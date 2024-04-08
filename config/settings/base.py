@@ -21,6 +21,8 @@ BASE_APPS = [
 ]
 
 PROJECT_APPS = [
+    "apps.categories",
+    "apps.utilities",
 ]
 
 THIRD_APPS = [
