@@ -5,3 +5,6 @@ django-environ==0.11.2
 djoser==2.2.2
 djangorestframework-simplejwt==5.3.1
 social-auth-app-django==5.4.0
+
+# Security
+argon2-cffi==23.1.0
