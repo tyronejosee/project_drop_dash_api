@@ -9,5 +9,8 @@ social-auth-app-django==5.4.0
 # Security
 argon2-cffi==23.1.0
 
+# Docs
+drf-spectacular==0.27.2
+
 # Utilities
 pillow==10.3.0

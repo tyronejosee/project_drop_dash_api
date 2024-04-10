@@ -35,6 +35,7 @@ THIRD_APPS = [
     "social_django",
     "rest_framework_simplejwt",
     "rest_framework_simplejwt.token_blacklist",
+    "drf_spectacular",
 ]
 
 INSTALLED_APPS = BASE_APPS + PROJECT_APPS + THIRD_APPS
@@ -114,7 +115,7 @@ REST_FRAMEWORK = {
         "rest_framework.throttling.AnonRateThrottle",
         "rest_framework.throttling.UserRateThrottle"
     ],
-    # "DEFAULT_SCHEMA_CLASS": "drf_spectacular.openapi.AutoSchema",
+    "DEFAULT_SCHEMA_CLASS": "drf_spectacular.openapi.AutoSchema",
     # "DEFAULT_VERSIONING_CLASS": "rest_framework.versioning.NamespaceVersioning",
     "DEFAULT_CONTENT_LANGUAGE": "en",
     "DEFAULT_PAGINATION_CLASS": "rest_framework.pagination.PageNumberPagination",
@@ -179,3 +180,21 @@ AUTHENTICATION_BACKENDS = (
     "social_core.backends.facebook.FacebookOAuth2",
     "django.contrib.auth.backends.ModelBackend",
 )
+
+
+SPECTACULAR_SETTINGS = {
+    "TITLE": "Drop Dash (API)",
+    "DESCRIPTION": "Pending decription.",
+    "VERSION": "v1",
+    "LICENSE": {
+        "name": "Apache Licence 2.0",
+        "url": "https://github.com/tyronejosee/project_drop_dash_api/blob/main/LICENSE"
+    },
+    "CONTACT": {"name": "Developer", "url": "https://github.com/tyronejosee"},
+    "SCHEMA_PATH_PREFIX": r"^/api/v\d+",
+    "SCHEMA_PATH_PREFIX_TRIM": True,
+    "SERVE_INCLUDE_SCHEMA": False,
+    # "SWAGGER_UI_DIST": "SIDECAR",
+    # "SWAGGER_UI_FAVICON_HREF": "SIDECAR",
+    # "REDOC_DIST": "SIDECAR",
+}
