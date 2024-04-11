@@ -21,7 +21,7 @@ class Menu(BaseModel):
         verbose_name_plural = "Menus"
 
     def __str__(self):
-        return f"{self.user} {self.restaurant}"
+        return f"{self.restaurant}'s Menu"
 
 
 class MenuItem(BaseModel):
@@ -35,4 +35,4 @@ class MenuItem(BaseModel):
         verbose_name_plural = "MenuItems"
 
     def __str__(self):
-        return self.menu
+        return f"{self.menu}'s Items"

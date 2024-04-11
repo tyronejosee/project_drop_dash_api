@@ -10,7 +10,7 @@ class MenuAdmin(admin.ModelAdmin):
     """Admin config for Menu model."""
     search_fields = ["user", "restaurant"]
     list_display = [
-        "user", "restaurant", "available", "created_at", "updated_at"
+        "restaurant", "available", "created_at", "updated_at"
     ]
     list_per_page = 25
     readonly_fields = ["pk", "created_at", "updated_at",]
