@@ -16,7 +16,7 @@ class CategoryList(APIView):
     serializer_class = CategorySerializer
     permission_classes = [IsStaffOrReadOnly]
 
-    def get(self, request):
+    def get(self, request, format=None):
         """Get a list of categories."""
         categories = Category.objects.filter(available=True).order_by("id")
         if categories.exists():
@@ -30,7 +30,7 @@ class CategoryList(APIView):
             status=status.HTTP_204_NO_CONTENT
         )
 
-    def post(self, request):
+    def post(self, request, format=None):
         """Create a new category."""
         serializer = self.serializer_class(data=request.data)
         if serializer.is_valid():
@@ -57,13 +57,13 @@ class CategoryDetail(APIView):
         except Category.DoesNotExist:
             raise Http404
 
-    def get(self, request, category_id):
+    def get(self, request, category_id, format=None):
         """Get details of a category."""
         category = self.get_object(category_id)
         serializer = self.serializer_class(category)
         return Response(serializer.data)
 
-    def put(self, request, category_id):
+    def put(self, request, category_id, format=None):
         """Update a category."""
         category = self.get_object(category_id)
         serializer = self.serializer_class(category, data=request.data)
@@ -75,7 +75,7 @@ class CategoryDetail(APIView):
             status=status.HTTP_400_BAD_REQUEST
         )
 
-    def delete(self, request, category_id):
+    def delete(self, request, category_id, format=None):
         """Delete a category."""
         category = self.get_object(category_id)
         category.delete()
