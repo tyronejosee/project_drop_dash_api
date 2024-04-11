@@ -4,7 +4,6 @@ from django.http import Http404
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
-from rest_framework.permissions import AllowAny
 
 from apps.utilities.pagination import LargeSetPagination
 from apps.utilities.permissions import IsStaffOrReadOnly

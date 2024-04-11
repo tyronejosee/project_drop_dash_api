@@ -26,6 +26,8 @@ PROJECT_APPS = [
     "apps.restaurants",
     "apps.drivers",
     "apps.users",
+    "apps.foods",
+    "apps.menus",
     "apps.utilities",
 ]
 
