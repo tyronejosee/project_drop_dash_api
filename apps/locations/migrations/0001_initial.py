@@ -10,35 +10,39 @@ class Migration(migrations.Migration):
     initial = True
 
     dependencies = [
-        ('restaurants', '0001_initial'),
     ]
 
     operations = [
         migrations.CreateModel(
-            name='MenuItem',
+            name='Region',
             fields=[
                 ('id', models.UUIDField(default=uuid.uuid4, editable=False, primary_key=True, serialize=False)),
                 ('available', models.BooleanField(db_index=True, default=True)),
                 ('created_at', models.DateField(auto_now_add=True)),
                 ('updated_at', models.DateField(auto_now=True)),
+                ('name', models.CharField(max_length=100, unique=True)),
+                ('number', models.PositiveSmallIntegerField(default=0)),
+                ('is_metropolitan', models.BooleanField(default=False)),
             ],
             options={
-                'verbose_name': 'MenuItem',
-                'verbose_name_plural': 'MenuItems',
+                'verbose_name': 'Region',
+                'verbose_name_plural': 'Regions',
             },
         ),
         migrations.CreateModel(
-            name='Menu',
+            name='Comune',
             fields=[
                 ('id', models.UUIDField(default=uuid.uuid4, editable=False, primary_key=True, serialize=False)),
                 ('available', models.BooleanField(db_index=True, default=True)),
                 ('created_at', models.DateField(auto_now_add=True)),
                 ('updated_at', models.DateField(auto_now=True)),
-                ('restaurant', models.OneToOneField(on_delete=django.db.models.deletion.CASCADE, to='restaurants.restaurant')),
+                ('name', models.CharField(max_length=100, unique=True)),
+                ('region', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='locations.region')),
             ],
             options={
-                'verbose_name': 'Menu',
-                'verbose_name_plural': 'Menus',
+                'verbose_name': 'Comune',
+                'verbose_name_plural': 'Comunes',
+                'indexes': [models.Index(fields=['region'], name='locations_c_region__e287c5_idx')],
             },
         ),
     ]
