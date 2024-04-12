@@ -1,0 +1,1 @@
+"""URLs for Deliveries App."""
