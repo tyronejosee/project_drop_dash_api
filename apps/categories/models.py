@@ -9,7 +9,6 @@ from apps.utilities.models import BaseModel
 class Category(BaseModel):
     """Model definition for Category."""
     name = models.CharField(max_length=100, unique=True)
-    description = models.TextField(blank=True, null=True)
     slug = models.SlugField(max_length=100, unique=True, blank=True)
 
     class Meta:
