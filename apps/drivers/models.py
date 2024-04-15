@@ -4,7 +4,9 @@ from django.conf import settings
 from django.db import models
 
 from apps.utilities.models import BaseModel
+from apps.locations.models import Comune, Region
 from .validators import validate_phone, validate_birth_date
+from .choices import Status
 
 User = settings.AUTH_USER_MODEL
 
@@ -18,9 +20,12 @@ class Driver(BaseModel):
         max_length=12, unique=True, validators=[validate_phone])
     email = models.EmailField(blank=True)
     birth_date = models.DateField(validators=[validate_birth_date])
-    # region = models.ForeignKey(Region, on_delete=models.CASCADE)
-    # city = models.ForeignKey(City, on_delete=models.CASCADE)
-    # status [alert, bronce, silver, diamond]
+    comune = models.ForeignKey(Comune, on_delete=models.CASCADE)
+    region = models.ForeignKey(Region, on_delete=models.CASCADE)
+    status = models.CharField(
+        max_length=10, choices=Status.choices,
+        default=Status.BRONCE
+    )  # TODO: Add crontab or signals for logic
 
     class Meta:
         """Meta definition for Driver."""

@@ -10,6 +10,8 @@ class OrderAdmin(admin.ModelAdmin):
     """Admin config for Order model."""
     search_fields = ["transaction", "user"]
     list_display = ["transaction", "available", "created_at", "status"]
+    list_filter = ["status",]
+    list_editable = ["available",]
     list_per_page = 25
     readonly_fields = ["pk", "created_at", "updated_at",]
     ordering = ["created_at",]
@@ -20,6 +22,7 @@ class OrderItemAdmin(admin.ModelAdmin):
     """Admin config for OrderItem model."""
     search_fields = ["order", "food"]
     list_display = ["order", "food", "created_at", "available"]
+    list_editable = ["available",]
     list_per_page = 25
     readonly_fields = ["pk", "created_at", "updated_at",]
     ordering = ["created_at",]
