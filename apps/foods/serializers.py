@@ -2,11 +2,15 @@
 
 from rest_framework.serializers import ModelSerializer
 
+from apps.restaurants.serializers import RestaurantSerializer
+from apps.categories.serializers import CategorySerializer
 from .models import Food
 
 
 class FoodSerializer(ModelSerializer):
     """Serializer for Food model."""
+    restaurant = RestaurantSerializer(read_only=True)
+    category = CategorySerializer(read_only=True)
 
     class Meta:
         """Meta definition for FoodSerializer."""
