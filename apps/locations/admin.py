@@ -9,10 +9,10 @@ from .models import Region, Comune
 class RegionAdmin(admin.ModelAdmin):
     """Admin config for Region model."""
     search_fields = ["name",]
-    list_display = ["name", "available", "created_at", "updated_at"]
+    list_display = ["name", "number", "available", "created_at",]
     list_per_page = 25
     readonly_fields = ["pk", "created_at", "updated_at",]
-    ordering = ["pk",]
+    ordering = ["number",]
 
 
 @admin.register(Comune)
