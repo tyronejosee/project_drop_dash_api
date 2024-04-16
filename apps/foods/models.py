@@ -15,7 +15,8 @@ class Food(BaseModel):
     sale_price = models.DecimalField(max_digits=10, decimal_places=2)
     preparation_time = models.IntegerField()
     image = models.ImageField(upload_to="foods/")
-    restaurant = models.ForeignKey(Restaurant, on_delete=models.CASCADE)
+    restaurant = models.ForeignKey(
+        Restaurant, on_delete=models.CASCADE, related_name="foods")
     category = models.ForeignKey(
         Category, on_delete=models.SET_NULL, null=True)
     is_vegetarian = models.BooleanField(default=False)

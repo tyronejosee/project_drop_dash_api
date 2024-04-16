@@ -1,14 +1,18 @@
 """Models for Contents App."""
 
+from django.conf import settings
 from django.db import models
 from django.utils.text import slugify
 
 from apps.utilities.models import BaseModel
 from .choices import SPECIALTY_CHOICES
 
+User = settings.AUTH_USER_MODEL
+
 
 class Restaurant(BaseModel):
     """Model definition for Restaurant (Entity)."""
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
     name = models.CharField(max_length=50, unique=True, db_index=True)
     slug = models.SlugField(max_length=50, unique=True, db_index=True)
     image = models.ImageField(upload_to="restaurants/")

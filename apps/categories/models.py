@@ -1,15 +1,17 @@
 """Models for Categories App."""
 
 from django.db import models
-from django.utils.text import slugify
 
 from apps.utilities.models import BaseModel
+from apps.restaurants.models import Restaurant
 
 
 class Category(BaseModel):
     """Model definition for Category."""
-    name = models.CharField(max_length=100, unique=True)
-    slug = models.SlugField(max_length=100, unique=True, blank=True)
+    name = models.CharField(max_length=100)
+    restaurant = models.ForeignKey(
+        Restaurant, on_delete=models.CASCADE, related_name="categories"
+    )
 
     class Meta:
         """Meta definition for Category."""
@@ -19,9 +21,3 @@ class Category(BaseModel):
     def __str__(self):
         """Unicode representation of Category."""
         return self.name
-
-    def save(self, *args, **kwargs):
-        """Override the save method to automatically generate the slug."""
-        if not self.slug:
-            self.slug = slugify(self.name)
-        super().save(*args, **kwargs)
