@@ -1,0 +1,25 @@
+# Python files
+*.pyc
+__pycache__
+
+# Git files
+.git
+.github
+.gitignore
+.gitattributes
+.gitkeep
+
+# Linter files
+.flake8
+.editorconfig
+.pre-commit-config.yaml
+
+# Envs files
+env
+.envs/
+
+# Projects files
+desktop.ini
+LICENCE
+endpoints.md
+README.md

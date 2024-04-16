@@ -1,0 +1,37 @@
+version: "3.9"
+
+services:
+  db:
+    image: postgres
+    container_name: dropdash_db
+    restart: always
+    environment:
+      POSTGRES_DB: dropdash_db
+      POSTGRES_USER: dropdash_user
+      POSTGRES_PASSWORD: dropdash_password
+    ports:
+      - 5432:5432
+    volumes:
+      - .data:/var/lib/postgresql
+
+  redis:
+    image: redis
+    container_name: dropdash_redis
+    ports:
+      - 6379:6379
+
+  web:
+    container_name: dropdash_web
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
+    command: python manage.py runserver 0.0.0.0:8000
+    volumes:
+      - .:/app
+    ports:
+      - "8000:8000"
+    env_file:
+      - ./.env.dev
+    depends_on:
+      - db
+      - redis

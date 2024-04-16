@@ -7,6 +7,8 @@ from rest_framework.response import Response
 from rest_framework import status
 
 from apps.utilities.pagination import LargeSetPagination
+from apps.categories.models import Category
+# from apps.categories.serializers import CategorySerializer
 # from apps.menus.models import Menu
 # from apps.menus.serializers import MenuSerializer
 from .models import Restaurant
@@ -20,7 +22,7 @@ class RestaurantListAPIView(APIView):
     permission_classes = [IsAuthenticatedOrReadOnly]
 
     def get(self, request):
-        """Get a list of restaurants."""
+        # Get a list of restaurants
         stores = Restaurant.objects.filter(available=True).order_by("id")
         paginator = LargeSetPagination()
         page = paginator.paginate_queryset(stores, request)
@@ -33,7 +35,7 @@ class RestaurantListAPIView(APIView):
         )
 
     def post(self, request):
-        """Create a new restaurant."""
+        # Create a new restaurant
         serializer = self.serializer_class(data=request.data)
         if serializer.is_valid():
             serializer.save()
@@ -53,7 +55,7 @@ class RestaurantDetailAPIView(APIView):
     permission_classes = [IsBusinessOwnerOrReadOnly]
 
     def get_object(self, restaurant_id):
-        """Get a restaurant instance by id."""
+        # Get a restaurant instance by id
         try:
             return Restaurant.objects.get(pk=restaurant_id)
         except Restaurant.DoesNotExist:
@@ -84,6 +86,22 @@ class RestaurantDetailAPIView(APIView):
         return Response(status=status.HTTP_204_NO_CONTENT)
 
 
+class RestaurantCategoriesAPIView(APIView):
+
+    def get(self, request, restaurant_id, formate=None):
+        # Gets a list of categories associated with a restaurant
+        categories = Category.filter(restaurant=restaurant_id)
+        paginator = LargeSetPagination()
+        paginated_data = paginator.paginate_queryset(categories, request)
+        if paginated_data is not None:
+            serializer = self.serializer_class(paginated_data, many=True)
+            return paginator.get_paginated_response(serializer.data)
+        return Response(
+            {"detail": "No categories available."},
+            status=status.HTTP_204_NO_CONTENT
+        )
+
+
 # class RestaurantMenuAPIView(APIView):
 #     # permission_classes = []
 
@@ -95,6 +113,5 @@ class RestaurantDetailAPIView(APIView):
 #             return Response(serializer.data)
 #         except Menu.DoesNotExist:
 #             return Response(
-#                 {"detail": "Menu not found"},
 #                 status=status.HTTP_404_NOT_FOUND
 #             )
