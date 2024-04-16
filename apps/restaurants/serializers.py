@@ -28,3 +28,17 @@ class RestaurantSerializer(serializers.ModelSerializer):
             "created_at",
             "updated_at"
         ]
+
+
+class RestaurantListSerializer(serializers.ModelSerializer):
+    """Serializer for Restaurant model (List only)."""
+
+    class Meta:
+        """Meta definition for RestaurantSerializer."""
+        model = Restaurant
+        fields = [
+            "id",
+            "name",
+            "slug",
+            "image",
+        ]

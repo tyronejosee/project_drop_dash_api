@@ -3,7 +3,7 @@
 from rest_framework.serializers import ModelSerializer
 
 from apps.users.serializers import UserSerializer
-from apps.restaurants.serializers import RestaurantSerializer
+from apps.restaurants.serializers import RestaurantListSerializer
 from apps.foods.serializers import FoodSerializer
 from .models import Menu, MenuItem
 
@@ -11,7 +11,7 @@ from .models import Menu, MenuItem
 class MenuSerializer(ModelSerializer):
     """Serializer for Menu model."""
     user = UserSerializer(read_only=True)
-    restaurant = RestaurantSerializer(read_only=True)
+    restaurant = RestaurantListSerializer(read_only=True)
 
     class Meta:
         """Meta definition for MenuSerializer."""
