@@ -7,8 +7,8 @@ from rest_framework.response import Response
 from rest_framework import status
 
 from apps.utilities.pagination import LargeSetPagination
-from apps.menus.models import Menu, MenuItem
-from apps.menus.serializers import MenuItemSerializer
+# from apps.menus.models import Menu
+# from apps.menus.serializers import MenuSerializer
 from .models import Restaurant
 from .serializers import RestaurantSerializer
 from .permissions import IsBusinessOwnerOrReadOnly
@@ -84,17 +84,17 @@ class RestaurantDetailAPIView(APIView):
         return Response(status=status.HTTP_204_NO_CONTENT)
 
 
-class RestaurantMenuAPIView(APIView):
-    # permission_classes = []
+# class RestaurantMenuAPIView(APIView):
+#     # permission_classes = []
 
-    def get(self, request, restaurant_id, format=None):
-        try:
-            menu = Menu.objects.get(restaurant=restaurant_id)
-            menu_items = MenuItem.objects.filter(menu=menu)
-            serializer = MenuItemSerializer(menu_items, many=True)
-            return Response(serializer.data)
-        except Menu.DoesNotExist:
-            return Response(
-                {"detail": "Menu not found"},
-                status=status.HTTP_404_NOT_FOUND
-            )
+#     def get(self, request, restaurant_id, format=None):
+#         try:
+#             menu = Menu.objects.get(restaurant=restaurant_id)
+#             menu_items = MenuItem.objects.filter(menu=menu)
+#             serializer = MenuItemSerializer(menu_items, many=True)
+#             return Response(serializer.data)
+#         except Menu.DoesNotExist:
+#             return Response(
+#                 {"detail": "Menu not found"},
+#                 status=status.HTTP_404_NOT_FOUND
+#             )

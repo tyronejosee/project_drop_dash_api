@@ -9,5 +9,6 @@ urlpatterns = [
     path("api/v1/restaurants/", RestaurantListAPIView.as_view()),
     path("api/v1/restaurants/<uuid:restaurant_id>/",
          RestaurantDetailAPIView.as_view()),
-    # path("api/v1/restaurants/<uuid:restaurant_id>/menus/", RestaurantDetailAPIView.as_view()),
+    # path("api/v1/restaurants/<uuid:restaurant_id>/menu/",
+    #      RestaurantMenuAPIView.as_view()),
 ]
