@@ -4,8 +4,10 @@ from django.conf import settings
 from django.db import models
 from django.utils.text import slugify
 
+from apps.utilities.paths import image_path
+from apps.utilities.validators import validate_phone
 from apps.utilities.models import BaseModel
-from .choices import SPECIALTY_CHOICES
+from .choices import Specialty
 
 User = settings.AUTH_USER_MODEL
 
@@ -15,15 +17,19 @@ class Restaurant(BaseModel):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     name = models.CharField(max_length=50, unique=True, db_index=True)
     slug = models.SlugField(max_length=50, unique=True, db_index=True)
-    image = models.ImageField(upload_to="restaurants/")
+    image = models.ImageField(upload_to=image_path)
     description = models.TextField(blank=True)
     specialty = models.CharField(
-        max_length=20, choices=SPECIALTY_CHOICES, default="varied")
+        max_length=20, choices=Specialty.choices, default=Specialty.VARIED)
     address = models.CharField(max_length=255)
     opening_time = models.TimeField()
     closing_time = models.TimeField()
-    phone = models.CharField(max_length=15)
+    phone = models.CharField(
+        max_length=12, unique=True, validators=[validate_phone])
     email = models.EmailField(blank=True)
+    facebook = models.URLField(max_length=255, blank=True)
+    instagram = models.URLField(max_length=255, blank=True)
+    tiktok = models.URLField(max_length=255, blank=True)
     website = models.URLField(max_length=255, blank=True)
     is_open = models.BooleanField(default=False)
 

@@ -1,21 +1,23 @@
 """Choices for Restaurants App."""
 
+from django.db import models
 
-SPECIALTY_CHOICES = [
-    ("varied", "Varied"),
-    ("chilean", "Chilean"),
-    ("peruvian", "Peruvian"),
-    ("argentinian", "Argentinian"),
-    ("mexican", "Mexican"),
-    ("italian", "Italian"),
-    ("french", "French"),
-    ("japanese", "Japanese"),
-    ("chinese", "Chinese"),
-    ("indian", "Indian"),
-    ("thai", "Thai"),
-    ("spanish", "Spanish"),
-    ("russian", "Russian"),
-    ("moroccan", "Moroccan"),
-    ("korean", "Korean"),
-    ("turkish", "Turkish")
-]
+
+class Specialty(models.TextChoices):
+    """Choices for specialty of a restaurant."""
+    VARIED = "varied", "Varied"
+    CHILEAN = "chilean", "Chilean"
+    PERUVIAN = "peruvian", "Peruvian"
+    ARGENTINIAN = "argentinian", "Argentinian"
+    MEXICAN = "mexican", "Mexican"
+    ITALIAN = "italian", "Italian"
+    FRENCH = "french", "French"
+    JAPANESE = "japanese", "Japanese"
+    CHINESE = "chinese", "Chinese"
+    INDIAN = "indian", "Indian"
+    THAI = "thai", "Thai"
+    SPANISH = "spanish", "Spanish"
+    RUSSIAN = "russian", "Russian"
+    MOROCCAN = "moroccan", "Moroccan"
+    KOREAN = "korean", "Korean"
+    TURKISH = "turkish", "Turkish"

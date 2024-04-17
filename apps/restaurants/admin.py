@@ -11,5 +11,5 @@ class RestaurantAdmin(admin.ModelAdmin):
     search_fields = ["name", "user"]
     list_display = ["name", "available",]
     list_per_page = 25
-    readonly_fields = ["pk", "slug", "created_at", "updated_at",]
+    readonly_fields = ["pk", "slug", "is_open", "created_at", "updated_at",]
     ordering = ["name",]
