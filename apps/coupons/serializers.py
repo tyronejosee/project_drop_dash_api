@@ -2,15 +2,15 @@
 
 from rest_framework.serializers import ModelSerializer
 
-from .models import FixedDiscountCoupon, PercentageDiscountCoupon
+from .models import FixedCoupon, PercentageCoupon
 
 
-class FixedDiscountCouponSerializer(ModelSerializer):
-    """Serializer for FixedDiscountCoupon model."""
+class FixedCouponSerializer(ModelSerializer):
+    """Serializer for FixedCoupon model."""
 
     class Meta:
-        """Meta definition for FixedDiscountCouponSerializer."""
-        model = FixedDiscountCoupon
+        """Meta definition for FixedCouponSerializer."""
+        model = FixedCoupon
         fields = [
             "id",
             "name",
@@ -19,18 +19,16 @@ class FixedDiscountCouponSerializer(ModelSerializer):
             "start_date",
             "end_date",
             "quantity",
-            "is_active",
-            "created_at",
-            "updated_at"
+            "is_active"
         ]
 
 
-class PercentageDiscountCouponSerializer(ModelSerializer):
-    """Serializer for PercentageDiscountCoupon model."""
+class PercentageCouponSerializer(ModelSerializer):
+    """Serializer for PercentageCoupon model."""
 
     class Meta:
-        """Meta definition for PercentageDiscountCouponSerializer."""
-        model = PercentageDiscountCoupon
+        """Meta definition for PercentageCouponSerializer."""
+        model = PercentageCoupon
         fields = [
             "id",
             "name",
@@ -39,7 +37,5 @@ class PercentageDiscountCouponSerializer(ModelSerializer):
             "start_date",
             "end_date",
             "quantity",
-            "is_active",
-            "created_at",
-            "updated_at"
+            "is_active"
         ]

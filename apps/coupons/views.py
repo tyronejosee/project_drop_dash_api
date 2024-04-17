@@ -5,9 +5,9 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
 
-from .models import FixedDiscountCoupon, PercentageDiscountCoupon
+from .models import FixedCoupon, PercentageCoupon
 from .serializers import (
-    FixedDiscountCouponSerializer, PercentageDiscountCouponSerializer
+    FixedCouponSerializer, PercentageCouponSerializer
 )
 
 
@@ -20,16 +20,16 @@ class CheckCouponAPIView(APIView):
             coupon_code = request.query_params.get("coupon_code")
             # coupon_code = request.data.get("coupon_code")
 
-            fixed_coupon = FixedDiscountCoupon.objects.filter(
+            fixed_coupon = FixedCoupon.objects.filter(
                 code=coupon_code).first()
-            percentage_coupon = PercentageDiscountCoupon.objects.filter(
+            percentage_coupon = PercentageCoupon.objects.filter(
                 code=coupon_code).first()
 
             if fixed_coupon:
-                serializer = FixedDiscountCouponSerializer(fixed_coupon)
+                serializer = FixedCouponSerializer(fixed_coupon)
                 return Response(serializer.data)
             elif percentage_coupon:
-                serializer = PercentageDiscountCouponSerializer(
+                serializer = PercentageCouponSerializer(
                     percentage_coupon)
                 return Response(serializer.data)
             else:
