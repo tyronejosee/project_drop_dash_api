@@ -20,3 +20,15 @@ class CategorySerializer(serializers.ModelSerializer):
             "created_at",
             "updated_at"
         ]
+
+
+class CategoryListSerializer(serializers.ModelSerializer):
+    """Serializer for Category model (List only)."""
+
+    class Meta:
+        """Meta definition for CategoryListSerializer."""
+        model = Category
+        fields = [
+            "id",
+            "name"
+        ]

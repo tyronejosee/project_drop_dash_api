@@ -12,6 +12,9 @@ class FoodAdmin(admin.ModelAdmin):
     list_display = [
         "name", "restaurant", "available", "created_at", "updated_at"
     ]
+    list_editable = ["available",]
+    list_filter = ["restaurant", "category"]
     list_per_page = 25
-    readonly_fields = ["pk", "created_at", "updated_at",]
+    readonly_fields = ["pk", "sale_price", "created_at", "updated_at",]
+    autocomplete_fields = ["restaurant", "category"]
     ordering = ["pk",]

@@ -3,9 +3,9 @@
 from django.conf import settings
 from django.db import models
 
+from apps.utilities.validators import validate_phone, validate_birth_date
 from apps.utilities.models import BaseModel
 from apps.locations.models import Comune, Region
-from .validators import validate_phone, validate_birth_date
 from .choices import Status
 
 User = settings.AUTH_USER_MODEL
@@ -19,8 +19,8 @@ class Driver(BaseModel):
         max_length=12, unique=True, validators=[validate_phone])
     email = models.EmailField(blank=True)
     birth_date = models.DateField(validators=[validate_birth_date])
-    comune = models.ForeignKey(Comune, on_delete=models.CASCADE)
-    region = models.ForeignKey(Region, on_delete=models.CASCADE)
+    comune = models.ForeignKey(Comune, on_delete=models.PROTECT)
+    region = models.ForeignKey(Region, on_delete=models.PROTECT)
     status = models.CharField(
         max_length=10, choices=Status.choices,
         default=Status.BRONCE
