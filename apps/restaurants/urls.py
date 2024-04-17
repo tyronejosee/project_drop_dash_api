@@ -11,6 +11,4 @@ urlpatterns = [
          RestaurantDetailAPIView.as_view()),
     path("api/v1/restaurants/<uuid:restaurant_id>/categories/",
          RestaurantCategoriesAPIView.as_view()),
-    # path("api/v1/restaurants/<uuid:restaurant_id>/menu/",
-    #      RestaurantMenuAPIView.as_view()),
 ]

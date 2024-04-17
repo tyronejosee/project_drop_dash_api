@@ -5,7 +5,7 @@
     <img src="./static/img/logo_light.svg" alt="logo-light" width="80">
   </a>
   <a href="https://github.com/tyronejosee/project_new_store#gh-dark-mode-only" target="_blank">
-    <img src="./static/img/logo_dark.svg" alt="logo-dark" width="80">
+    <img src="./.github/logo_light.svg" alt="logo-dark" width="80">
   </a>
 </p>
 <p align="center">

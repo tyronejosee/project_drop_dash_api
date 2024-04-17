@@ -27,7 +27,6 @@ PROJECT_APPS = [
     "apps.drivers",
     "apps.users",
     "apps.foods",
-    "apps.menus",
     "apps.coupons",
     "apps.orders",
     "apps.payments",

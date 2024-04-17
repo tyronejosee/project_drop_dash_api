@@ -9,8 +9,6 @@ from rest_framework import status
 from apps.utilities.pagination import LargeSetPagination
 from apps.categories.models import Category
 # from apps.categories.serializers import CategorySerializer
-# from apps.menus.models import Menu
-# from apps.menus.serializers import MenuSerializer
 from .models import Restaurant
 from .serializers import RestaurantSerializer
 from .permissions import IsBusinessOwnerOrReadOnly
@@ -100,18 +98,3 @@ class RestaurantCategoriesAPIView(APIView):
             {"detail": "No categories available."},
             status=status.HTTP_204_NO_CONTENT
         )
-
-
-# class RestaurantMenuAPIView(APIView):
-#     # permission_classes = []
-
-#     def get(self, request, restaurant_id, format=None):
-#         try:
-#             menu = Menu.objects.get(restaurant=restaurant_id)
-#             menu_items = MenuItem.objects.filter(menu=menu)
-#             serializer = MenuItemSerializer(menu_items, many=True)
-#             return Response(serializer.data)
-#         except Menu.DoesNotExist:
-#             return Response(
-#                 status=status.HTTP_404_NOT_FOUND
-#             )
