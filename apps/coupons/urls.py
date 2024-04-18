@@ -2,9 +2,10 @@
 
 from django.urls import path
 
-from .views import CheckCouponAPIView
+from .views import FixedCouponListAPIView, CheckCouponAPIView
 
 
 urlpatterns = [
-    path("api/v1/coupons/check-coupon/", CheckCouponAPIView.as_view())
+    path("api/v1/coupons/fixed-coupons/", FixedCouponListAPIView.as_view()),
+    path("api/v1/coupons/check-coupons/", CheckCouponAPIView.as_view())
 ]
