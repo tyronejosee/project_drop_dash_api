@@ -30,3 +30,22 @@ class FoodSerializer(ModelSerializer):
             "created_at",
             "updated_at"
         ]
+
+
+class FoodMiniSerializer(ModelSerializer):
+    """Serializer for Food model (Mini)."""
+
+    class Meta:
+        """Meta definition for FoodSerializer."""
+        model = Food
+        fields = [
+            "id",
+            "name",
+            "price",
+            "sale_price",
+            "image",
+            "is_vegetarian",
+            "is_gluten_free",
+            "is_spicy",
+            "is_featured",
+        ]

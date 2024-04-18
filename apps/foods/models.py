@@ -14,7 +14,7 @@ class Food(BaseModel):
     name = models.CharField(max_length=255)
     price = models.DecimalField(max_digits=10, decimal_places=2)
     sale_price = models.DecimalField(
-        max_digits=10, decimal_places=2, blank=True)
+        max_digits=10, decimal_places=2, blank=True, null=True)
     image = models.ImageField(upload_to=image_path)
     restaurant = models.ForeignKey(
         Restaurant, on_delete=models.CASCADE, related_name="foods")

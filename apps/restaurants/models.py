@@ -4,7 +4,7 @@ from django.conf import settings
 from django.db import models
 from django.utils.text import slugify
 
-from apps.utilities.paths import image_path
+from apps.utilities.paths import image_path, image_banner_path
 from apps.utilities.validators import validate_phone
 from apps.utilities.models import BaseModel
 from .choices import Specialty
@@ -18,6 +18,7 @@ class Restaurant(BaseModel):
     name = models.CharField(max_length=50, unique=True, db_index=True)
     slug = models.SlugField(max_length=50, unique=True, db_index=True)
     image = models.ImageField(upload_to=image_path)
+    banner = models.ImageField(upload_to=image_banner_path, blank=True)
     description = models.TextField(blank=True)
     specialty = models.CharField(
         max_length=20, choices=Specialty.choices, default=Specialty.VARIED)
