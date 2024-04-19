@@ -1,18 +1,18 @@
 # Endpoints
 
-## Todo
+## Progress
 
 ### Coupons
 
-- [ ] `GET /api/coupons/`
-- [ ] `POST /api/coupons/`
-- [ ] `GET /api/coupons/{id}/`
-- [ ] `PUT /api/coupons/{id}/`
-- [ ] `DELETE /api/coupons/{id}/`
-- [ ] `GET /api/coupons/active/`
-- [ ] `POST /api/orders/{order_id}/apply-coupon/`
+- [x] `GET /api/coupons/`
+- [x] `POST /api/coupons/`
+- [x] `GET /api/coupons/{id}/`
+- [x] `PUT /api/coupons/{id}/`
+- [x] `DELETE /api/coupons/{id}/`
 - [ ] `GET /api/coupons/{coupon_id}/orders/`
-- [ ] `GET /api/coupons/{coupon_id}/total-discount/`
+- [ ] `POST /api/orders/{order_id}/apply-coupon/`
+
+## Backlog
 
 ### Orders
 
@@ -21,6 +21,7 @@
 - `GET /api/orders/{id}/`
 - `PUT /api/orders/{id}/`
 - `DELETE /api/orders/{id}/`
+-
 - `GET /api/users/{user_id}/orders/`
 - `GET /api/restaurants/{restaurant_id}/orders/`
 - `GET /api/orders/pending/`

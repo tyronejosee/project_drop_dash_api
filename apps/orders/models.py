@@ -4,8 +4,11 @@ from django.db import models
 from django.contrib.auth import get_user_model
 
 from apps.utilities.models import BaseModel
+from apps.restaurants.models import Restaurant
 from apps.foods.models import Food
 from apps.locations.models import Comune, Region
+from apps.payments.choices import PaymentMethod
+from .managers import OrderItemManager
 from .choices import OrderStatus
 
 User = get_user_model()
@@ -14,20 +17,19 @@ User = get_user_model()
 class Order(BaseModel):
     """Model definition for Order (Entity)."""
     transaction = models.CharField(max_length=255, unique=True, editable=False)
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.PROTECT)
+    restaurant = models.ForeignKey(Restaurant, on_delete=models.PROTECT)
     address = models.CharField(max_length=255)
-    comune = models.ForeignKey(Comune, on_delete=models.CASCADE)
-    region = models.ForeignKey(Region, on_delete=models.CASCADE)
+    comune = models.ForeignKey(Comune, on_delete=models.PROTECT)
+    region = models.ForeignKey(Region, on_delete=models.PROTECT)
     phone = models.CharField(max_length=255)
     note = models.TextField(blank=True)
     status = models.CharField(
         max_length=50, choices=OrderStatus.choices,
-        default=OrderStatus.NOT_PROCESSED
-    )
-    payment_method = models.CharField(max_length=255)
-    payment_status = models.CharField(max_length=50)
-    estimated_delivery_time = models.DateTimeField(null=True, blank=True)
-    actual_delivery_time = models.DateTimeField(null=True, blank=True)
+        default=OrderStatus.NOT_PROCESSED)
+    payment_method = models.CharField(
+        max_length=15, choices=PaymentMethod.choices,
+        default=PaymentMethod.CASH)
 
     class Meta:
         """Meta definition for Order model."""
@@ -43,21 +45,17 @@ class Order(BaseModel):
             self.transaction = f"{self.pk}/{self.user.pk}"
         super().save(*args, **kwargs)
 
-    def calculate_total(self):
-        # Calculate the total of the order by summing the prices of the items
-        return sum(
-            item.calculate_subtotal() for item in self.order_items.all()
-        )
-
 
 class OrderItem(BaseModel):
     """Model definition for OrderItem (Pivot)."""
     order = models.ForeignKey(Order, on_delete=models.CASCADE)
     food = models.ForeignKey(Food, on_delete=models.DO_NOTHING)
-    price = models.DecimalField(max_digits=5, decimal_places=2)
+    price = models.DecimalField(max_digits=5, decimal_places=2)  # Ref
     discount = models.DecimalField(max_digits=5, decimal_places=2, default=0)
     tax = models.DecimalField(max_digits=5, decimal_places=2, default=0)
     count = models.IntegerField()
+
+    objects = OrderItemManager()
 
     class Meta:
         """Meta definition for OrderItem model."""
@@ -66,7 +64,3 @@ class OrderItem(BaseModel):
 
     def __str__(self):
         return f"{self.order} - {self.food}"
-
-    def calculate_subtotal(self):
-        # Calculate the subtotal of this item considering discounts and taxes
-        return (self.price * self.count) - self.discount + self.tax
