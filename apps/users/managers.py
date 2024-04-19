@@ -17,8 +17,6 @@ class UserManager(BaseUserManager):
         user.set_password(password)
         user.save()
 
-        # TODO: extra models here
-
         return user
 
     def create_superuser(self, email, password, **kwargs):
