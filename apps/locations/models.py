@@ -17,7 +17,7 @@ class Region(BaseModel):
         verbose_name_plural = "Regions"
 
     def __str__(self):
-        return self.name
+        return str(self.name)
 
 
 class Comune(BaseModel):
@@ -34,4 +34,4 @@ class Comune(BaseModel):
         ]
 
     def __str__(self):
-        return f"{self.name} - {self.region}"
+        return str(self.name)

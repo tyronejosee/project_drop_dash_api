@@ -1,5 +1,7 @@
 """Models for Deliveries App."""
 
+# from django.db import models
+
 
 # class Delivery(models.Model):
 #     DELIVERY_STATUS_CHOICES = [
@@ -9,14 +11,21 @@
 #     ]
 #     order = models.OneToOneField(Order, on_delete=models.CASCADE)
 #     user = models.ForeignKey(User, on_delete=models.CASCADE)
-#     driver = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True, related_name='deliveries')
-#     status = models.CharField(max_length=20, choices=DELIVERY_STATUS_CHOICES, default='IN_PROGRESS')
+#     driver = models.ForeignKey(
+#         User, on_delete=models.SET_NULL, null=True,
+#         blank=True, related_name='deliveries')
+#     status = models.CharField(
+#         max_length=20, choices=DELIVERY_STATUS_CHOICES,
+#         default='IN_PROGRESS')
 #     delivery_date = models.DateTimeField()
 
-
 #     user = models.ForeignKey(User, on_delete=models.CASCADE)
-#     driver = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True, related_name='deliveries')
-#     status = models.CharField(max_length=20, choices=DELIVERY_STATUS_CHOICES, default='IN_PROGRESS')
+#     driver = models.ForeignKey(
+#         User, on_delete=models.SET_NULL,
+#         null=True, blank=True, related_name='deliveries')
+#     status = models.CharField(
+#         max_length=20, choices=DELIVERY_STATUS_CHOICES,
+#         default='IN_PROGRESS')
 #     delivery_date = models.DateTimeField()
 #     pickup_address = models.CharField(max_length=255)
 #     delivery_address = models.CharField(max_length=255)
@@ -29,26 +38,3 @@
 #     payment_status = models.BooleanField(default=False)
 #     signature = models.ImageField(upload_to='signatures/', blank=True)
 #     internal_notes = models.TextField(blank=True)
-
-#     @classmethod
-#     def create_from_order(cls, order):
-#         if order.payment_status:
-#             return cls.objects.create(order=order)
-#         return None
-
-# # Ejemplo de uso:
-# # Crear una compra
-# order = Order.objects.create(user=request.user, total_amount=100.00)
-
-# # Realizar el pago
-# order.payment_status = True
-# order.save()
-
-# # Activar la entrega
-# delivery = Delivery.create_from_order(order)
-# if delivery:
-#     # La entrega se activó correctamente
-#     pass
-# else:
-#     # El pago no se ha realizado
-#     pass

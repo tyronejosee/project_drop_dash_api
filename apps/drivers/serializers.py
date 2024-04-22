@@ -3,17 +3,14 @@
 from rest_framework import serializers
 
 from apps.users.serializers import UserSerializer
-from apps.locations.serializers import (
-    ComuneListSerializer, RegionListSerializer
-)
 from .models import Driver
 
 
 class DriverSerializer(serializers.ModelSerializer):
     """Serializer for Driver model."""
     user = UserSerializer()
-    comune = ComuneListSerializer()
-    region = RegionListSerializer()
+    comune = serializers.StringRelatedField()
+    region = serializers.StringRelatedField()
     status = serializers.CharField(source="get_status_display", read_only=True)
 
     class Meta:

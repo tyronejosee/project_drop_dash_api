@@ -12,8 +12,10 @@
 #     def __str__(self):
 #         return self.name
 
+
 # class PromotionCode(models.Model):
-#     promotion = models.ForeignKey(Promotion, on_delete=models.CASCADE, related_name='codes')
+#     promotion = models.ForeignKey(
+#         Promotion, on_delete=models.CASCADE, related_name='codes')
 #     code = models.CharField(max_length=50, unique=True)
 #     is_used = models.BooleanField(default=False)
 
@@ -32,7 +34,8 @@
 
 
 # def create_promotion_code(promotion):
-#     code = generate_unique_code()  # Implementa lógica para generar un código único
+#     code = generate_unique_code()
+#     # Implementa lógica para generar un código único
 #     promotion_code = PromotionCode.objects.create(
 #         promotion=promotion,
 #         code=code

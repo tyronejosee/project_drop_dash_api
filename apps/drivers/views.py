@@ -17,7 +17,7 @@ class DriverListAPIView(APIView):
     """API view to list and create drivers."""
     permission_classes = [IsAuthenticated]
     serializer_class = DriverSerializer
-    cache_key = "fixed_coupon"
+    cache_key = "driver"
     cache_timeout = 7200  # 2 hours
 
     def get(self, request, format=None):
