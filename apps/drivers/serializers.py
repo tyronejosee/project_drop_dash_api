@@ -1,15 +1,20 @@
 """Serializers for Drivers App."""
 
-from rest_framework.serializers import ModelSerializer
+from rest_framework import serializers
 
-from apps.locations.serializers import ComuneSerializer, RegionSerializer
+from apps.users.serializers import UserSerializer
+from apps.locations.serializers import (
+    ComuneListSerializer, RegionListSerializer
+)
 from .models import Driver
 
 
-class DriverSerializer(ModelSerializer):
+class DriverSerializer(serializers.ModelSerializer):
     """Serializer for Driver model."""
-    comune = ComuneSerializer(read_only=True)
-    region = RegionSerializer(read_only=True)
+    user = UserSerializer()
+    comune = ComuneListSerializer()
+    region = RegionListSerializer()
+    status = serializers.CharField(source="get_status_display")
 
     class Meta:
         """Meta definition for DriverSerializer."""

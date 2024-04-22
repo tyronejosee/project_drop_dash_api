@@ -5,6 +5,8 @@ from django.core.exceptions import ValidationError
 from datetime import date
 
 
+# TODO: Remove validator.py, error in migrations dependencies
+
 validate_phone = RegexValidator(
     regex=r'^\+569\d{8}$',
     message="Invalid phone number."

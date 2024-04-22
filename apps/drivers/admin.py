@@ -9,7 +9,8 @@ from .models import Driver
 class DriverAdmin(admin.ModelAdmin):
     """Admin config for Driver model."""
     search_fields = ["user",]
-    list_display = ["user", "available", "created_at", "updated_at"]
+    list_display = ["user", "created_at", "updated_at", "available"]
+    list_editable = ["available"]
     list_per_page = 25
     readonly_fields = ["pk", "created_at", "updated_at",]
     ordering = ["pk",]

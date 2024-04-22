@@ -6,6 +6,7 @@ from django.db import models
 from apps.utilities.validators import validate_phone, validate_birth_date
 from apps.utilities.models import BaseModel
 from apps.locations.models import Comune, Region
+from .managers import DriverManager
 from .choices import Status
 
 User = settings.AUTH_USER_MODEL
@@ -26,8 +27,11 @@ class Driver(BaseModel):
         default=Status.BRONCE
     )  # TODO: Add crontab or signals for logic
 
+    objects = DriverManager()
+
     class Meta:
         """Meta definition for Driver."""
+        ordering = ["pk"]
         verbose_name = "Driver"
         verbose_name_plural = "Drivers"
 

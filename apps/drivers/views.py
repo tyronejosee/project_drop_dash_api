@@ -1,10 +1,14 @@
 """Views for Drivers App."""
 
-from django.http import Http404
+from django.db import transaction
+# from django.core.cache import cache
+# from django.utils.decorators import method_decorator
+# from django.views.decorators.cache import cache_page
+from django.shortcuts import get_object_or_404
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
-from rest_framework.permissions import IsAuthenticated, IsAdminUser
+from rest_framework.permissions import IsAuthenticated
 
 from apps.utilities.pagination import LargeSetPagination
 from .models import Driver
@@ -13,23 +17,23 @@ from .serializers import DriverSerializer
 
 class DriverListAPIView(APIView):
     """API view to list and create drivers."""
+    permission_classes = [IsAuthenticated]
     serializer_class = DriverSerializer
-    permission_classes = [IsAdminUser]
 
     def get(self, request, format=None):
         # Get a list of drivers
-        drivers = Driver.objects.filter(available=True).order_by("id")
+        drivers = Driver.objects.get_available_drivers()
         if drivers.exists():
             paginator = LargeSetPagination()
             paginated_data = paginator.paginate_queryset(drivers, request)
-            if paginated_data is not None:
-                serializer = self.serializer_class(paginated_data, many=True)
-                return paginator.get_paginated_response(serializer.data)
+            serializer = self.serializer_class(paginated_data, many=True)
+            return paginator.get_paginated_response(serializer.data)
         return Response(
             {"detail": "No drivers available"},
             status=status.HTTP_204_NO_CONTENT
         )
 
+    @transaction.atomic
     def post(self, request, format=None):
         # Create a new driver
         serializer = self.serializer_class(data=request.data)
@@ -43,20 +47,19 @@ class DriverListAPIView(APIView):
 
 
 class DriverDetailAPIView(APIView):
-    serializer_class = DriverSerializer
     permission_classes = [IsAuthenticated]
+    serializer_class = DriverSerializer
 
-    def get_objects(self, driver_id):
-        try:
-            return Driver.objects.get(pk=driver_id)
-        except Driver.DoesNotExist:
-            return Http404
+    def get_object(self, driver_id):
+        # Get a driver instance by id
+        return get_object_or_404(Driver, pk=driver_id)
 
     def get(self, request, driver_id, format=None):
         driver = self.get_object(driver_id)
         serializer = self.serializer_class(driver)
         return Response(serializer.data)
 
+    @transaction.atomic
     def put(self, request, driver_id, format=None):
         # Update a restaurant
         driver = self.get_object(driver_id)
@@ -69,10 +72,12 @@ class DriverDetailAPIView(APIView):
             status=status.HTTP_400_BAD_REQUEST
         )
 
+    @transaction.atomic
     def delete(self, request, driver_id, format=None):
         # Delete a restaurant
         driver = self.get_object(driver_id)
-        driver.delete()
+        driver.available = False  # Logical deletion
+        driver.save()
         return Response(status=status.HTTP_204_NO_CONTENT)
 
 
