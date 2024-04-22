@@ -19,44 +19,47 @@ class FixedCouponListAPIView(APIView):
     """APIView for listing and creating fixed coupons."""
     permission_classes = [IsAuthenticated]
     serializer_class = FixedCouponSerializer
-    pagination_class = MediumSetPagination
-    CACHE_TIMEOUT = 7200  # Cache for 2 hours
+    cache_key = "fixed_coupon"
+    cache_timeout = 7200
 
     def get(self, request, format=None):
         # Get a list of available fixed coupons
-        cache_key = f"fixed_coupon_{request.user.id}"
-        cached_data = cache.get(cache_key)
+        paginator = MediumSetPagination()
+        cached_data = cache.get(self.cache_key)
 
         if cached_data is None:
-            coupons = FixedCoupon.objects.filter(available=True).order_by("id")
-            if coupons.exists():
-                serializer = self.serializer_class(coupons, many=True)
-                # Set cache
-                cache.set(cache_key, serializer.data, self.CACHE_TIMEOUT)
-                return Response(serializer.data, status=status.HTTP_200_OK)
-            return Response(
-                {"detail": "No fixed coupons available."},
-                status=status.HTTP_404_NOT_FOUND
-            )
-        return Response(cached_data, status=status.HTTP_200_OK)
+            coupons = FixedCoupon.objects.get_all()
+            if not coupons.exists():
+                return Response(
+                    {"detail": "No fixed coupons available."},
+                    status=status.HTTP_404_NOT_FOUND
+                )
+            # Fetches the data from the database and serializes it
+            paginated_data = paginator.paginate_queryset(coupons, request)
+            serializer = self.serializer_class(paginated_data, many=True)
+            # Set cache
+            cache.set(self.cache_key, serializer.data, self.cache_timeout)
+        else:
+            # Retrieve the cached data and serialize it
+            paginated_cached_data = paginator.paginate_queryset(
+                cached_data, request)
+            serializer = self.serializer_class(
+                paginated_cached_data, many=True)
+
+        return paginator.get_paginated_response(serializer.data)
 
     @transaction.atomic
     def post(self, request, format=None):
         # Create a new fixed coupon
         serializer = self.serializer_class(data=request.data)
+
         if serializer.is_valid():
             serializer.save()
             # Invalidate cache
-            cache_key = f"fixed_coupon_{request.user.id}"
-            cache.delete(cache_key)
-            return Response(
-                serializer.data,
-                status=status.HTTP_201_CREATED
-            )
+            cache.delete(self.cache_key)
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(
-            serializer.errors,
-            status=status.HTTP_400_BAD_REQUEST
-        )
+            serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 class FixedCouponDetailAPIView(APIView):
@@ -91,7 +94,8 @@ class FixedCouponDetailAPIView(APIView):
     def delete(self, request, fixed_coupon_id):
         # Delete a fixed coupon
         fixed_coupon = self.get_object(fixed_coupon_id)
-        fixed_coupon.delete()
+        fixed_coupon.available = False  # Logical deletion
+        fixed_coupon.save()
         return Response(status=status.HTTP_204_NO_CONTENT)
 
 
@@ -99,27 +103,34 @@ class PercentageCouponListAPIView(APIView):
     """APIView for listing and creating percentage coupons."""
     permission_classes = [IsAuthenticated]
     serializer_class = PercentageCouponSerializer
-    pagination_class = MediumSetPagination
-    CACHE_TIMEOUT = 7200  # Cache for 2 hours
+    cache_key = "percentage_coupon"
+    cache_timeout = 7200
 
     def get(self, request, format=None):
         # Get a list of available percentage coupons
-        cache_key = f"percentage_coupon_{request.user.id}"
-        cached_data = cache.get(cache_key)
+        paginator = MediumSetPagination()
+        cached_data = cache.get(self.cache_key)
 
         if cached_data is None:
-            coupons = PercentageCoupon.objects.filter(
-                available=True).order_by("id")
-            if coupons.exists():
-                serializer = self.serializer_class(coupons, many=True)
-                # Set cache
-                cache.set(cache_key, serializer.data, self.CACHE_TIMEOUT)
-                return Response(serializer.data, status=status.HTTP_200_OK)
-            return Response(
-                {"detail": "No percentage coupons available."},
-                status=status.HTTP_404_NOT_FOUND
-            )
-        return Response(cached_data, status=status.HTTP_200_OK)
+            coupons = PercentageCoupon.objects.get_all()
+            if not coupons.exists():
+                return Response(
+                    {"detail": "No percentage coupons available."},
+                    status=status.HTTP_404_NOT_FOUND
+                )
+
+            paginated_data = paginator.paginate_queryset(coupons, request)
+            serializer = self.serializer_class(paginated_data, many=True)
+            # Set cache
+            cache.set(self.cache_key, serializer.data, self.cache_timeout)
+        else:
+            # Retrieve the cached data and serialize it
+            paginated_cached_data = paginator.paginate_queryset(
+                cached_data, request)
+            serializer = self.serializer_class(
+                paginated_cached_data, many=True)
+
+        return paginator.get_paginated_response(serializer.data)
 
     @transaction.atomic
     def post(self, request, format=None):
@@ -128,16 +139,9 @@ class PercentageCouponListAPIView(APIView):
         if serializer.is_valid():
             serializer.save()
             # Invalidate cache
-            cache_key = f"percentage_coupon_{request.user.id}"
-            cache.delete(cache_key)
-            return Response(
-                serializer.data,
-                status=status.HTTP_201_CREATED
-            )
-        return Response(
-            serializer.errors,
-            status=status.HTTP_400_BAD_REQUEST
-        )
+            cache.delete(self.cache_key)
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 class PercentageCouponDetailAPIView(APIView):
@@ -174,7 +178,8 @@ class PercentageCouponDetailAPIView(APIView):
     def delete(self, request, percentage_coupon_id):
         # Delete a percentage coupon
         percentage_coupon = self.get_object(percentage_coupon_id)
-        percentage_coupon.delete()
+        percentage_coupon.available = False  # Logical deletion
+        percentage_coupon.save()
         return Response(status=status.HTTP_204_NO_CONTENT)
 
 

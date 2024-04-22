@@ -1,9 +1,7 @@
 """Models for Coupons App."""
 
-from datetime import timedelta
 from django.db import models
 from django.core.validators import MinValueValidator, MaxValueValidator
-from django.utils import timezone
 
 from apps.utilities.models import BaseModel
 from .managers import FixedCouponManager, PercentageCouponManager
@@ -16,8 +14,8 @@ class FixedCoupon(BaseModel):
     code = models.CharField(max_length=36, unique=True, blank=True)
     discount_price = models.DecimalField(
         max_digits=7, decimal_places=2, validators=[validate_discount_price])
-    start_date = models.DateField(default=timezone.now)
-    end_date = models.DateField(default=timezone.now() + timedelta(days=30))
+    start_date = models.DateField()
+    end_date = models.DateField()
     quantity = models.PositiveIntegerField(default=50)
     is_active = models.BooleanField(default=True)
 
@@ -25,6 +23,7 @@ class FixedCoupon(BaseModel):
 
     class Meta:
         """Meta definition for FixedCoupon."""
+        ordering = ["pk"]
         verbose_name = "fixed coupon"
         verbose_name_plural = "fixed coupons"
 
@@ -44,8 +43,8 @@ class PercentageCoupon(BaseModel):
     code = models.CharField(max_length=36, unique=True, blank=True)
     discount_percentage = models.IntegerField(
         validators=[MinValueValidator(5), MaxValueValidator(25)])
-    start_date = models.DateField(default=timezone.now)
-    end_date = models.DateField(default=timezone.now() + timedelta(days=30))
+    start_date = models.DateField()
+    end_date = models.DateField()
     quantity = models.PositiveIntegerField(default=50)
     is_active = models.BooleanField(default=True)
 
@@ -53,6 +52,7 @@ class PercentageCoupon(BaseModel):
 
     class Meta:
         """Meta definition for PercentageCoupon."""
+        ordering = ["pk"]
         verbose_name = "percentage coupon"
         verbose_name_plural = "percentage coupons"
 

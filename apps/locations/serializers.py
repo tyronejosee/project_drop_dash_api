@@ -21,9 +21,21 @@ class RegionSerializer(ModelSerializer):
         ]
 
 
+class RegionListSerializer(ModelSerializer):
+    """Serializer for Region model (List only)."""
+
+    class Meta:
+        """Meta definition for RegionListSerializer."""
+        model = Region
+        fields = [
+            "id",
+            "name",
+        ]
+
+
 class ComuneSerializer(ModelSerializer):
     """Serializer for Comune model."""
-    region = RegionSerializer(read_only=True)
+    region = RegionSerializer()
 
     class Meta:
         """Meta definition for ComuneSerializer."""
@@ -34,4 +46,16 @@ class ComuneSerializer(ModelSerializer):
             "region",
             "created_at",
             "updated_at"
+        ]
+
+
+class ComuneListSerializer(ModelSerializer):
+    """Serializer for Comune model (List only)."""
+
+    class Meta:
+        """Meta definition for ComuneListSerializer."""
+        model = Comune
+        fields = [
+            "id",
+            "name"
         ]
