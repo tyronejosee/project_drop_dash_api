@@ -14,7 +14,7 @@ class DriverSerializer(serializers.ModelSerializer):
     user = UserSerializer()
     comune = ComuneListSerializer()
     region = RegionListSerializer()
-    status = serializers.CharField(source="get_status_display")
+    status = serializers.CharField(source="get_status_display", read_only=True)
 
     class Meta:
         """Meta definition for DriverSerializer."""

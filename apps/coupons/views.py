@@ -20,7 +20,7 @@ class FixedCouponListAPIView(APIView):
     permission_classes = [IsAuthenticated]
     serializer_class = FixedCouponSerializer
     cache_key = "fixed_coupon"
-    cache_timeout = 7200
+    cache_timeout = 7200  # 2 hours
 
     def get(self, request, format=None):
         # Get a list of available fixed coupons

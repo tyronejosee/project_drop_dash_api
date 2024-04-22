@@ -6,7 +6,7 @@ from django.db import models
 class DriverManager(models.Manager):
     """Manager for Driver Model."""
 
-    def get_available_drivers(self):
+    def get_available(self):
         """Return a queryset of available drivers."""
         return self.filter(available=True)
 

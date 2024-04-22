@@ -1,9 +1,7 @@
 """Views for Drivers App."""
 
 from django.db import transaction
-# from django.core.cache import cache
-# from django.utils.decorators import method_decorator
-# from django.views.decorators.cache import cache_page
+from django.core.cache import cache
 from django.shortcuts import get_object_or_404
 from rest_framework.views import APIView
 from rest_framework.response import Response
@@ -19,19 +17,33 @@ class DriverListAPIView(APIView):
     """API view to list and create drivers."""
     permission_classes = [IsAuthenticated]
     serializer_class = DriverSerializer
+    cache_key = "fixed_coupon"
+    cache_timeout = 7200  # 2 hours
 
     def get(self, request, format=None):
         # Get a list of drivers
-        drivers = Driver.objects.get_available_drivers()
-        if drivers.exists():
-            paginator = LargeSetPagination()
+        paginator = LargeSetPagination()
+        cached_data = cache.get(self.cache_key)
+
+        if cached_data is None:
+            drivers = Driver.objects.get_available()
+            if not drivers.exists():
+                return Response(
+                    {"detail": "No drivers available"},
+                    status=status.HTTP_204_NO_CONTENT
+                )
+            # Fetches the data from the database and serializes it
             paginated_data = paginator.paginate_queryset(drivers, request)
             serializer = self.serializer_class(paginated_data, many=True)
-            return paginator.get_paginated_response(serializer.data)
-        return Response(
-            {"detail": "No drivers available"},
-            status=status.HTTP_204_NO_CONTENT
-        )
+            cache.set(self.cache_key, serializer.data, self.cache_timeout)
+        else:
+            # Retrieve the cached data and serialize it
+            paginated_cached_data = paginator.paginate_queryset(
+                cached_data, request)
+            serializer = self.serializer_class(
+                paginated_cached_data, many=True)
+
+        return paginator.get_paginated_response(serializer.data)
 
     @transaction.atomic
     def post(self, request, format=None):
@@ -39,11 +51,10 @@ class DriverListAPIView(APIView):
         serializer = self.serializer_class(data=request.data)
         if serializer.is_valid():
             serializer.save(user=request.user)
+            # Invalidate cache
+            cache.delete(self.cache_key)
             return Response(serializer.data, status=status.HTTP_201_CREATED)
-        return Response(
-            serializer.errors,
-            status=status.HTTP_400_BAD_REQUEST
-        )
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 class DriverDetailAPIView(APIView):
@@ -67,10 +78,7 @@ class DriverDetailAPIView(APIView):
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data)
-        return Response(
-            serializer.errors,
-            status=status.HTTP_400_BAD_REQUEST
-        )
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     @transaction.atomic
     def delete(self, request, driver_id, format=None):
@@ -79,21 +87,3 @@ class DriverDetailAPIView(APIView):
         driver.available = False  # Logical deletion
         driver.save()
         return Response(status=status.HTTP_204_NO_CONTENT)
-
-
-# class DriverMeAPIView(APIView):
-#     """API view to retrieve the current user's driver information."""
-#     serializer_class = DriverSerializer
-#     permission_classes = [IsAuthenticated]
-
-#     def get(self, request, format=None):
-#         # Get the driver information for the current user
-#         user = request.user
-#         driver = Driver.objects.filter(user=user)  # .first()
-#         if driver.exists():
-#             serializer = self.serializer_class(driver)
-#             return Response(serializer.data)
-#         return Response(
-#             {"detail": "You do not have a registered driver account."},
-#             status=status.HTTP_404_NOT_FOUND
-#         )
