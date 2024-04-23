@@ -2,13 +2,12 @@
 
 from rest_framework import serializers
 
-from apps.restaurants.serializers import RestaurantSerializer
 from .models import Category
 
 
 class CategorySerializer(serializers.ModelSerializer):
     """Serializer for Category model."""
-    restaurant = RestaurantSerializer(read_only=True)
+    restaurant = serializers.StringRelatedField()
 
     class Meta:
         """Meta definition for CategorySerializer."""

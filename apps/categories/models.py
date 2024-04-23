@@ -4,6 +4,7 @@ from django.db import models
 
 from apps.utilities.models import BaseModel
 from apps.restaurants.models import Restaurant
+from .managers import CategoryManager
 
 
 class Category(BaseModel):
@@ -12,6 +13,8 @@ class Category(BaseModel):
     restaurant = models.ForeignKey(
         Restaurant, on_delete=models.CASCADE, related_name="categories"
     )
+
+    objects = CategoryManager()
 
     class Meta:
         """Meta definition for Category."""
