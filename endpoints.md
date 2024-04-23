@@ -1,32 +1,23 @@
 # Endpoints
 
-## Progress
+## Apps
 
-### Coupons
+### Users
 
-- [x] `GET /api/coupons/`
-- [x] `POST /api/coupons/`
-- [x] `GET /api/coupons/{id}/`
-- [x] `PUT /api/coupons/{id}/`
-- [x] `DELETE /api/coupons/{id}/`
-- [ ] `GET /api/coupons/{coupon_id}/orders/`
-- [ ] `POST /api/orders/{order_id}/apply-coupon/`
-
-## Backlog
+- [ ] `GET /api/users/{user_id}/orders/`
 
 ### Orders
 
-- `GET /api/orders/`
-- `POST /api/orders/`
-- `GET /api/orders/{id}/`
-- `PUT /api/orders/{id}/`
-- `DELETE /api/orders/{id}/`
--
-- `GET /api/users/{user_id}/orders/`
-- `GET /api/restaurants/{restaurant_id}/orders/`
-- `GET /api/orders/pending/`
-- `GET /api/orders/completed/`
+- [ ] `GET /api/orders/`
+- [ ] `POST /api/orders/`
+- [ ] `GET /api/orders/{id}/`
+- [ ] `PUT /api/orders/{id}/`
+- [ ] `DELETE /api/orders/{id}/`
+- [ ] `GET /api/orders/pending/`
+- [ ] `GET /api/orders/completed/`
+
 - `PUT /api/orders/{id}/update-status/`
+- [ ] `POST /api/orders/{order_id}/apply-coupon/`
 
 **Logica de negocio**:
 
@@ -38,16 +29,16 @@
 
 ### Drivers
 
-- `GET /api/drivers/`
-- `POST /api/drivers/`
-- `GET /api/drivers/{id}/`
-- `PUT /api/drivers/{id}/`
-- `DELETE /api/drivers/{id}/`
-- `GET /api/drivers/{id}/orders/`
-- `POST /api/drivers/{id}/orders/`
-- `GET /api/drivers/{driver_id}/orders/{order_id}/`
-- `PUT /api/drivers/{driver_id}/orders/{order_id}/`
-- `DELETE /api/drivers/{driver_id}/orders/{order_id}/`
+- [x] `GET /api/drivers/`
+- [x] `POST /api/drivers/`
+- [x] `GET /api/drivers/{id}/`
+- [x] `PUT /api/drivers/{id}/`
+- [x] `DELETE /api/drivers/{id}/`
+- [ ] `GET /api/drivers/{id}/orders/`
+- [ ] `POST /api/drivers/{id}/orders/`
+- [ ] `GET /api/drivers/{driver_id}/orders/{order_id}/`
+- [ ] `PUT /api/drivers/{driver_id}/orders/{order_id}/`
+- [ ] `DELETE /api/drivers/{driver_id}/orders/{order_id}/`
 
 **Logica de negocio**:
 
@@ -57,8 +48,8 @@
 
 ### Payments
 
-- `POST /api/payments`
-- `GET /api/payments/{payment_id}`
+- [ ] `POST /api/payments`
+- [ ] `GET /api/payments/{payment_id}`
 
 ### Promotions
 
@@ -75,37 +66,25 @@
 
 ### Deliveries
 
-1. Obtener todas las entregas:
-   - `GET /api/deliveries/`
+- [ ] `GET /api/deliveries/`
+- [ ] `POST /api/deliveries/`
+- [ ] `GET /api/deliveries/{id}/`
+- [ ] `PUT /api/deliveries/{id}/`
+- [ ] `DELETE /api/deliveries/{id}/`
+- [ ] `GET /api/orders/{order_id}/deliveries/`
+- [ ] `POST /api/orders/{order_id}/deliveries/`
+- [ ] `GET /api/orders/{order_id}/deliveries/{delivery_id}/`
+- [ ] `PUT /api/orders/{order_id}/deliveries/{delivery_id}/`
+- [ ] `DELETE /api/orders/{order_id}/deliveries/{delivery_id}/`
 
-2. Crear una nueva entrega:
-   - `POST /api/deliveries/`
+### Coupons
 
-3. Obtener detalles de una entrega específica:
-   - `GET /api/deliveries/{id}/`
-
-4. Actualizar detalles de una entrega específica:
-   - `PUT /api/deliveries/{id}/`
-
-5. Eliminar una entrega específica:
-   - `DELETE /api/deliveries/{id}/`
-
-6. Obtener todas las entregas para un pedido específico:
-   - `GET /api/orders/{order_id}/deliveries/`
-
-7. Crear una nueva entrega para un pedido específico:
-   - `POST /api/orders/{order_id}/deliveries/`
-
-8. Obtener detalles de una entrega específica para un pedido específico:
-   - `GET /api/orders/{order_id}/deliveries/{delivery_id}/`
-
-9. Actualizar detalles de una entrega específica para un pedido específico:
-   - `PUT /api/orders/{order_id}/deliveries/{delivery_id}/`
-
-10. Eliminar una entrega específica para un pedido específico:
-    - `DELETE /api/orders/{order_id}/deliveries/{delivery_id}/`
-
-### Done
+- [x] `GET /api/coupons/`
+- [x] `POST /api/coupons/`
+- [x] `GET /api/coupons/{id}/`
+- [x] `PUT /api/coupons/{id}/`
+- [x] `DELETE /api/coupons/{id}/`
+- [ ] `GET /api/coupons/{coupon_id}/orders/`
 
 ### Restaurants
 
@@ -115,7 +94,4 @@
 - [x] `PUT /api/restaurants/{restaurant_id}/`
 - [x] `DELETE /api/restaurants/{restaurant_id}/`
 - [x] `GET /api/restaurants/{restaurant_id}/foods/`
-- [x] `POST /api/restaurants/{restaurant_id}/foods/`
-- [x] `GET /api/restaurants/{restaurant_id}/foods/{food_id}/`
-- [x] `PUT /api/restaurants/{restaurant_id}/foods/{food_id}/`
-- [x] `DELETE /api/restaurants/{restaurant_id}/foods/{food_id}/`
+- [ ] `GET /api/restaurants/{restaurant_id}/orders/`
