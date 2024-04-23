@@ -1,39 +1,54 @@
 """Views for Restaurants App."""
 
 from django.db import transaction
-from django.http import Http404
+from django.core.cache import cache
 from django.shortcuts import get_object_or_404
 from rest_framework.views import APIView
-from rest_framework.permissions import IsAuthenticatedOrReadOnly, AllowAny
 from rest_framework.response import Response
 from rest_framework import status
 
 from apps.utilities.pagination import LargeSetPagination
 from apps.foods.models import Food
-from apps.foods.serializers import FoodSerializer, FoodMiniSerializer
+from apps.foods.serializers import FoodMiniSerializer
 from apps.categories.models import Category
+from apps.categories.serializers import CategoryListSerializer
 from .models import Restaurant
 from .serializers import RestaurantSerializer
-from .permissions import IsBusinessOwnerOrReadOnly
+from .permissions import IsBusinessOrReadOnly
 
 
 class RestaurantListAPIView(APIView):
     """APIView to list and create restaurants."""
     serializer_class = RestaurantSerializer
-    permission_classes = [IsAuthenticatedOrReadOnly]
+    permission_classes = [IsBusinessOrReadOnly]
+    cache_key = "restaurant"
+    cache_timeout = 7200  # 2 hours
 
     def get(self, request):
         # Get a list of restaurants
-        stores = Restaurant.objects.filter(available=True).order_by("id")
-        if stores.exists():
-            paginator = LargeSetPagination()
-            paginated_data = paginator.paginate_queryset(stores, request)
+        paginator = LargeSetPagination()
+        cached_data = cache.get(self.cache_key)
+
+        if cached_data is None:
+            restaurants = Restaurant.objects.get_all()
+            if not restaurants.exists():
+                return Response(
+                    {"detail": "No restaurants available."},
+                    status=status.HTTP_404_NOT_FOUND
+                )
+            # Fetches the data from the database and serializes it
+            paginated_data = paginator.paginate_queryset(restaurants, request)
             serializer = self.serializer_class(paginated_data, many=True)
-            return paginator.get_paginated_response(serializer.data)
-        return Response(
-            {"detail": "No restaurants available."},
-            status=status.HTTP_404_NOT_FOUND
-        )
+            # Set cache
+            cache.set(self.cache_key, serializer.data, self.cache_timeout)
+        else:
+            # Retrieve the cached data and serialize it
+            paginated_cached_data = paginator.paginate_queryset(
+                cached_data, request)
+            serializer = self.serializer_class(
+                paginated_cached_data, many=True)
+
+        return paginator.get_paginated_response(serializer.data)
 
     @transaction.atomic
     def post(self, request):
@@ -41,61 +56,53 @@ class RestaurantListAPIView(APIView):
         serializer = self.serializer_class(data=request.data)
         if serializer.is_valid():
             serializer.save()
-            return Response(
-                serializer.data,
-                status=status.HTTP_201_CREATED
-            )
-        return Response(
-            serializer.errors,
-            status=status.HTTP_400_BAD_REQUEST
-        )
+            # Invalidate cache
+            cache.delete(self.cache_key)
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 class RestaurantDetailAPIView(APIView):
     """APIView to retrieve, update, and delete a restaurant."""
     serializer_class = RestaurantSerializer
-    permission_classes = [IsBusinessOwnerOrReadOnly]
+    permission_classes = [IsBusinessOrReadOnly]
 
     def get_object(self, restaurant_id):
         # Get a restaurant instance by id
-        try:
-            return Restaurant.objects.get(pk=restaurant_id)
-        except Restaurant.DoesNotExist:
-            raise Http404
+        return get_object_or_404(Restaurant, pk=restaurant_id)
 
     def get(self, request, restaurant_id):
         # Get details of a restaurant
-        store = self.get_object(restaurant_id)
-        serializer = self.serializer_class(store)
+        restaurant = self.get_object(restaurant_id)
+        serializer = self.serializer_class(restaurant)
         return Response(serializer.data)
 
     @transaction.atomic
     def put(self, request, restaurant_id):
         # Update a restaurant
-        store = self.get_object(restaurant_id)
-        serializer = self.serializer_class(store, data=request.data)
+        restaurant = self.get_object(restaurant_id)
+        serializer = self.serializer_class(restaurant, data=request.data)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data)
-        return Response(
-            serializer.errors,
-            status=status.HTTP_400_BAD_REQUEST
-        )
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     @transaction.atomic
     def delete(self, request, restaurant_id):
         # Delete a restaurant
-        store = self.get_object(restaurant_id)
-        store.delete()
+        restaurant = self.get_object(restaurant_id)
+        restaurant.available = False  # Logical deletion
+        restaurant.save()
         return Response(status=status.HTTP_204_NO_CONTENT)
 
 
 class RestaurantCategoriesAPIView(APIView):
-    permission_classes = [IsAuthenticatedOrReadOnly]
+    permission_classes = [IsBusinessOrReadOnly]
+    serializer_class = CategoryListSerializer
 
-    def get(self, request, restaurant_id, formate=None):
+    def get(self, request, restaurant_id, format=None):
         # Get a list of categories associated with a restaurant
-        categories = Category.filter(restaurant=restaurant_id)
+        categories = Category.objects.filter(restaurant=restaurant_id)
         if categories.exists():
             paginator = LargeSetPagination()
             paginated_data = paginator.paginate_queryset(categories, request)
@@ -108,12 +115,12 @@ class RestaurantCategoriesAPIView(APIView):
 
 
 class RestaurantFoodsAPIView(APIView):
-    permission_classes = [IsAuthenticatedOrReadOnly]
+    permission_classes = [IsBusinessOrReadOnly]
 
     def get(self, request, restaurant_id, format=None):
         # Get a list of foods for a restaurant
         restaurant = get_object_or_404(Restaurant, id=restaurant_id)
-        foods = Food.objects.filter(restaurant=restaurant)
+        foods = Food.objects.get_foods_by_restaurant(restaurant)
         if foods.exists():
             paginator = LargeSetPagination()
             paginated_data = paginator.paginate_queryset(foods, request)
@@ -123,52 +130,3 @@ class RestaurantFoodsAPIView(APIView):
             {"detail": "No foods available."},
             status=status.HTTP_404_NOT_FOUND
         )
-
-    @transaction.atomic
-    def post(self, request, restaurant_id, format=None):
-        # Create a new food item for a restaurant
-        restaurant = get_object_or_404(Restaurant, id=restaurant_id)
-        serializer = FoodSerializer(data=request.data)
-        if serializer.is_valid():
-            serializer.save(restaurant=restaurant)
-            return Response(
-                serializer.data,
-                status=status.HTTP_201_CREATED
-            )
-        return Response(
-            serializer.errors,
-            status=status.HTTP_400_BAD_REQUEST
-        )
-
-
-class RestaurantFoodDetailAPIView(APIView):
-    permission_classes = [AllowAny]
-
-    def get(self, request, restaurant_id, food_id, format=None):
-        # Retrieve details for a food item associated with a restaurant
-        restaurant = get_object_or_404(Restaurant, id=restaurant_id)
-        food = get_object_or_404(Food, id=food_id, restaurant=restaurant)
-        serializer = FoodSerializer(food)
-        return Response(serializer.data)
-
-    def put(self, request, restaurant_id, food_id, format=None):
-        # Update details for a food item associated with a restaurant
-        restaurant = get_object_or_404(Restaurant, id=restaurant_id)
-        food = get_object_or_404(Food, id=food_id, restaurant=restaurant)
-        serializer = FoodSerializer(food, data=request.data)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data)
-        return Response(
-            serializer.errors,
-            status=status.HTTP_400_BAD_REQUEST
-        )
-
-    def delete(self, request, restaurant_id, food_id, format=None):
-        # Delete a food item associated with a restaurant
-        restaurant = get_object_or_404(Restaurant, id=restaurant_id)
-        food = get_object_or_404(Food, id=food_id, restaurant=restaurant)
-        food.delete()
-        return Response(status=status.HTTP_204_NO_CONTENT)
-
-# TODO: Add new permission

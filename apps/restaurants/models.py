@@ -7,6 +7,7 @@ from django.utils.text import slugify
 from apps.utilities.paths import image_path, image_banner_path
 from apps.utilities.validators import validate_phone
 from apps.utilities.models import BaseModel
+from .managers import RestaurantManager
 from .choices import Specialty
 
 User = settings.AUTH_USER_MODEL
@@ -34,8 +35,11 @@ class Restaurant(BaseModel):
     website = models.URLField(max_length=255, blank=True)
     is_open = models.BooleanField(default=False)
 
+    objects = RestaurantManager()
+
     class Meta:
         """Meta definition for Restaurant."""
+        ordering = ["pk"]
         verbose_name = "Restaurant"
         verbose_name_plural = "Restaurants"
 

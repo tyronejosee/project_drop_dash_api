@@ -3,10 +3,11 @@
 from rest_framework.permissions import BasePermission, SAFE_METHODS
 
 
-class IsBusinessOwnerOrReadOnly(BasePermission):
+class IsBusinessOrReadOnly(BasePermission):
     """Permission to only allow business owners to edit the restaurant."""
 
-    def has_object_permission(self, request, view, obj):
-        if request.method in SAFE_METHODS:
-            return True
-        return request.user.role == "business"
+    def has_permission(self, request, view):
+        is_safe_method = request.method in SAFE_METHODS
+        is_business = (
+            request.user.is_authenticated and request.user.role == "business")
+        return is_safe_method or is_business
