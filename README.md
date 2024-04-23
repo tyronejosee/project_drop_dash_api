@@ -2,10 +2,10 @@
 
 <p align="center">
   <a href="https://github.com/tyronejosee/project_new_store#gh-light-mode-only" target="_blank">
-    <img src="./static/img/logo_light.svg" alt="logo-light" width="80">
+    <img src="./.github/logo_light.svg" alt="logo-light" width="80">
   </a>
   <a href="https://github.com/tyronejosee/project_new_store#gh-dark-mode-only" target="_blank">
-    <img src="./.github/logo_light.svg" alt="logo-dark" width="80">
+    <img src="./.github/logo_dark.svg" alt="logo-dark" width="80">
   </a>
 </p>
 <p align="center">
@@ -18,17 +18,20 @@ This API simulates a home delivery platform that allows users to search for and 
 </p>
 <p align="center">
   <a href="https://www.python.org/">
-  <img src="https://img.shields.io/badge/python-3.11.9-blue" alt="python-version">
+  <img src="https://img.shields.io/badge/python-3.11.9-3572A5" alt="python-version">
   </a>
   <a href="https://www.djangoproject.com/">
-  <img src="https://img.shields.io/badge/django-5.0.4-green" alt="django-version">
+  <img src="https://img.shields.io/badge/django-5.0.4-092E20" alt="django-version">
   </a>
   <a href="https://www.django-rest-framework.org/">
-  <img src="https://img.shields.io/badge/drf-3.15.1-red" alt="django-version">
+  <img src="https://img.shields.io/badge/drf-3.15.1-A30000" alt="django-version">
+  </a>
+  <a href="https://www.docker.com/">
+  <img src="https://img.shields.io/badge/docker-26.0.0-0db7ed" alt="docker-version">
   </a>
 </p>
 
-## Installation
+## ⚙️ Installation
 
 Clone the repository.
 
@@ -89,7 +92,7 @@ Perform database migrations.
 
 > Note: Create the migrations in case Django skips any.
 
-## Usage
+## 🚀 Usage
 
 Create a superuser to access the entire site without restrictions.
 
@@ -110,7 +113,7 @@ http://127.0.0.1:8000/api/schema/swagger/
 http://127.0.0.1:8000/api/schema/redoc/
 ```
 
-## Important Notes
+## 🚨 Important Notes
 
 Check the creation of migrations before creating them.
 
@@ -123,7 +126,7 @@ Check the creation of migrations before creating them.
 
 > Note: Checking migrations before their creation is necessary to avoid inconsistencies in user models.
 
-## PostgreSQL
+## 💾 PostgreSQL
 
 ```bash
 (env) docker compose -f docker-compose.dev.yml exec web python manage.py dumpdata > backup.json
@@ -133,13 +136,13 @@ Check the creation of migrations before creating them.
 (dropdash_db=#) \d <table>
 ```
 
-## Redis
+## 💾 Redis
 
 ```bash
 (env) docker compose exec redis redis-cli
 (127.0.0.1:6379) keys *
 ```
 
-## License
+## ⚖️ License
 
 This project is under the [Apache-2.0 license](https://github.com/tyronejosee/project_drop_dash_api/blob/main/LICENSE).
