@@ -29,6 +29,7 @@ class Food(BaseModel):
 
     class Meta:
         """Meta definition for Food."""
+        ordering = ["pk"]
         verbose_name = "Food"
         verbose_name_plural = "Foods"
 

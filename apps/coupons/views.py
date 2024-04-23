@@ -75,7 +75,7 @@ class FixedCouponDetailAPIView(APIView):
         # Get details of a fixed coupon
         fixed_coupon = self.get_object(fixed_coupon_id)
         serializer = self.serializer_class(fixed_coupon)
-        return Response(serializer.data, status=status.HTTP_200_OK)
+        return Response(serializer.data)
 
     @transaction.atomic
     def put(self, request, fixed_coupon_id):
@@ -84,11 +84,8 @@ class FixedCouponDetailAPIView(APIView):
         serializer = self.serializer_class(fixed_coupon, data=request.data)
         if serializer.is_valid():
             serializer.save()
-            return Response(serializer.data, status=status.HTTP_200_OK)
-        return Response(
-            serializer.errors,
-            status=status.HTTP_400_BAD_REQUEST
-        )
+            return Response(serializer.data)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     @transaction.atomic
     def delete(self, request, fixed_coupon_id):
@@ -157,22 +154,18 @@ class PercentageCouponDetailAPIView(APIView):
         # Get details of a percentage coupon
         percentage_coupon = self.get_object(percentage_coupon_id)
         serializer = self.serializer_class(percentage_coupon)
-        return Response(serializer.data, status=status.HTTP_200_OK)
+        return Response(serializer.data)
 
     @transaction.atomic
     def put(self, request, percentage_coupon_id):
         # Update a percentage coupon
         percentage_coupon = self.get_object(percentage_coupon_id)
         serializer = self.serializer_class(
-            percentage_coupon, data=request.data
-        )
+            percentage_coupon, data=request.data)
         if serializer.is_valid():
             serializer.save()
-            return Response(serializer.data, status=status.HTTP_200_OK)
-        return Response(
-            serializer.errors,
-            status=status.HTTP_400_BAD_REQUEST
-        )
+            return Response(serializer.data)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     @transaction.atomic
     def delete(self, request, percentage_coupon_id):

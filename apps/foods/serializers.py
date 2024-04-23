@@ -1,16 +1,15 @@
 """Serializers for Foods App."""
 
-from rest_framework.serializers import ModelSerializer
+from rest_framework import serializers
 
 from apps.restaurants.serializers import RestaurantListSerializer
-from apps.categories.serializers import CategorySerializer
 from .models import Food
 
 
-class FoodSerializer(ModelSerializer):
+class FoodSerializer(serializers.ModelSerializer):
     """Serializer for Food model."""
     restaurant = RestaurantListSerializer(read_only=True)
-    category = CategorySerializer(read_only=True)
+    category = serializers.StringRelatedField()
 
     class Meta:
         """Meta definition for FoodSerializer."""
@@ -32,7 +31,7 @@ class FoodSerializer(ModelSerializer):
         ]
 
 
-class FoodMiniSerializer(ModelSerializer):
+class FoodMiniSerializer(serializers.ModelSerializer):
     """Serializer for Food model (Mini)."""
 
     class Meta:
