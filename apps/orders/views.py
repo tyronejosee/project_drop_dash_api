@@ -16,7 +16,7 @@ class OrderListView(APIView):
     permission_classes = [AllowAny]
 
     def get(self, request, format=None):
-        # Get all orders availables, order by id
+        # Get all available orders, order by id
         orders = Order.objects.filter(available=True).order_by("id")
 
         # Paginate all orders

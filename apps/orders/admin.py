@@ -24,5 +24,5 @@ class OrderItemAdmin(admin.ModelAdmin):
     list_display = ["order", "food", "created_at", "available"]
     list_editable = ["available",]
     list_per_page = 25
-    readonly_fields = ["pk", "created_at", "updated_at",]
+    readonly_fields = ["pk", "price", "subtotal", "created_at", "updated_at",]
     ordering = ["created_at",]

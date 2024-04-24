@@ -33,6 +33,7 @@ class Order(BaseModel):
 
     class Meta:
         """Meta definition for Order model."""
+        ordering = ["pk"]
         verbose_name = "order"
         verbose_name_plural = "orders"
 
@@ -40,27 +41,52 @@ class Order(BaseModel):
         return str(self.transaction)
 
     def save(self, *args, **kwargs):
-        # Generate transaction field
-        if not self.transaction:
-            self.transaction = f"{self.pk}/{self.user.pk}"
+        # Apply methods on save
+        self.set_transaction()
         super().save(*args, **kwargs)
+
+    def set_transaction(self):
+        """Set the transaction ID based on Order and User IDs."""
+        # if not self.transaction:
+        self.transaction = f"{self.pk}/{self.user.pk}"
 
 
 class OrderItem(BaseModel):
     """Model definition for OrderItem (Pivot)."""
     order = models.ForeignKey(Order, on_delete=models.CASCADE)
     food = models.ForeignKey(Food, on_delete=models.DO_NOTHING)
-    price = models.DecimalField(max_digits=5, decimal_places=2)  # Ref
-    discount = models.DecimalField(max_digits=5, decimal_places=2, default=0)
-    tax = models.DecimalField(max_digits=5, decimal_places=2, default=0)
-    count = models.IntegerField()
+    quantity = models.IntegerField()
+    price = models.DecimalField(
+        max_digits=10, decimal_places=2, blank=True, editable=False)  # Ref
+    subtotal = models.DecimalField(
+        max_digits=10, decimal_places=2, blank=True,
+        editable=False, default=0)  # Ref
+    # tax = models.DecimalField(max_digits=10, decimal_places=2, default=0)
 
     objects = OrderItemManager()
 
     class Meta:
         """Meta definition for OrderItem model."""
+        ordering = ["pk"]
         verbose_name = "order_item"
         verbose_name_plural = "order_items"
 
     def __str__(self):
         return f"{self.order} - {self.food}"
+
+    def save(self, *args, **kwargs):
+        # Apply methods on save
+        self.set_price()
+        self.calculate_subtotal()
+        super(OrderItem, self).save(*args, **kwargs)
+
+    def set_price(self):
+        """Set the price based on the Food's sale price or regular price."""
+        if self.food.sale_price:
+            self.price = self.food.sale_price
+        else:
+            self.price = self.food.price
+
+    def calculate_subtotal(self):
+        """Calculate the subtotal for the OrderItem."""
+        self.subtotal = self.price * self.quantity
