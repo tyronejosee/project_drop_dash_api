@@ -1,15 +1,24 @@
 """Serializers for Orders App."""
 
-from rest_framework.serializers import ModelSerializer
+from rest_framework.serializers import ModelSerializer, ReadOnlyField
 
-from apps.locations.serializers import ComuneSerializer, RegionSerializer
-from .models import Order
+from apps.locations.serializers import (
+    ComuneListSerializer, RegionListSerializer)
+from apps.foods.serializers import FoodMiniSerializer
+from .models import Order, OrderItem
+
+
+class UUIDField(ReadOnlyField):
+    def to_representation(self, value):
+        return str(value)
 
 
 class OrderSerializer(ModelSerializer):
     """Serializer for Order model."""
-    comune = ComuneSerializer(read_only=True)
-    region = RegionSerializer(read_only=True)
+    user = UUIDField()
+    transaction = UUIDField(read_only=True)
+    comune = ComuneListSerializer()
+    region = RegionListSerializer()
 
     class Meta:
         """Meta definition for RestaurantSerializer."""
@@ -24,10 +33,22 @@ class OrderSerializer(ModelSerializer):
             "phone",
             "note",
             "status",
-            "payment_method",
-            "payment_status",
-            "estimated_delivery_time",
-            "actual_delivery_time",
-            "created_at",
-            "updated_at"
+            "payment_method"
+        ]
+
+
+class OrderItemSerializer(ModelSerializer):
+    """Serializer for OrderItem model."""
+    food = FoodMiniSerializer()
+
+    class Meta:
+        """Meta definition for OrderItemSerializer."""
+        model = OrderItem
+        fields = [
+            "id",
+            "order",
+            "food",
+            "quantity",
+            "price",
+            "subtotal"
         ]

@@ -27,10 +27,7 @@ class OrderListView(APIView):
         if cached_data is None:
             orders = Order.objects.filter(available=True)
             if not orders.exists():
-                return Response(
-                    {"detail": "No orders available."},
-                    status=status.HTTP_204_NO_CONTENT
-                )
+                return Response(status=status.HTTP_204_NO_CONTENT)
             # Fetches the data from the database and serializes it
             paginated_data = paginator.paginate_queryset(orders, request)
             serializer = self.serializer_class(paginated_data, many=True)
@@ -65,11 +62,19 @@ class OrderDetailView(APIView):
         # Get a order instance by id
         return get_object_or_404(Order, pk=order_id)
 
+    def get(self, request, order_id, format=None):
+        # Get details of a food
+        order = self.get_object(order_id)
+        serializer = self.serializer_class(order)
+        return Response(serializer.data)
+
     def delete(self, request, order_id, format=None):
         # Delete a food
         order = self.get_object(order_id)
         order.available = False  # Logical deletion
         order.save()
+        # Invalidate cache
+        cache.delete("order")
         return Response(status=status.HTTP_204_NO_CONTENT)
 
 

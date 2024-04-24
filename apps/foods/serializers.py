@@ -39,12 +39,5 @@ class FoodMiniSerializer(serializers.ModelSerializer):
         model = Food
         fields = [
             "id",
-            "name",
-            "price",
-            "sale_price",
-            "image",
-            "is_vegetarian",
-            "is_gluten_free",
-            "is_spicy",
-            "is_featured",
+            "name"
         ]

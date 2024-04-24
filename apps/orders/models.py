@@ -46,9 +46,9 @@ class Order(BaseModel):
         super().save(*args, **kwargs)
 
     def set_transaction(self):
-        """Set the transaction ID based on Order and User IDs."""
+        """Set the transaction ID based on Order IDs."""
         # if not self.transaction:
-        self.transaction = f"{self.pk}/{self.user.pk}"
+        self.transaction = f"trans-{self.pk}"
 
 
 class OrderItem(BaseModel):
