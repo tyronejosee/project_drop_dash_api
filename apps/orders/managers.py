@@ -2,43 +2,38 @@
 
 from django.db import models
 
-from .choices import OrderStatus
-
 
 class OrderManager(models.Manager):
     """Manager for Order Model."""
 
     def get_queryset(self):
-        return super().get_queryset().filter(available=True)
+        # Default queryset
+        return super().get_queryset()
 
-    def not_processed_orders(self):
-        return self.get_queryset().filter(status=OrderStatus.NOT_PROCESSED)
+    def get_available(self):
+        """Get all available orders"""
+        return self.get_queryset().filter(available=True)
 
-    def processed_orders(self):
-        return self.get_queryset().filter(status=OrderStatus.PROCESSED)
+    def get_unavailable(self):
+        """Get all unavailable orders"""
+        return self.get_queryset().filter(available=False)
 
-    def shipping_orders(self):
-        return self.get_queryset().filter(status=OrderStatus.SHIPPING)
-
-    def delivered_orders(self):
-        return self.get_queryset().filter(status=OrderStatus.DELIVERED)
-
-    def cancelled_orders(self):
-        return self.get_queryset().filter(status=OrderStatus.CANCELLED)
+    def get_by_status(self, status):
+        """Get orders by status"""
+        return self.get_available().filter(status=status)
 
 
 class OrderItemManager(models.Manager):
     """Manager for OrderItem Model."""
 
     def get_queryset(self):
-        return super().get_queryset().filter(available=True)
+        # Default queryset
+        return super().get_queryset()
 
-    def calculate_total_price_and_tax(self, order_item):
-        price = order_item.price
-        discount = order_item.discount
-        tax_percentage = order_item.tax_percentage
-        count = order_item.count
+    def get_available(self):
+        """Get all available orders items"""
+        return self.get_queryset().filter(available=True)
 
-        tax = (price * tax_percentage / 100) * count
-        total_price = (price * count) - discount + tax
-        return total_price, tax
+    def get_unavailable(self):
+        """Get all unavailable orders items"""
+        return self.get_queryset().filter(available=False)

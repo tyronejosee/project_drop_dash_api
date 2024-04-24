@@ -8,7 +8,7 @@ from apps.restaurants.models import Restaurant
 from apps.foods.models import Food
 from apps.locations.models import Comune, Region
 from apps.payments.choices import PaymentMethod
-from .managers import OrderItemManager
+from .managers import OrderManager, OrderItemManager
 from .choices import OrderStatus
 
 User = get_user_model()
@@ -30,6 +30,8 @@ class Order(BaseModel):
     payment_method = models.CharField(
         max_length=15, choices=PaymentMethod.choices,
         default=PaymentMethod.CASH)
+
+    objects = OrderManager()
 
     class Meta:
         """Meta definition for Order model."""
