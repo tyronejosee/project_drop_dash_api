@@ -7,13 +7,14 @@ from rest_framework.response import Response
 from rest_framework import status
 
 from apps.utilities.pagination import LargeSetPagination
+from apps.restaurants.permissions import IsBusinessOrReadOnly
 from .models import Food
 from .serializers import FoodSerializer
 
 
-class FoodList(APIView):
+class FoodListView(APIView):
     """APIView to list and create foods."""
-    # permission_classes = # TODO: Add permission for restaurant
+    permission_classes = [IsBusinessOrReadOnly]
     serializer_class = FoodSerializer
     cache_key = "food"
     cache_timeout = 7200  # 2 hours
@@ -24,11 +25,11 @@ class FoodList(APIView):
         cached_data = cache.get(self.cache_key)
 
         if cached_data is None:
-            foods = Food.objects.get_all()
+            foods = Food.objects.get_available()
             if not foods.exists():
                 return Response(
                     {"detail": "No Foods Available."},
-                    status=status.HTTP_204_NO_CONTENT
+                    status=status.HTTP_404_NOT_FOUND
                 )
             # Fetches the data from the database and serializes it
             paginated_data = paginator.paginate_queryset(foods, request)
@@ -55,9 +56,9 @@ class FoodList(APIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
-class FoodDetail(APIView):
+class FoodDetailView(APIView):
     """APIView to retrieve, update, and delete a food."""
-    # permission_classes = # TODO: Add permission for restaurant
+    permission_classes = [IsBusinessOrReadOnly]
     serializer_class = FoodSerializer
 
     def get_object(self, food_id):
@@ -84,4 +85,40 @@ class FoodDetail(APIView):
         food = self.get_object(food_id)
         food.available = False  # Logical deletion
         food.save()
+        # Invalidate cache
+        cache.delete("food")
         return Response(status=status.HTTP_204_NO_CONTENT)
+
+
+class FoodDeletedListView(APIView):
+    """APIView to list deleted foods."""
+    permission_classes = [IsBusinessOrReadOnly]
+    serializer_class = FoodSerializer
+    cache_key = "food_deleted"
+    cache_timeout = 7200  # 2 hours
+
+    def get(self, request, format=None):
+        # Get a list of deleted foods
+        paginator = LargeSetPagination()
+        cached_data = cache.get(self.cache_key)
+
+        if cached_data is None:
+            foods = Food.objects.get_unavailable()
+            if not foods.exists():
+                return Response(
+                    {"detail": "No Foods Available."},
+                    status=status.HTTP_404_NOT_FOUND
+                )
+            # Fetches the data from the database and serializes it
+            paginated_data = paginator.paginate_queryset(foods, request)
+            serializer = self.serializer_class(paginated_data, many=True)
+            # Set cache
+            cache.set(self.cache_key, serializer.data, self.cache_timeout)
+        else:
+            # Retrieve the cached data and serialize it
+            paginated_cached_data = paginator.paginate_queryset(
+                cached_data, request)
+            serializer = self.serializer_class(
+                paginated_cached_data, many=True)
+
+        return paginator.get_paginated_response(serializer.data)
