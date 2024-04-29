@@ -17,7 +17,7 @@ from .serializers import RestaurantSerializer
 from .permissions import IsBusinessOrReadOnly
 
 
-class RestaurantListAPIView(APIView):
+class RestaurantListView(APIView):
     """APIView to list and create restaurants."""
     serializer_class = RestaurantSerializer
     permission_classes = [IsBusinessOrReadOnly]
@@ -30,7 +30,7 @@ class RestaurantListAPIView(APIView):
         cached_data = cache.get(self.cache_key)
 
         if cached_data is None:
-            restaurants = Restaurant.objects.get_all()
+            restaurants = Restaurant.objects.get_available()
             if not restaurants.exists():
                 return Response(
                     {"detail": "No restaurants available."},
@@ -38,9 +38,10 @@ class RestaurantListAPIView(APIView):
                 )
             # Fetches the data from the database and serializes it
             paginated_data = paginator.paginate_queryset(restaurants, request)
-            serializer = self.serializer_class(paginated_data, many=True)
             # Set cache
-            cache.set(self.cache_key, serializer.data, self.cache_timeout)
+            cache.set(self.cache_key, paginated_data, self.cache_timeout)
+            serializer = self.serializer_class(paginated_data, many=True)
+            return paginator.get_paginated_response(serializer.data)
         else:
             # Retrieve the cached data and serialize it
             paginated_cached_data = paginator.paginate_queryset(
@@ -62,7 +63,7 @@ class RestaurantListAPIView(APIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
-class RestaurantDetailAPIView(APIView):
+class RestaurantDetailView(APIView):
     """APIView to retrieve, update, and delete a restaurant."""
     serializer_class = RestaurantSerializer
     permission_classes = [IsBusinessOrReadOnly]
@@ -96,7 +97,7 @@ class RestaurantDetailAPIView(APIView):
         return Response(status=status.HTTP_204_NO_CONTENT)
 
 
-class RestaurantCategoriesAPIView(APIView):
+class RestaurantCategoriesView(APIView):
     permission_classes = [IsBusinessOrReadOnly]
     serializer_class = CategoryListSerializer
 
@@ -114,7 +115,7 @@ class RestaurantCategoriesAPIView(APIView):
         )
 
 
-class RestaurantFoodsAPIView(APIView):
+class RestaurantFoodsView(APIView):
     permission_classes = [IsBusinessOrReadOnly]
 
     def get(self, request, restaurant_id, format=None):
