@@ -2,7 +2,8 @@
 
 from django.urls import path
 
-from .views import OrderListView, OrderDetailView, OrderItemListView, OrderItemDetailView
+from .views import (
+    OrderListView, OrderDetailView, OrderItemListView, OrderItemDetailView)
 
 
 urlpatterns = [
@@ -12,17 +13,3 @@ urlpatterns = [
     path("api/v1/orders/<uuid:order_id>/items/<uuid:item_id>",
          OrderItemDetailView.as_view()),
 ]
-
-# Endpoints
-
-# GET / api/orders
-# POST / api/orders
-# GET / api/orders/{order_id}
-# PUT / api/orders/{order_id}
-# DELETE / api/orders/{order_id}
-
-# GET / api/orders/{order_id}/items
-# POST / api/orders/{order_id}/items
-# GET / api/orders/{order_id}/items/{item_id}
-# PUT / api/orders/{order_id}/items/{item_id}
-# DELETE / api/orders/{order_id}/items/{item_id}
