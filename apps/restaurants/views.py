@@ -42,6 +42,7 @@ class RestaurantListView(APIView):
             cache.set(self.cache_key, paginated_data, self.cache_timeout)
             serializer = self.serializer_class(paginated_data, many=True)
             return paginator.get_paginated_response(serializer.data)
+
         else:
             # Retrieve the cached data and serialize it
             paginated_cached_data = paginator.paginate_queryset(

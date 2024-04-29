@@ -6,6 +6,7 @@ from django.core.validators import FileExtensionValidator
 
 from apps.utilities.models import BaseModel
 from apps.utilities.paths import image_path
+from .managers import PromotionManager
 
 User = settings.AUTH_USER_MODEL
 
@@ -24,6 +25,8 @@ class Promotion(BaseModel):
             FileExtensionValidator(allowed_extensions=["webp"]),
         ]
     )
+
+    objects = PromotionManager()
 
     # TODO: Add max file size, min and max dimensions validators
 

@@ -26,6 +26,7 @@ urlpatterns = [
     path("", include("apps.drivers.urls")),
     path("", include("apps.foods.urls")),
     path("", include("apps.orders.urls")),
+    path("", include("apps.promotions.urls")),
     path("", include("apps.coupons.urls")),
     path("", include("apps.users.urls")),
 ]
