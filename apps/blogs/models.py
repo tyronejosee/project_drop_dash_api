@@ -12,7 +12,7 @@ User = settings.AUTH_USER_MODEL
 class Tag(BaseModel):
     """Model definition for Tag (Catalog)."""
     name = models.CharField(max_length=50, unique=True)
-    slug = models.SlugField(max_length=50, unique=True)
+    slug = models.SlugField(unique=True, blank=True, null=True)
 
     class Meta:
         """Meta definition for Post."""
@@ -24,16 +24,16 @@ class Tag(BaseModel):
         return str(self.name)
 
     def save(self, *args, **kwargs):
-        """Override the save method to automatically generate the slug."""
-        if not self.slug:
+        # Override the save method to generate the slug
+        if not self.slug or self.slug != self.name:
             self.slug = slugify(self.name)
         super().save(*args, **kwargs)
 
 
 class Post(BaseModel):
     """Model definition for Post (Entity)."""
-    title = models.CharField(max_length=255)
-    slug = models.SlugField(unique=True)
+    title = models.CharField(max_length=100)
+    slug = models.SlugField(unique=True, blank=True, null=True)
     content = models.TextField()
     tags = models.ManyToManyField(Tag)
     author = models.ForeignKey(User, on_delete=models.CASCADE)
@@ -48,7 +48,7 @@ class Post(BaseModel):
         return str(self.title)
 
     def save(self, *args, **kwargs):
-        """Override the save method to automatically generate the slug."""
-        if not self.slug:
+        # Override the save method to generate the slug
+        if not self.slug or self.slug != self.title:
             self.slug = slugify(self.title)
         super().save(*args, **kwargs)

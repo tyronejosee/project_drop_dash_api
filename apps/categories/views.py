@@ -16,7 +16,7 @@ class CategoryList(APIView):
     """APIView to list and create categories."""
     serializer_class = CategorySerializer
     permission_classes = [IsStaffOrReadOnly]
-    cache_key = "category"
+    cache_key = "category_list"
     cache_timeout = 7200  # 2 hours
 
     def get(self, request, format=None):
@@ -29,7 +29,7 @@ class CategoryList(APIView):
             if not categories.exists():
                 return Response(
                     {"details": "No categories available."},
-                    status=status.HTTP_204_NO_CONTENT
+                    status=status.HTTP_404_NOT_FOUND
                 )
             # Fetches the data from the database and serializes it
             paginated_data = paginator.paginate_queryset(categories, request)
