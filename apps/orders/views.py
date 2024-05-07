@@ -5,7 +5,7 @@ from django.shortcuts import get_object_or_404
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
-from rest_framework.permissions import IsAuthenticated
+from rest_framework.permissions import IsAdminUser, IsAuthenticated
 
 from apps.utilities.pagination import LargeSetPagination
 from .models import Order, OrderItem
@@ -14,9 +14,14 @@ from .serializers import OrderSerializer, OrderItemSerializer
 
 class OrderListView(APIView):
     """View to list and create orders."""
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsAdminUser]
     cache_key = "order"
     cache_timeout = 7200  # 2 hours
+
+    def get_permissions(self):
+        if self.request.method == "POST":
+            return [IsAuthenticated()]
+        return super().get_permissions()
 
     def get(self, request, format=None):
         # Get all available orders

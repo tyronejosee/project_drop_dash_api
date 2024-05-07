@@ -1,11 +1,12 @@
 """Serializers for Orders App."""
 
-from rest_framework.serializers import ModelSerializer, ReadOnlyField
+from rest_framework.serializers import (
+    ModelSerializer, ReadOnlyField, StringRelatedField,
+    ChoiceField, ValidationError)
 
-from apps.locations.serializers import (
-    ComuneListSerializer, RegionListSerializer)
 from apps.foods.serializers import FoodMiniSerializer
 from .models import Order, OrderItem
+from .choices import OrderStatus
 
 
 class UUIDField(ReadOnlyField):
@@ -17,8 +18,9 @@ class OrderSerializer(ModelSerializer):
     """Serializer for Order model."""
     user = UUIDField()
     transaction = UUIDField(read_only=True)
-    comune = ComuneListSerializer()
-    region = RegionListSerializer()
+    comune = StringRelatedField()
+    region = StringRelatedField()
+    status = ChoiceField(choices=OrderStatus.choices)
 
     class Meta:
         """Meta definition for RestaurantSerializer."""
@@ -35,6 +37,12 @@ class OrderSerializer(ModelSerializer):
             "status",
             "payment_method"
         ]
+
+    def validate_status(self, value):
+        """Validate that status is one of the choices."""
+        if value not in dict(OrderStatus.choices):
+            raise ValidationError("Invalid status")
+        return value
 
 
 class OrderItemSerializer(ModelSerializer):
