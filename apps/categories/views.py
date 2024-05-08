@@ -6,18 +6,23 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
 
+from apps.users.permissions import IsAdministrator, IsBusiness
 from apps.utilities.pagination import LargeSetPagination
-from apps.utilities.permissions import IsStaffOrReadOnly
 from .models import Category
 from .serializers import CategorySerializer
 
 
 class CategoryList(APIView):
     """APIView to list and create categories."""
+    permission_classes = [IsAdministrator]
     serializer_class = CategorySerializer
-    permission_classes = [IsStaffOrReadOnly]
     cache_key = "category_list"
     cache_timeout = 7200  # 2 hours
+
+    def get_permissions(self):
+        if self.request.method == "POST":
+            return [IsBusiness()]
+        return super().get_permissions()
 
     def get(self, request, format=None):
         # Get a list of categories
@@ -26,6 +31,7 @@ class CategoryList(APIView):
 
         if cached_data is None:
             categories = Category.objects.get_all()
+            # TODO: Fix query only restaurant
             if not categories.exists():
                 return Response(
                     {"details": "No categories available."},
@@ -58,8 +64,8 @@ class CategoryList(APIView):
 
 class CategoryDetail(APIView):
     """APIView to retrieve, update, and delete a category."""
+    permission_classes = [IsBusiness]
     serializer_class = CategorySerializer
-    permission_classes = [IsStaffOrReadOnly]
 
     def get_object(self, category_id):
         # Get a category instance by id

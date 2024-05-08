@@ -5,6 +5,7 @@ from rest_framework.serializers import (
     ChoiceField, ValidationError)
 
 from apps.foods.serializers import FoodMiniSerializer
+from apps.payments.choices import PaymentMethod
 from .models import Order, OrderItem
 from .choices import OrderStatus
 
@@ -21,6 +22,7 @@ class OrderSerializer(ModelSerializer):
     comune = StringRelatedField()
     region = StringRelatedField()
     status = ChoiceField(choices=OrderStatus.choices)
+    payment_method = ChoiceField(choices=PaymentMethod.choices)
 
     class Meta:
         """Meta definition for RestaurantSerializer."""
@@ -42,6 +44,12 @@ class OrderSerializer(ModelSerializer):
         """Validate that status is one of the choices."""
         if value not in dict(OrderStatus.choices):
             raise ValidationError("Invalid status")
+        return value
+
+    def validate_payment_method(self, value):
+        """Validate that payment_method is one of the choices."""
+        if value not in dict(PaymentMethod.choices):
+            raise ValidationError("Invalid payment method")
         return value
 
 

@@ -19,8 +19,8 @@ from .permissions import IsBusinessOrReadOnly
 
 class RestaurantListView(APIView):
     """APIView to list and create restaurants."""
-    serializer_class = RestaurantSerializer
     permission_classes = [IsBusinessOrReadOnly]
+    serializer_class = RestaurantSerializer
     cache_key = "restaurant"
     cache_timeout = 7200  # 2 hours
 
@@ -118,6 +118,7 @@ class RestaurantCategoriesView(APIView):
 
 class RestaurantFoodsView(APIView):
     permission_classes = [IsBusinessOrReadOnly]
+    serializer_class = FoodMiniSerializer
 
     def get(self, request, restaurant_id, format=None):
         # Get a list of foods for a restaurant
@@ -126,7 +127,7 @@ class RestaurantFoodsView(APIView):
         if foods.exists():
             paginator = LargeSetPagination()
             paginated_data = paginator.paginate_queryset(foods, request)
-            serializer = FoodMiniSerializer(paginated_data, many=True)
+            serializer = self.serializer_class(paginated_data, many=True)
             return paginator.get_paginated_response(serializer.data)
         return Response(
             {"detail": "No foods available."},

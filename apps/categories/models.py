@@ -22,5 +22,4 @@ class Category(BaseModel):
         verbose_name_plural = "Categories"
 
     def __str__(self):
-        """Unicode representation of Category."""
-        return self.name
+        return str(self.name)

@@ -36,4 +36,4 @@ class Driver(BaseModel):
         verbose_name_plural = "Drivers"
 
     def __str__(self):
-        return self.user.username
+        return str(self.user.username)

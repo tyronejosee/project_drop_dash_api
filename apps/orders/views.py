@@ -15,6 +15,7 @@ from .serializers import OrderSerializer, OrderItemSerializer
 class OrderListView(APIView):
     """View to list and create orders."""
     permission_classes = [IsAdminUser]
+    serializer_class = OrderSerializer
     cache_key = "order"
     cache_timeout = 7200  # 2 hours
 
@@ -37,20 +38,21 @@ class OrderListView(APIView):
                 )
             # Fetches the data from the database and serializes it
             paginated_data = paginator.paginate_queryset(orders, request)
-            serializer = OrderSerializer(paginated_data, many=True)
+            serializer = self.serializer_class(paginated_data, many=True)
             # Set cache
             cache.set(self.cache_key, serializer.data, self.cache_timeout)
         else:
             # Retrieve the cached data and serialize it
             paginated_cached_data = paginator.paginate_queryset(
                 cached_data, request)
-            serializer = OrderSerializer(paginated_cached_data, many=True)
+            serializer = self.serializer_class(
+                paginated_cached_data, many=True)
 
         return paginator.get_paginated_response(serializer.data)
 
     def post(self, request, format=None):
         # Create a new order
-        serializer = OrderSerializer(data=request.data)
+        serializer = self.serializer_class(data=request.data)
         if serializer.is_valid():
             serializer.save()
             # Invalidate cache
@@ -62,6 +64,7 @@ class OrderListView(APIView):
 class OrderDetailView(APIView):
     """View delete a order."""
     permission_classes = [IsAuthenticated]
+    serializer_class = OrderSerializer
 
     def get_object(self, order_id):
         # Get a order instance by id
@@ -70,7 +73,7 @@ class OrderDetailView(APIView):
     def get(self, request, order_id, format=None):
         # Get details of a order
         order = self.get_object(order_id)
-        serializer = OrderSerializer(order)
+        serializer = self.serializer_class(order)
         return Response(serializer.data)
 
     def delete(self, request, order_id, format=None):
@@ -78,20 +81,20 @@ class OrderDetailView(APIView):
         order = self.get_object(order_id)
         order.available = False  # Logical deletion
         order.save()
-        # Invalidate cache
-        cache.delete("order")
+        cache.delete("order")  # Invalidate cache
         return Response(status=status.HTTP_204_NO_CONTENT)
 
 
 class OrderItemListView(APIView):
     """View to list and create order items."""
     permission_classes = [IsAuthenticated]
+    serializer_class = OrderItemSerializer
 
     def get(self, request, order_id, format=None):
         # Get all available items from an order
         order_items = OrderItem.objects.filter(order=order_id)
         if order_items.exists():
-            serializer = OrderItemSerializer(order_items, many=True)
+            serializer = self.serializer_class(order_items, many=True)
             return Response(serializer.data)
         return Response(
             {"detail": "No order items available."},
@@ -101,7 +104,7 @@ class OrderItemListView(APIView):
     def post(self, request, order_id, format=None):
         # Create a item for an order
         request.data["order"] = order_id
-        serializer = OrderItemSerializer(data=request.data)
+        serializer = self.serializer_class(data=request.data)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
@@ -111,17 +114,18 @@ class OrderItemListView(APIView):
 class OrderItemDetailView(APIView):
     """View to retrieve, update, or delete a specific order item."""
     permission_classes = [IsAuthenticated]
+    serializer_class = OrderItemSerializer
 
     def get(self, request, order_id, item_id, format=None):
         # Get the details of an item from an order
         order_item = OrderItem.objects.get(order=order_id, id=item_id)
-        serializer = OrderItemSerializer(order_item)
+        serializer = self.serializer_class(order_item)
         return Response(serializer.data)
 
     def put(self, request, order_id, item_id, format=None):
         # Updates the details of an order item
         order_item = OrderItem.objects.get(order_id=order_id, id=item_id)
-        serializer = OrderItemSerializer(order_item, data=request.data)
+        serializer = self.serializer_class(order_item, data=request.data)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data)
@@ -132,5 +136,3 @@ class OrderItemDetailView(APIView):
         order_item = OrderItem.objects.get(order_id=order_id, id=item_id)
         order_item.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
-
-# TODO: Pending tests
