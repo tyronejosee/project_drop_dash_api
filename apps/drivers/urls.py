@@ -2,17 +2,17 @@
 
 from django.urls import path
 
-from .views import DriverListAPIView, DriverDetailAPIView
+from .views import DriverListView, DriverDetailView
 
 
 urlpatterns = [
     path(
         "api/v1/drivers/",
-        DriverListAPIView.as_view()
+        DriverListView.as_view()
     ),
     path(
         "api/v1/drivers/<uuid:driver_id>/",
-        DriverDetailAPIView.as_view()
+        DriverDetailView.as_view()
     ),
 
     # GET drivers/{driver_id}/orders

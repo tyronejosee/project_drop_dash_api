@@ -5,13 +5,16 @@ from django.shortcuts import get_object_or_404
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
+from drf_spectacular.utils import extend_schema_view
 
 from apps.users.permissions import IsAdministrator, IsBusiness
 from apps.utilities.pagination import LargeSetPagination
 from .models import Category
 from .serializers import CategorySerializer
+from .schemas import category_list_schema, category_detail_schema
 
 
+@extend_schema_view(**category_list_schema)
 class CategoryList(APIView):
     """APIView to list and create categories."""
     permission_classes = [IsAdministrator]
@@ -62,6 +65,7 @@ class CategoryList(APIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
+@extend_schema_view(**category_detail_schema)
 class CategoryDetail(APIView):
     """APIView to retrieve, update, and delete a category."""
     permission_classes = [IsBusiness]

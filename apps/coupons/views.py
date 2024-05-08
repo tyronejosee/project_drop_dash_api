@@ -7,15 +7,21 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
 from rest_framework import status
+from drf_spectacular.utils import extend_schema_view
 
 from apps.utilities.pagination import MediumSetPagination
 from .models import FixedCoupon, PercentageCoupon
 from .serializers import (
     FixedCouponSerializer, PercentageCouponSerializer
 )
+from .schemas import (
+    fixed_coupon_list_schema, fixed_coupon_detail_schema,
+    percentage_coupon_list_schema, percentage_coupon_detail_schema
+)
 
 
-class FixedCouponListAPIView(APIView):
+@extend_schema_view(**fixed_coupon_list_schema)
+class FixedCouponListView(APIView):
     """APIView for listing and creating fixed coupons."""
     permission_classes = [IsAuthenticated]
     serializer_class = FixedCouponSerializer
@@ -62,7 +68,8 @@ class FixedCouponListAPIView(APIView):
             serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
-class FixedCouponDetailAPIView(APIView):
+@extend_schema_view(**fixed_coupon_detail_schema)
+class FixedCouponDetailView(APIView):
     """APIView to retrieve, update, and delete a fixed coupon."""
     permission_classes = [IsAuthenticated]
     serializer_class = FixedCouponSerializer
@@ -96,7 +103,8 @@ class FixedCouponDetailAPIView(APIView):
         return Response(status=status.HTTP_204_NO_CONTENT)
 
 
-class PercentageCouponListAPIView(APIView):
+@extend_schema_view(**percentage_coupon_list_schema)
+class PercentageCouponListView(APIView):
     """APIView for listing and creating percentage coupons."""
     permission_classes = [IsAuthenticated]
     serializer_class = PercentageCouponSerializer
@@ -141,7 +149,8 @@ class PercentageCouponListAPIView(APIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
-class PercentageCouponDetailAPIView(APIView):
+@extend_schema_view(**percentage_coupon_detail_schema)
+class PercentageCouponDetailView(APIView):
     """APIView to retrieve, update, and delete a percentage coupon."""
     permission_classes = [IsAuthenticated]
     serializer_class = PercentageCouponSerializer
@@ -176,7 +185,7 @@ class PercentageCouponDetailAPIView(APIView):
         return Response(status=status.HTTP_204_NO_CONTENT)
 
 
-class CheckCouponAPIView(APIView):
+class CheckCouponView(APIView):
     """APIView to check the validity of a coupon code."""
 
     def get(self, request, format=None):

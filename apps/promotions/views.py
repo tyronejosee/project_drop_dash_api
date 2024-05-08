@@ -12,10 +12,10 @@ from apps.users.permissions import IsAdministrator
 from apps.utilities.pagination import MediumSetPagination
 from .models import Promotion
 from .serializers import PromotionSerializer
-from .schemas import promotion_list_schemas, promotion_detail_schemas
+from .schemas import promotion_list_schema, promotion_detail_schema
 
 
-@extend_schema_view(**promotion_list_schemas)
+@extend_schema_view(**promotion_list_schema)
 class PromotionListView(APIView):
     """View to list and create promotions."""
     permission_classes = [IsAdministrator]
@@ -62,7 +62,7 @@ class PromotionListView(APIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
-@extend_schema_view(**promotion_detail_schemas)
+@extend_schema_view(**promotion_detail_schema)
 class PromotionDetailView(APIView):
     """View to retrieve and delete a promotion."""
     permission_classes = [IsAdministrator]

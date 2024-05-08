@@ -2,8 +2,10 @@
 
 from drf_spectacular.utils import extend_schema
 
+from .serializers import PromotionSerializer
 
-promotion_list_schemas = {
+
+promotion_list_schema = {
     "get": extend_schema(
         operation_id="promotion_list_retrieve",
         summary="Get promotions",
@@ -13,18 +15,22 @@ promotion_list_schemas = {
         operation_id="promotion_list_create",
         summary="Create promotion",
         description="pending",
+        responses={
+            201: PromotionSerializer(),
+            400: None
+        }
     )
 }
 
 
-promotion_detail_schemas = {
+promotion_detail_schema = {
     "get": extend_schema(
-        operation_id="promotions_detail_retrieve",
+        operation_id="promotion_detail_retrieve",
         summary="Get promotion",
         description="pending",
     ),
     "delete": extend_schema(
-        operation_id="promotions_detail_destroy",
+        operation_id="promotion_detail_destroy",
         summary="Delete promotion",
         description="pending",
     )

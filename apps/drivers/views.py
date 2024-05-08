@@ -6,14 +6,17 @@ from django.shortcuts import get_object_or_404
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
+from drf_spectacular.utils import extend_schema_view
 
 from apps.users.permissions import IsAdministrator, IsClient, IsDriver
 from apps.utilities.pagination import LargeSetPagination
 from .models import Driver
 from .serializers import DriverReadSerializer, DriverWriteSerializer
+from .schemas import driver_list_schema, driver_detail_schema
 
 
-class DriverListAPIView(APIView):
+@extend_schema_view(**driver_list_schema)
+class DriverListView(APIView):
     """API view to list and create drivers."""
     permission_classes = [IsAdministrator]
     serializer_class = DriverReadSerializer
@@ -63,7 +66,8 @@ class DriverListAPIView(APIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
-class DriverDetailAPIView(APIView):
+@extend_schema_view(**driver_detail_schema)
+class DriverDetailView(APIView):
     permission_classes = [IsDriver]
     serializer_class = DriverReadSerializer
 

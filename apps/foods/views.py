@@ -5,13 +5,16 @@ from django.shortcuts import get_object_or_404
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
+from drf_spectacular.utils import extend_schema_view
 
 from apps.utilities.pagination import LargeSetPagination
 from apps.restaurants.permissions import IsBusinessOrReadOnly
 from .models import Food
 from .serializers import FoodSerializer
+from .schemas import food_list_schema, food_detail_schema
 
 
+@extend_schema_view(**food_list_schema)
 class FoodListView(APIView):
     """APIView to list and create foods."""
     permission_classes = [IsBusinessOrReadOnly]
@@ -56,6 +59,7 @@ class FoodListView(APIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
+@extend_schema_view(**food_detail_schema)
 class FoodDetailView(APIView):
     """APIView to retrieve, update, and delete a food."""
     permission_classes = [IsBusinessOrReadOnly]
