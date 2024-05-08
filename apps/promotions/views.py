@@ -6,16 +6,19 @@ from django.shortcuts import get_object_or_404
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
-from rest_framework.permissions import IsAdminUser
+from drf_spectacular.utils import extend_schema_view
 
+from apps.users.permissions import IsAdministrator
 from apps.utilities.pagination import MediumSetPagination
 from .models import Promotion
 from .serializers import PromotionSerializer
+from .schemas import promotion_list_schemas, promotion_detail_schemas
 
 
+@extend_schema_view(**promotion_list_schemas)
 class PromotionListView(APIView):
     """View to list and create promotions."""
-    permission_classes = [IsAdminUser]
+    permission_classes = [IsAdministrator]
     serializer_class = PromotionSerializer
     cache_key = "promotion_list"
     cache_timeout = 7200  # 2 hours
@@ -59,9 +62,10 @@ class PromotionListView(APIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
+@extend_schema_view(**promotion_detail_schemas)
 class PromotionDetailView(APIView):
     """View to retrieve and delete a promotion."""
-    permission_classes = [IsAdminUser]
+    permission_classes = [IsAdministrator]
     serializer_class = PromotionSerializer
 
     def get_object(self, promotion_id):

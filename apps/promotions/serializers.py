@@ -2,6 +2,7 @@
 
 from rest_framework.serializers import ModelSerializer
 
+from apps.users.serializers import UserSerializer
 from .models import Promotion
 
 
@@ -21,3 +22,9 @@ class PromotionSerializer(ModelSerializer):
             "is_active",
             "image"
         ]
+
+    def to_representation(self, instance):
+        # Overridden method to include serializers for foreign keys
+        data = super().to_representation(instance)
+        data["creator"] = UserSerializer(instance.creator).data
+        return data

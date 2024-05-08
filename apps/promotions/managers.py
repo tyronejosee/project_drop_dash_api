@@ -11,9 +11,9 @@ class PromotionManager(Manager):
         return super().get_queryset()
 
     def get_available(self):
-        """Return a queryset of available drivers."""
+        """Return a queryset of available promotions."""
         return self.get_queryset().filter(available=True)
 
     def get_unavailable(self):
-        """Return a queryset of unavailable drivers."""
+        """Return a queryset of unavailable promotions."""
         return self.get_queryset().filter(available=False)
