@@ -6,19 +6,24 @@ from django.shortcuts import get_object_or_404
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
-from rest_framework.permissions import IsAuthenticated
 
+from apps.users.permissions import IsAdministrator, IsClient, IsDriver
 from apps.utilities.pagination import LargeSetPagination
 from .models import Driver
-from .serializers import DriverSerializer
+from .serializers import DriverReadSerializer, DriverWriteSerializer
 
 
 class DriverListAPIView(APIView):
     """API view to list and create drivers."""
-    permission_classes = [IsAuthenticated]
-    serializer_class = DriverSerializer
+    permission_classes = [IsAdministrator]
+    serializer_class = DriverReadSerializer
     cache_key = "driver"
     cache_timeout = 7200  # 2 hours
+
+    def get_permissions(self):
+        if self.request.method == "POST":
+            return [IsClient()]
+        return super().get_permissions()
 
     def get(self, request, format=None):
         # Get a list of drivers
@@ -48,18 +53,19 @@ class DriverListAPIView(APIView):
     @transaction.atomic
     def post(self, request, format=None):
         # Create a new driver
-        serializer = self.serializer_class(data=request.data)
+        serializer = DriverWriteSerializer(data=request.data)
         if serializer.is_valid():
             serializer.save(user=request.user)
-            # Invalidate cache
-            cache.delete(self.cache_key)
+            request.user.role = "driver"  # Update role
+            request.user.save()
+            cache.delete(self.cache_key)  # Invalidate cache
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 class DriverDetailAPIView(APIView):
-    permission_classes = [IsAuthenticated]
-    serializer_class = DriverSerializer
+    permission_classes = [IsDriver]
+    serializer_class = DriverReadSerializer
 
     def get_object(self, driver_id):
         # Get a driver instance by id
@@ -72,7 +78,7 @@ class DriverDetailAPIView(APIView):
 
     @transaction.atomic
     def put(self, request, driver_id, format=None):
-        # Update a restaurant
+        # Update a driver
         driver = self.get_object(driver_id)
         serializer = self.serializer_class(driver, data=request.data)
         if serializer.is_valid():
@@ -82,7 +88,7 @@ class DriverDetailAPIView(APIView):
 
     @transaction.atomic
     def delete(self, request, driver_id, format=None):
-        # Delete a restaurant
+        # Delete a driver
         driver = self.get_object(driver_id)
         driver.available = False  # Logical deletion
         driver.save()

@@ -2,19 +2,19 @@
 
 from rest_framework import serializers
 
-from apps.users.serializers import UserSerializer
 from .models import Driver
+from .choices import Status
 
 
-class DriverSerializer(serializers.ModelSerializer):
-    """Serializer for Driver model."""
-    user = UserSerializer()
+class DriverReadSerializer(serializers.ModelSerializer):
+    """Serializer for reading Driver instances."""
+    user = serializers.UUIDField(read_only=True)
     comune = serializers.StringRelatedField()
     region = serializers.StringRelatedField()
-    status = serializers.CharField(source="get_status_display", read_only=True)
+    status = serializers.ChoiceField(choices=Status.choices)
 
     class Meta:
-        """Meta definition for DriverSerializer."""
+        """Meta definition for DriverReadSerializer."""
         model = Driver
         fields = [
             "id",
@@ -26,4 +26,20 @@ class DriverSerializer(serializers.ModelSerializer):
             "comune",
             "region",
             "status"
+        ]
+
+
+class DriverWriteSerializer(serializers.ModelSerializer):
+    """Serializer for creating/updating Driver instances."""
+
+    class Meta:
+        """Meta definition for DriverWriteSerializer."""
+        model = Driver
+        fields = [
+            "address",
+            "phone",
+            "email",
+            "birth_date",
+            "comune",
+            "region"
         ]
