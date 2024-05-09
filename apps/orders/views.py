@@ -5,23 +5,35 @@ from django.shortcuts import get_object_or_404
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
-from rest_framework.permissions import IsAdminUser, IsAuthenticated
+from drf_spectacular.utils import extend_schema_view
 
+from apps.users.permissions import IsAdministrator, IsClient
 from apps.utilities.pagination import LargeSetPagination
 from .models import Order, OrderItem
-from .serializers import OrderSerializer, OrderItemSerializer
+from .serializers import (
+    OrderWriteSerializer, OrderReadSerializer, OrderItemSerializer)
+from .schemas import (
+    order_list_schema, order_detail_schema,
+    order_item_list_schema, order_item_detail_schema)
 
 
+@extend_schema_view(**order_list_schema)
 class OrderListView(APIView):
-    """View to list and create orders."""
-    permission_classes = [IsAdminUser]
-    serializer_class = OrderSerializer
+    """
+    View to list and create orders.
+
+    Endpoints:
+    - GET api/v1/orders/
+    - POST api/v1/orders/
+    """
+    permission_classes = [IsAdministrator]
+    serializer_class = OrderWriteSerializer
     cache_key = "order"
     cache_timeout = 7200  # 2 hours
 
     def get_permissions(self):
         if self.request.method == "POST":
-            return [IsAuthenticated()]
+            return [IsClient()]
         return super().get_permissions()
 
     def get(self, request, format=None):
@@ -54,17 +66,24 @@ class OrderListView(APIView):
         # Create a new order
         serializer = self.serializer_class(data=request.data)
         if serializer.is_valid():
-            serializer.save()
+            serializer.save(user=request.user)
             # Invalidate cache
             cache.delete(self.cache_key)
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
+@extend_schema_view(**order_detail_schema)
 class OrderDetailView(APIView):
-    """View delete a order."""
-    permission_classes = [IsAuthenticated]
-    serializer_class = OrderSerializer
+    """
+    View to retrieve and delete an order.
+
+    Endpoints:
+    - GET api/v1/orders/{id}/
+    - DELETE api/v1/orders/{id}/
+    """
+    permission_classes = [IsClient]
+    serializer_class = OrderReadSerializer
 
     def get_object(self, order_id):
         # Get a order instance by id
@@ -85,9 +104,38 @@ class OrderDetailView(APIView):
         return Response(status=status.HTTP_204_NO_CONTENT)
 
 
+class OrderMeView(APIView):
+    """
+    View of order profile for authenticated user (client).
+
+    Endpoints:
+    - GET api/v1/orders/me/
+    """
+    permission_classes = [IsClient]
+    serializer_class = OrderReadSerializer
+
+    def get(self, request, format=None):
+        # Retrieve the order for the authenticated user
+        order = Order.objects.get_by_user(request.user)
+        if order.exists():
+            serializer = self.serializer_class(order.first())
+            return Response(serializer.data)
+        return Response(
+            {"detail": "You don't have a profile for orders created."},
+            status=status.HTTP_404_NOT_FOUND
+        )
+
+
+@extend_schema_view(**order_item_list_schema)
 class OrderItemListView(APIView):
-    """View to list and create order items."""
-    permission_classes = [IsAuthenticated]
+    """
+    View to list and create order items.
+
+    Endpoints:
+    - GET api/v1/orders/{id}/items/
+    - POST api/v1/orders/{id}/items/
+    """
+    permission_classes = [IsClient]
     serializer_class = OrderItemSerializer
 
     def get(self, request, order_id, format=None):
@@ -111,9 +159,17 @@ class OrderItemListView(APIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
+@extend_schema_view(**order_item_detail_schema)
 class OrderItemDetailView(APIView):
-    """View to retrieve, update, or delete a specific order item."""
-    permission_classes = [IsAuthenticated]
+    """
+    View to retrieve, update, or delete an order item.
+
+    Endpoints:
+    - GET api/v1/orders/{id}/items/{id}/
+    - PUT api/v1/orders/{id}/items/{id}/
+    - DELETE api/v1/orders/{id}/items/{id}/
+    """
+    permission_classes = [IsClient]
     serializer_class = OrderItemSerializer
 
     def get(self, request, order_id, item_id, format=None):
@@ -122,10 +178,11 @@ class OrderItemDetailView(APIView):
         serializer = self.serializer_class(order_item)
         return Response(serializer.data)
 
-    def put(self, request, order_id, item_id, format=None):
-        # Updates the details of an order item
-        order_item = OrderItem.objects.get(order_id=order_id, id=item_id)
-        serializer = self.serializer_class(order_item, data=request.data)
+    def patch(self, request, order_id, item_id, format=None):
+        # Partial Update the details of an order item
+        order_item = OrderItem.objects.get(order=order_id, id=item_id)
+        serializer = self.serializer_class(
+            order_item, data=request.data, partial=True)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data)
