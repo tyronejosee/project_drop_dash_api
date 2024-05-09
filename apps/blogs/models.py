@@ -15,7 +15,6 @@ class Tag(BaseModel):
     slug = models.SlugField(unique=True, blank=True, null=True)
 
     class Meta:
-        """Meta definition for Post."""
         ordering = ["pk"]
         verbose_name = "tag"
         verbose_name_plural = "tags"
@@ -39,7 +38,6 @@ class Post(BaseModel):
     author = models.ForeignKey(User, on_delete=models.CASCADE)
 
     class Meta:
-        """Meta definition for Post."""
         ordering = ["pk"]
         verbose_name = "post"
         verbose_name_plural = "posts"

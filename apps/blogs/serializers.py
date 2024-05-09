@@ -5,35 +5,61 @@ from rest_framework.serializers import ModelSerializer
 from .models import Post, Tag
 
 
-class TagSerializer(ModelSerializer):
-    """Serializer for Category model."""
+class TagReadSerializer(ModelSerializer):
+    """Serializer for Category model (List/retrieve)."""
 
     class Meta:
-        """Meta definition for TagSerializer."""
         model = Tag
         fields = [
             "id",
             "name",
             "slug"
         ]
-        read_only_fields = ["slug",]
+        read_only_fields = [
+            "id", "slug"
+        ]
 
 
-class PostSerializer(ModelSerializer):
-    """Serializer for Post model."""
-    tags = TagSerializer(many=True)
+class TagWriteSerializer(ModelSerializer):
+    """Serializer for Category model (Create/update)."""
 
     class Meta:
-        """Meta definition for PostSerializer."""
+        model = Tag
+        fields = [
+            "name"
+        ]
+
+
+class PostReadSerializer(ModelSerializer):
+    """Serializer for Post model (List/retrieve)."""
+    tags = TagReadSerializer(many=True)
+
+    class Meta:
         model = Post
         fields = [
             "id",
             "title",
             "slug",
             "content",
-            "tags"
+            "tags",
             "author",
             "created_at",
             "updated_at"
         ]
-        read_only_fields = ["slug", "created_at", "updated_at"]
+        read_only_fields = [
+            "slug",
+            "created_at",
+            "updated_at"
+        ]
+
+
+class PostWriteSerializer(ModelSerializer):
+    """Serializer for Post model (Create/update)."""
+
+    class Meta:
+        model = Post
+        fields = [
+            "title",
+            "content",
+            "tags"
+        ]
