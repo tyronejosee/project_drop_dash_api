@@ -6,6 +6,7 @@ from django.shortcuts import get_object_or_404
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
+from drf_spectacular.utils import extend_schema_view
 
 from apps.utilities.pagination import LargeSetPagination
 from apps.foods.models import Food
@@ -15,8 +16,12 @@ from apps.categories.serializers import CategoryListSerializer
 from .models import Restaurant
 from .serializers import RestaurantSerializer
 from .permissions import IsBusinessOrReadOnly
+from .schemas import (
+    restaurant_list_schema, restaurant_detail_schema,
+    restaurant_categories_schema, restaurant_foods_schema)
 
 
+@extend_schema_view(**restaurant_list_schema)
 class RestaurantListView(APIView):
     """APIView to list and create restaurants."""
     permission_classes = [IsBusinessOrReadOnly]
@@ -64,6 +69,7 @@ class RestaurantListView(APIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
+@extend_schema_view(**restaurant_detail_schema)
 class RestaurantDetailView(APIView):
     """APIView to retrieve, update, and delete a restaurant."""
     serializer_class = RestaurantSerializer
@@ -98,6 +104,7 @@ class RestaurantDetailView(APIView):
         return Response(status=status.HTTP_204_NO_CONTENT)
 
 
+@extend_schema_view(**restaurant_categories_schema)
 class RestaurantCategoriesView(APIView):
     permission_classes = [IsBusinessOrReadOnly]
     serializer_class = CategoryListSerializer
@@ -116,6 +123,7 @@ class RestaurantCategoriesView(APIView):
         )
 
 
+@extend_schema_view(**restaurant_foods_schema)
 class RestaurantFoodsView(APIView):
     permission_classes = [IsBusinessOrReadOnly]
     serializer_class = FoodMiniSerializer

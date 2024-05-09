@@ -8,11 +8,20 @@ from .views import (
 
 
 urlpatterns = [
-    path("api/v1/restaurants/", RestaurantListView.as_view()),
-    path("api/v1/restaurants/<uuid:restaurant_id>/",
-         RestaurantDetailView.as_view()),
-    path("api/v1/restaurants/<uuid:restaurant_id>/categories/",
-         RestaurantCategoriesView.as_view()),
-    path("api/v1/restaurants/<uuid:restaurant_id>/foods/",
-         RestaurantFoodsView.as_view()),
+    path(
+        "api/v1/restaurants/",
+        RestaurantListView.as_view()
+    ),
+    path(
+        "api/v1/restaurants/<uuid:restaurant_id>/",
+        RestaurantDetailView.as_view()
+    ),
+    path(
+        "api/v1/restaurants/<uuid:restaurant_id>/categories/",
+        RestaurantCategoriesView.as_view()
+    ),
+    path(
+        "api/v1/restaurants/<uuid:restaurant_id>/foods/",
+        RestaurantFoodsView.as_view()
+    ),
 ]
