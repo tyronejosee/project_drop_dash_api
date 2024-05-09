@@ -22,6 +22,10 @@ class OrderManager(models.Manager):
         """Get orders by status"""
         return self.get_available().filter(status=status)
 
+    def get_by_user(self, user):
+        """Get orders by status"""
+        return self.get_available().filter(user=user)
+
 
 class OrderItemManager(models.Manager):
     """Manager for OrderItem Model."""

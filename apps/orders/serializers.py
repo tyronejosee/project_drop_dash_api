@@ -15,22 +15,15 @@ class UUIDField(ReadOnlyField):
         return str(value)
 
 
-class OrderSerializer(ModelSerializer):
-    """Serializer for Order model."""
-    user = UUIDField()
-    transaction = UUIDField(read_only=True)
-    comune = StringRelatedField()
-    region = StringRelatedField()
-    status = ChoiceField(choices=OrderStatus.choices)
-    payment_method = ChoiceField(choices=PaymentMethod.choices)
+class OrderWriteSerializer(ModelSerializer):
+    """Serializer for Order model (Create/update)."""
 
     class Meta:
-        """Meta definition for RestaurantSerializer."""
         model = Order
         fields = [
             "id",
             "transaction",
-            "user",
+            "restaurant",
             "address",
             "comune",
             "region",
@@ -39,6 +32,7 @@ class OrderSerializer(ModelSerializer):
             "status",
             "payment_method"
         ]
+        read_only_fields = ["user", "transaction", "status"]
 
     def validate_status(self, value):
         """Validate that status is one of the choices."""
@@ -53,9 +47,33 @@ class OrderSerializer(ModelSerializer):
         return value
 
 
+class OrderReadSerializer(ModelSerializer):
+    """Serializer for Order model (Read/retrieve)."""
+    user = UUIDField()
+    transaction = UUIDField(read_only=True)
+    comune = StringRelatedField()
+    region = StringRelatedField()
+    status = ChoiceField(choices=OrderStatus.choices)
+    payment_method = ChoiceField(choices=PaymentMethod.choices)
+
+    class Meta:
+        model = Order
+        fields = [
+            "id",
+            "transaction",
+            "user",
+            "address",
+            "comune",
+            "region",
+            "phone",
+            "note",
+            "status",
+            "payment_method"
+        ]
+
+
 class OrderItemSerializer(ModelSerializer):
     """Serializer for OrderItem model."""
-    food = FoodMiniSerializer()
 
     class Meta:
         """Meta definition for OrderItemSerializer."""
@@ -68,3 +86,9 @@ class OrderItemSerializer(ModelSerializer):
             "price",
             "subtotal"
         ]
+
+    def to_representation(self, instance):
+        # Overridden method to include serializers for foreign keys
+        data = super().to_representation(instance)
+        data["food"] = FoodMiniSerializer(instance.food).data
+        return data
