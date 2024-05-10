@@ -8,26 +8,25 @@ from rest_framework.response import Response
 from rest_framework import status
 from drf_spectacular.utils import extend_schema_view
 
+from apps.users.permissions import IsAdministrator, IsBusiness
 from apps.utilities.pagination import LargeSetPagination
 from apps.foods.models import Food
 from apps.foods.serializers import FoodMiniSerializer
-from apps.categories.models import Category
-from apps.categories.serializers import CategoryListSerializer
-from .models import Restaurant
-from .serializers import RestaurantSerializer
-from .permissions import IsBusinessOrReadOnly
+from .models import Restaurant, Category
+from .serializers import (
+    RestaurantSerializer, CategorySerializer, CategoryListSerializer)
 from .schemas import (
     restaurant_list_schema, restaurant_detail_schema,
-    restaurant_categories_schema, restaurant_foods_schema)
+    restaurant_categories_schema, restaurant_foods_schema,
+    category_list_schema, category_detail_schema)
 
 
 @extend_schema_view(**restaurant_list_schema)
 class RestaurantListView(APIView):
     """APIView to list and create restaurants."""
-    permission_classes = [IsBusinessOrReadOnly]
+    permission_classes = [IsAdministrator]
     serializer_class = RestaurantSerializer
-    cache_key = "restaurant"
-    cache_timeout = 7200  # 2 hours
+    cache_key = "restaurant_list"
 
     def get(self, request):
         # Get a list of restaurants
@@ -44,7 +43,7 @@ class RestaurantListView(APIView):
             # Fetches the data from the database and serializes it
             paginated_data = paginator.paginate_queryset(restaurants, request)
             # Set cache
-            cache.set(self.cache_key, paginated_data, self.cache_timeout)
+            cache.set(self.cache_key, paginated_data, 7200)
             serializer = self.serializer_class(paginated_data, many=True)
             return paginator.get_paginated_response(serializer.data)
 
@@ -73,7 +72,7 @@ class RestaurantListView(APIView):
 class RestaurantDetailView(APIView):
     """APIView to retrieve, update, and delete a restaurant."""
     serializer_class = RestaurantSerializer
-    permission_classes = [IsBusinessOrReadOnly]
+    permission_classes = [IsAdministrator]
 
     def get_object(self, restaurant_id):
         # Get a restaurant instance by id
@@ -106,7 +105,7 @@ class RestaurantDetailView(APIView):
 
 @extend_schema_view(**restaurant_categories_schema)
 class RestaurantCategoriesView(APIView):
-    permission_classes = [IsBusinessOrReadOnly]
+    permission_classes = [IsAdministrator]
     serializer_class = CategoryListSerializer
 
     def get(self, request, restaurant_id, format=None):
@@ -125,7 +124,7 @@ class RestaurantCategoriesView(APIView):
 
 @extend_schema_view(**restaurant_foods_schema)
 class RestaurantFoodsView(APIView):
-    permission_classes = [IsBusinessOrReadOnly]
+    permission_classes = [IsAdministrator]
     serializer_class = FoodMiniSerializer
 
     def get(self, request, restaurant_id, format=None):
@@ -141,3 +140,86 @@ class RestaurantFoodsView(APIView):
             {"detail": "No foods available."},
             status=status.HTTP_404_NOT_FOUND
         )
+
+
+@extend_schema_view(**category_list_schema)
+class CategoryList(APIView):
+    """APIView to list and create categories."""
+    permission_classes = [IsAdministrator]
+    serializer_class = CategorySerializer
+    cache_key = "category_list"
+
+    def get_permissions(self):
+        if self.request.method == "POST":
+            return [IsBusiness()]
+        return super().get_permissions()
+
+    def get(self, request, format=None):
+        # Get a list of categories
+        paginator = LargeSetPagination()
+        cached_data = cache.get(self.cache_key)
+
+        if cached_data is None:
+            categories = Category.objects.get_all()
+            # TODO: Fix query only restaurant
+            if not categories.exists():
+                return Response(
+                    {"details": "No categories available."},
+                    status=status.HTTP_404_NOT_FOUND
+                )
+            # Fetches the data from the database and serializes it
+            paginated_data = paginator.paginate_queryset(categories, request)
+            serializer = self.serializer_class(paginated_data, many=True)
+            # Set cache
+            cache.set(self.cache_key, serializer.data, 7200)
+        else:
+            # Retrieve the cached data and serialize it
+            paginated_cached_data = paginator.paginate_queryset(
+                cached_data, request)
+            serializer = self.serializer_class(
+                paginated_cached_data, many=True)
+
+        return paginator.get_paginated_response(serializer.data)
+
+    def post(self, request, format=None):
+        # Create a new category
+        serializer = self.serializer_class(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            # Invalidate cache
+            cache.delete(self.cache_key)
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+@extend_schema_view(**category_detail_schema)
+class CategoryDetailView(APIView):
+    """APIView to retrieve, update, and delete a category."""
+    permission_classes = [IsBusiness]
+    serializer_class = CategorySerializer
+
+    def get_object(self, category_id):
+        # Get a category instance by id
+        return get_object_or_404(Category, pk=category_id)
+
+    def get(self, request, category_id):
+        # Get details of a category
+        category = self.get_object(category_id)
+        serializer = self.serializer_class(category)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+    def put(self, request, category_id, format=None):
+        # Update a category
+        category = self.get_object(category_id)
+        serializer = self.serializer_class(category, data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        return Response(serializer.error, status=status.HTTP_400_BAD_REQUEST)
+
+    def delete(self, request, category_id):
+        # Delete a category
+        category = self.get_object(category_id)
+        category.available = False  # Logical deletion
+        category.save()
+        return Response(status=status.HTTP_204_NO_CONTENT)

@@ -25,3 +25,12 @@ urlpatterns = [
         RestaurantFoodsView.as_view()
     ),
 ]
+
+# path(
+#     "api/v1/categories/",
+#     CategoryList.as_view()
+# ),
+# path(
+#     "api/v1/categories/<uuid:category_id>/",
+#     CategoryDetail.as_view()
+# )

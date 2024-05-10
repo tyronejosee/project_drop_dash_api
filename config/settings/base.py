@@ -22,7 +22,6 @@ BASE_APPS = [
 ]
 
 PROJECT_APPS = [
-    "apps.categories",
     "apps.restaurants",
     "apps.drivers",
     "apps.users",

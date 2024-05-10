@@ -17,3 +17,16 @@ class RestaurantManager(models.Manager):
     def get_unavailable(self):
         """Get all unavailable restaurants"""
         return self.get_queryset().filter(available=False)
+
+
+class CategoryManager(models.Manager):
+    """Manager for Category model."""
+
+    def get_queryset(self):
+        # Default queryset
+        return super().get_queryset()
+
+    def get_all(self):
+        """Return default queryset."""
+        return self.get_queryset().filter(
+            available=True).prefetch_related("restaurant")

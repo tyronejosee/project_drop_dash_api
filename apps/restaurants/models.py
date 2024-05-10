@@ -7,7 +7,7 @@ from django.utils.text import slugify
 from apps.utilities.paths import image_path, image_banner_path
 from apps.utilities.validators import validate_phone
 from apps.utilities.models import BaseModel
-from .managers import RestaurantManager
+from .managers import RestaurantManager, CategoryManager
 from .choices import Specialty
 
 User = settings.AUTH_USER_MODEL
@@ -40,14 +40,31 @@ class Restaurant(BaseModel):
     class Meta:
         """Meta definition for Restaurant."""
         ordering = ["pk"]
-        verbose_name = "Restaurant"
-        verbose_name_plural = "Restaurants"
+        verbose_name = "restaurant"
+        verbose_name_plural = "restaurants"
 
     def __str__(self):
-        return self.name
+        return str(self.name)
 
     def save(self, *args, **kwargs):
         """Override the save method to automatically generate the slug."""
         if not self.slug:
             self.slug = slugify(self.name)
         super().save(*args, **kwargs)
+
+
+class Category(BaseModel):
+    """Model definition for Category."""
+    name = models.CharField(max_length=100)
+    restaurant = models.ForeignKey(
+        Restaurant, on_delete=models.CASCADE, related_name="categories"
+    )
+
+    objects = CategoryManager()
+
+    class Meta:
+        verbose_name = "category"
+        verbose_name_plural = "categories"
+
+    def __str__(self):
+        return str(self.name)

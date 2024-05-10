@@ -5,7 +5,7 @@ from django.db import models
 from apps.utilities.models import BaseModel
 from apps.utilities.paths import image_path
 from apps.restaurants.models import Restaurant
-from apps.categories.models import Category
+from apps.restaurants.models import Category
 from .managers import FoodManager
 
 
