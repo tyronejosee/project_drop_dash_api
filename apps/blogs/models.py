@@ -5,6 +5,7 @@ from django.db import models
 from django.utils.text import slugify
 
 from apps.utilities.models import BaseModel
+from .managers import PostManager
 
 User = settings.AUTH_USER_MODEL
 
@@ -36,6 +37,8 @@ class Post(BaseModel):
     content = models.TextField()
     tags = models.ManyToManyField(Tag)
     author = models.ForeignKey(User, on_delete=models.CASCADE)
+
+    objects = PostManager()
 
     class Meta:
         ordering = ["pk"]
