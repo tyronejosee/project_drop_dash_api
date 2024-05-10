@@ -1,13 +1,17 @@
 """Views for Blogs App."""
 
+from django.db import transaction
 from django.core.cache import cache
+from django.shortcuts import get_object_or_404
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
+from rest_framework.permissions import AllowAny
 
 from apps.users.permissions import IsAdministrator
 from .models import Post, Tag
-from .serializers import PostWriteSerializer, PostReadSerializer, TagReadSerializer
+from .serializers import (
+    PostWriteSerializer, PostReadSerializer, TagReadSerializer)
 
 
 class PostListView(APIView):
@@ -25,7 +29,7 @@ class PostListView(APIView):
             return [IsAdministrator()]
         return super().get_permissions()
 
-    def get(self, request, format=None):
+    def get(self, request):
         # Get a list of posts
         posts_cache = cache.get(self.cache_key)
 
@@ -43,7 +47,8 @@ class PostListView(APIView):
         serializer = PostReadSerializer(posts_cache, many=True)
         return Response(serializer.data)
 
-    def post(self, request, format=None):
+    @transaction.atomic
+    def post(self, request):
         # Create a new post
         serializer = PostWriteSerializer(data=request.data)
         if serializer.is_valid():
@@ -53,10 +58,48 @@ class PostListView(APIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
+class PostDetailView(APIView):
+    """View to retrieve, update, and delete a post."""
+    permission_classes = [IsAdministrator]
+
+    def get_permissions(self):
+        if self.request.method == "GET":
+            return [AllowAny()]
+        return super().get_permissions()
+
+    def get_object(self, post_id):
+        # Get a post instance by id
+        return get_object_or_404(Post, pk=post_id)
+
+    def get(self, request, post_id):
+        # Get details of a post
+        post = self.get_object(post_id)
+        serializer = PostReadSerializer(post)
+        return Response(serializer.data)
+
+    @transaction.atomic
+    def patch(self, request, post_id):
+        # Partial update a post
+        post = self.get_object(post_id)
+        serializer = PostWriteSerializer(post, data=request.data, partial=True)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    @transaction.atomic
+    def delete(self, request, post_id):
+        # Delete a post
+        post = self.get_object(post_id)
+        post.available = False  # Logical deletion
+        post.save()
+        return Response(status=status.HTTP_204_NO_CONTENT)
+
+
 class TagListView(APIView):
     """Pending."""
 
-    def get(self, request, format=None):
+    def get(self, request):
         #
         tags = Tag.objects.filter(available=True)
         if tags.exists():

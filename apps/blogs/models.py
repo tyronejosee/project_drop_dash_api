@@ -35,6 +35,7 @@ class Post(BaseModel):
     title = models.CharField(max_length=100)
     slug = models.SlugField(unique=True, blank=True, null=True)
     content = models.TextField()
+    is_featured = models.BooleanField(default=False)
     tags = models.ManyToManyField(Tag)
     author = models.ForeignKey(User, on_delete=models.CASCADE)
 

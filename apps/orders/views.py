@@ -166,7 +166,7 @@ class OrderItemDetailView(APIView):
 
     Endpoints:
     - GET api/v1/orders/{id}/items/{id}/
-    - PUT api/v1/orders/{id}/items/{id}/
+    - PATCH api/v1/orders/{id}/items/{id}/
     - DELETE api/v1/orders/{id}/items/{id}/
     """
     permission_classes = [IsClient]
