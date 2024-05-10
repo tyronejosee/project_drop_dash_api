@@ -59,7 +59,14 @@ class PostListView(APIView):
 
 
 class PostDetailView(APIView):
-    """View to retrieve, update, and delete a post."""
+    """
+    View to retrieve, update, and delete a post.
+
+    Endpoints:
+    - GET api/v1/posts/{id}/
+    - PATCH api/v1/posts/{id}/
+    - DELETE api/v1/posts/{id}/
+    """
     permission_classes = [IsAdministrator]
 
     def get_permissions(self):
@@ -94,6 +101,62 @@ class PostDetailView(APIView):
         post.available = False  # Logical deletion
         post.save()
         return Response(status=status.HTTP_204_NO_CONTENT)
+
+
+class FeaturedPostsView(APIView):
+    """
+    View to list featured posts.
+
+    Endpoints:
+    - GET api/v1/posts/featured/
+    """
+    cache_key = "featured_posts"
+
+    def get(self, request):
+        # Get a list of featured posts
+        featured_posts_cache = cache.get(self.cache_key)
+
+        if featured_posts_cache is None:
+            featured_posts = Post.objects.get_featured()
+            if not featured_posts.exists():
+                return Response(
+                    {"details": "No featured posts available."},
+                    status=status.HTTP_404_NOT_FOUND
+                )
+            cache.set(self.cache_key, featured_posts, 7200)  # Set cache
+            serializer = PostReadSerializer(featured_posts, many=True)
+            return Response(serializer.data)
+
+        serializer = PostReadSerializer(featured_posts_cache, many=True)
+        return Response(serializer.data)
+
+
+class RecentPostsView(APIView):
+    """
+    View to list recent posts.
+
+    Endpoints:
+    - GET api/v1/posts/recent/
+    """
+    cache_key = "recent_posts"
+
+    def get(self, request):
+        # Get a list of recent posts (7 days)
+        recent_posts_cache = cache.get(self.cache_key)
+
+        if recent_posts_cache is None:
+            recent_posts = Post.objects.get_recent()
+            if not recent_posts.exists():
+                return Response(
+                    {"details": "No recent posts available."},
+                    status=status.HTTP_404_NOT_FOUND
+                )
+            cache.set(self.cache_key, recent_posts, 7200)  # Set cache
+            serializer = PostReadSerializer(recent_posts, many=True)
+            return Response(serializer.data)
+
+        serializer = PostReadSerializer(recent_posts_cache, many=True)
+        return Response(serializer.data)
 
 
 class TagListView(APIView):
