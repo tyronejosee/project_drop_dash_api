@@ -7,8 +7,8 @@ from rest_framework.response import Response
 from rest_framework import status
 from drf_spectacular.utils import extend_schema_view
 
+from apps.users.permissions import IsBusiness
 from apps.utilities.pagination import LargeSetPagination
-from apps.restaurants.permissions import IsBusinessOrReadOnly
 from .models import Food
 from .serializers import FoodSerializer
 from .schemas import food_list_schema, food_detail_schema
@@ -17,10 +17,9 @@ from .schemas import food_list_schema, food_detail_schema
 @extend_schema_view(**food_list_schema)
 class FoodListView(APIView):
     """APIView to list and create foods."""
-    permission_classes = [IsBusinessOrReadOnly]
+    permission_classes = [IsBusiness]
     serializer_class = FoodSerializer
-    cache_key = "food"
-    cache_timeout = 7200  # 2 hours
+    cache_key = "food_list"
 
     def get(self, request, format=None):
         # Get a list of foods
@@ -38,7 +37,7 @@ class FoodListView(APIView):
             paginated_data = paginator.paginate_queryset(foods, request)
             serializer = self.serializer_class(paginated_data, many=True)
             # Set cache
-            cache.set(self.cache_key, serializer.data, self.cache_timeout)
+            cache.set(self.cache_key, serializer.data, 7200)
         else:
             # Retrieve the cached data and serialize it
             paginated_cached_data = paginator.paginate_queryset(
@@ -62,7 +61,7 @@ class FoodListView(APIView):
 @extend_schema_view(**food_detail_schema)
 class FoodDetailView(APIView):
     """APIView to retrieve, update, and delete a food."""
-    permission_classes = [IsBusinessOrReadOnly]
+    permission_classes = [IsBusiness]
     serializer_class = FoodSerializer
 
     def get_object(self, food_id):
@@ -96,7 +95,7 @@ class FoodDetailView(APIView):
 
 class FoodDeletedListView(APIView):
     """APIView to list deleted foods."""
-    permission_classes = [IsBusinessOrReadOnly]
+    permission_classes = [IsBusiness]
     serializer_class = FoodSerializer
     cache_key = "food_deleted"
     cache_timeout = 7200  # 2 hours

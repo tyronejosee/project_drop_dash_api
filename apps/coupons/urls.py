@@ -5,8 +5,7 @@ from django.urls import path
 from .views import (
     FixedCouponListView, FixedCouponDetailView,
     PercentageCouponListView, PercentageCouponDetailView,
-    CheckCouponView
-)
+    CheckCouponView)
 
 
 urlpatterns = [

@@ -7,7 +7,7 @@ from .models import Tag, Post
 
 @admin.register(Tag)
 class TagAdmin(admin.ModelAdmin):
-    """Admin config for Tag model."""
+    """Admin for Tag model."""
     search_fields = ["name",]
     list_display = ["name", "available",]
     list_editable = ["available"]
@@ -19,7 +19,7 @@ class TagAdmin(admin.ModelAdmin):
 
 @admin.register(Post)
 class PostAdmin(admin.ModelAdmin):
-    """Admin config for Post model."""
+    """Admin for Post model."""
     search_fields = ["title", "author"]
     list_display = ["title", "author", "available",]
     list_editable = ["available"]

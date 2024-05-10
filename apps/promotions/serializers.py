@@ -10,7 +10,6 @@ class PromotionSerializer(ModelSerializer):
     """Serializer for Promotion model."""
 
     class Meta:
-        """Meta definition for PromotionSerializer."""
         model = Promotion
         fields = [
             "id",

@@ -31,7 +31,6 @@ class Promotion(BaseModel):
     # TODO: Add max file size, min and max dimensions validators
 
     class Meta:
-        """Meta definition for FixedCoupon."""
         ordering = ["pk"]
         verbose_name = "promotion"
         verbose_name_plural = "promotions"

@@ -7,14 +7,13 @@ from .choices import Status
 
 
 class DriverReadSerializer(serializers.ModelSerializer):
-    """Serializer for reading Driver instances."""
+    """Serializer for Driver model (List/retrieve)"""
     user = serializers.UUIDField(read_only=True)
     comune = serializers.StringRelatedField()
     region = serializers.StringRelatedField()
     status = serializers.ChoiceField(choices=Status.choices)
 
     class Meta:
-        """Meta definition for DriverReadSerializer."""
         model = Driver
         fields = [
             "id",
@@ -30,10 +29,9 @@ class DriverReadSerializer(serializers.ModelSerializer):
 
 
 class DriverWriteSerializer(serializers.ModelSerializer):
-    """Serializer for creating/updating Driver instances."""
+    """Serializer for Driver model (Create/update)."""
 
     class Meta:
-        """Meta definition for DriverWriteSerializer."""
         model = Driver
         fields = [
             "address",

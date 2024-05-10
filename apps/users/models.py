@@ -28,12 +28,12 @@ class User(AbstractBaseUser, PermissionsMixin):
     REQUIRED_FIELDS = ["username"]
 
     class Meta:
-        """Meta definition for User model."""
+        ordering = ["pk"]
         verbose_name = "user"
         verbose_name_plural = "users"
 
     def __str__(self):
-        return self.username
+        return str(self.username)
 
     @property
     def full_name(self):

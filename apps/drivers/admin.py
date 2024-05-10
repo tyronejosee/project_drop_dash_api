@@ -7,7 +7,7 @@ from .models import Driver
 
 @admin.register(Driver)
 class DriverAdmin(admin.ModelAdmin):
-    """Admin config for Driver model."""
+    """Admin for Driver model."""
     search_fields = ["user",]
     list_display = ["user", "created_at", "updated_at", "available"]
     list_editable = ["available"]

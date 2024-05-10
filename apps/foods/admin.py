@@ -7,7 +7,7 @@ from .models import Food
 
 @admin.register(Food)
 class FoodAdmin(admin.ModelAdmin):
-    """Admin config for Driver model."""
+    """Admin for Driver model."""
     search_fields = ["name", "restaurant"]
     list_display = [
         "name", "restaurant", "available", "created_at", "updated_at"

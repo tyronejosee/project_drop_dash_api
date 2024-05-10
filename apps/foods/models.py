@@ -28,10 +28,9 @@ class Food(BaseModel):
     objects = FoodManager()
 
     class Meta:
-        """Meta definition for Food."""
         ordering = ["pk"]
         verbose_name = "Food"
         verbose_name_plural = "Foods"
 
     def __str__(self):
-        return self.name
+        return str(self.name)

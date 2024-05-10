@@ -1,4 +1,4 @@
-"""Schemas for Promotions App."""
+"""Schemas for Coupons App."""
 
 from drf_spectacular.utils import extend_schema
 

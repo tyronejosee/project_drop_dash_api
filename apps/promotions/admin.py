@@ -7,7 +7,7 @@ from .models import Promotion
 
 @admin.register(Promotion)
 class PromotionAdmin(admin.ModelAdmin):
-    """Admin config for Order model."""
+    """Admin for Order model."""
     search_fields = ["name", "user"]
     list_display = ["name", "created_at", "available"]
     list_filter = ["available",]

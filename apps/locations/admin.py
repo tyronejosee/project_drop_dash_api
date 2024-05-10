@@ -7,7 +7,7 @@ from .models import Region, Comune
 
 @admin.register(Region)
 class RegionAdmin(admin.ModelAdmin):
-    """Admin config for Region model."""
+    """Admin for Region model."""
     search_fields = ["name",]
     list_display = ["name", "number", "available", "created_at",]
     list_per_page = 25
@@ -17,7 +17,7 @@ class RegionAdmin(admin.ModelAdmin):
 
 @admin.register(Comune)
 class ComuneAdmin(admin.ModelAdmin):
-    """Admin config for Comune model."""
+    """Admin for Comune model."""
     search_fields = ["name", "region"]
     list_display = ["name", "region", "available", "created_at", "updated_at"]
     list_per_page = 25

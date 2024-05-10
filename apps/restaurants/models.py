@@ -38,7 +38,6 @@ class Restaurant(BaseModel):
     objects = RestaurantManager()
 
     class Meta:
-        """Meta definition for Restaurant."""
         ordering = ["pk"]
         verbose_name = "restaurant"
         verbose_name_plural = "restaurants"
@@ -47,7 +46,7 @@ class Restaurant(BaseModel):
         return str(self.name)
 
     def save(self, *args, **kwargs):
-        """Override the save method to automatically generate the slug."""
+        # Override the save method to generate the slug
         if not self.slug:
             self.slug = slugify(self.name)
         super().save(*args, **kwargs)
@@ -63,6 +62,7 @@ class Category(BaseModel):
     objects = CategoryManager()
 
     class Meta:
+        ordering = ["pk"]
         verbose_name = "category"
         verbose_name_plural = "categories"
 

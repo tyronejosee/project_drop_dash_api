@@ -48,7 +48,7 @@ class OrderWriteSerializer(ModelSerializer):
 
 
 class OrderReadSerializer(ModelSerializer):
-    """Serializer for Order model (Read/retrieve)."""
+    """Serializer for Order model (List/retrieve)."""
     user = UUIDField()
     transaction = UUIDField(read_only=True)
     comune = StringRelatedField()
@@ -76,7 +76,6 @@ class OrderItemSerializer(ModelSerializer):
     """Serializer for OrderItem model."""
 
     class Meta:
-        """Meta definition for OrderItemSerializer."""
         model = OrderItem
         fields = [
             "id",

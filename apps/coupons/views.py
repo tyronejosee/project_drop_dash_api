@@ -12,21 +12,18 @@ from drf_spectacular.utils import extend_schema_view
 from apps.utilities.pagination import MediumSetPagination
 from .models import FixedCoupon, PercentageCoupon
 from .serializers import (
-    FixedCouponSerializer, PercentageCouponSerializer
-)
+    FixedCouponSerializer, PercentageCouponSerializer)
 from .schemas import (
     fixed_coupon_list_schema, fixed_coupon_detail_schema,
-    percentage_coupon_list_schema, percentage_coupon_detail_schema
-)
+    percentage_coupon_list_schema, percentage_coupon_detail_schema)
 
 
 @extend_schema_view(**fixed_coupon_list_schema)
 class FixedCouponListView(APIView):
-    """APIView for listing and creating fixed coupons."""
+    """View for listing and creating fixed coupons."""
     permission_classes = [IsAuthenticated]
     serializer_class = FixedCouponSerializer
-    cache_key = "fixed_coupon"
-    cache_timeout = 7200  # 2 hours
+    cache_key = "fixed_coupon_list"
 
     def get(self, request, format=None):
         # Get a list of available fixed coupons
@@ -44,7 +41,7 @@ class FixedCouponListView(APIView):
             paginated_data = paginator.paginate_queryset(coupons, request)
             serializer = self.serializer_class(paginated_data, many=True)
             # Set cache
-            cache.set(self.cache_key, serializer.data, self.cache_timeout)
+            cache.set(self.cache_key, serializer.data, 7200)
         else:
             # Retrieve the cached data and serialize it
             paginated_cached_data = paginator.paginate_queryset(
@@ -70,7 +67,7 @@ class FixedCouponListView(APIView):
 
 @extend_schema_view(**fixed_coupon_detail_schema)
 class FixedCouponDetailView(APIView):
-    """APIView to retrieve, update, and delete a fixed coupon."""
+    """View to retrieve, update, and delete a fixed coupon."""
     permission_classes = [IsAuthenticated]
     serializer_class = FixedCouponSerializer
 
@@ -105,7 +102,7 @@ class FixedCouponDetailView(APIView):
 
 @extend_schema_view(**percentage_coupon_list_schema)
 class PercentageCouponListView(APIView):
-    """APIView for listing and creating percentage coupons."""
+    """View for listing and creating percentage coupons."""
     permission_classes = [IsAuthenticated]
     serializer_class = PercentageCouponSerializer
     cache_key = "percentage_coupon"
@@ -151,7 +148,7 @@ class PercentageCouponListView(APIView):
 
 @extend_schema_view(**percentage_coupon_detail_schema)
 class PercentageCouponDetailView(APIView):
-    """APIView to retrieve, update, and delete a percentage coupon."""
+    """View to retrieve, update, and delete a percentage coupon."""
     permission_classes = [IsAuthenticated]
     serializer_class = PercentageCouponSerializer
 
@@ -186,7 +183,7 @@ class PercentageCouponDetailView(APIView):
 
 
 class CheckCouponView(APIView):
-    """APIView to check the validity of a coupon code."""
+    """View to check the validity of a coupon code."""
 
     def get(self, request, format=None):
         """Handle GET requests to check the validity of a coupon code."""

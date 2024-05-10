@@ -7,7 +7,7 @@ from .models import FixedCoupon, PercentageCoupon
 
 @admin.register(FixedCoupon)
 class FixedCouponAdmin(admin.ModelAdmin):
-    """Admin config for FixedCoupon model."""
+    """Admin for FixedCoupon model."""
     search_fields = ["name", "code"]
     list_display = ["name", "discount_price", "is_active"]
     list_per_page = 25
@@ -17,7 +17,7 @@ class FixedCouponAdmin(admin.ModelAdmin):
 
 @admin.register(PercentageCoupon)
 class PercentageCouponAdmin(admin.ModelAdmin):
-    """Admin config for PercentageCoupon model."""
+    """Admin for PercentageCoupon model."""
     search_fields = ["name", "code"]
     list_display = ["name", "discount_percentage", "is_active"]
     list_per_page = 25

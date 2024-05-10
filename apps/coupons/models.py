@@ -22,13 +22,12 @@ class FixedCoupon(BaseModel):
     objects = FixedCouponManager()
 
     class Meta:
-        """Meta definition for FixedCoupon."""
         ordering = ["pk"]
         verbose_name = "fixed coupon"
         verbose_name_plural = "fixed coupons"
 
     def __str__(self):
-        return self.name
+        return str(self.name)
 
     def save(self, *args, **kwargs):
         # Generate a code based on the pk
@@ -51,13 +50,12 @@ class PercentageCoupon(BaseModel):
     objects = PercentageCouponManager()
 
     class Meta:
-        """Meta definition for PercentageCoupon."""
         ordering = ["pk"]
         verbose_name = "percentage coupon"
         verbose_name_plural = "percentage coupons"
 
     def __str__(self):
-        return self.name
+        return str(self.name)
 
     def save(self, *args, **kwargs):
         # Generate a code based on the pk

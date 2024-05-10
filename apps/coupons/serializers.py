@@ -9,7 +9,6 @@ class FixedCouponSerializer(ModelSerializer):
     """Serializer for FixedCoupon model."""
 
     class Meta:
-        """Meta definition for FixedCouponSerializer."""
         model = FixedCoupon
         fields = [
             "id",
@@ -27,7 +26,6 @@ class PercentageCouponSerializer(ModelSerializer):
     """Serializer for PercentageCoupon model."""
 
     class Meta:
-        """Meta definition for PercentageCouponSerializer."""
         model = PercentageCoupon
         fields = [
             "id",

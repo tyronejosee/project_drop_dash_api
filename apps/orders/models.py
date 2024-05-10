@@ -34,7 +34,6 @@ class Order(BaseModel):
     objects = OrderManager()
 
     class Meta:
-        """Meta definition for Order model."""
         ordering = ["pk"]
         verbose_name = "order"
         verbose_name_plural = "orders"
@@ -68,10 +67,9 @@ class OrderItem(BaseModel):
     objects = OrderItemManager()
 
     class Meta:
-        """Meta definition for OrderItem model."""
         ordering = ["pk"]
-        verbose_name = "order_item"
-        verbose_name_plural = "order_items"
+        verbose_name = "order item"
+        verbose_name_plural = "order items"
 
     def __str__(self):
         return f"{self.order} - {self.food}"

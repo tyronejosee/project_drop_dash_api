@@ -12,7 +12,6 @@ class FoodSerializer(serializers.ModelSerializer):
     category = serializers.StringRelatedField()
 
     class Meta:
-        """Meta definition for FoodSerializer."""
         model = Food
         fields = [
             "id",
@@ -35,7 +34,6 @@ class FoodMiniSerializer(serializers.ModelSerializer):
     """Serializer for Food model (Mini)."""
 
     class Meta:
-        """Meta definition for FoodSerializer."""
         model = Food
         fields = [
             "id",

@@ -9,7 +9,6 @@ class RestaurantSerializer(serializers.ModelSerializer):
     """Serializer for Restaurant model."""
 
     class Meta:
-        """Meta definition for RestaurantSerializer."""
         model = Restaurant
         fields = [
             "id",
@@ -38,7 +37,6 @@ class RestaurantListSerializer(serializers.ModelSerializer):
     """Serializer for Restaurant model (List only)."""
 
     class Meta:
-        """Meta definition for RestaurantSerializer."""
         model = Restaurant
         fields = [
             "id",
@@ -53,7 +51,6 @@ class CategorySerializer(serializers.ModelSerializer):
     restaurant = serializers.StringRelatedField()
 
     class Meta:
-        """Meta definition for CategorySerializer."""
         model = Category
         fields = [
             "id",
@@ -68,7 +65,6 @@ class CategoryListSerializer(serializers.ModelSerializer):
     """Serializer for Category model (List only)."""
 
     class Meta:
-        """Meta definition for CategoryListSerializer."""
         model = Category
         fields = [
             "id",

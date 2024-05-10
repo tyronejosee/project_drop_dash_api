@@ -12,5 +12,4 @@ class BaseModel(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
 
     class Meta:
-        """Meta definition for BaseModel."""
         abstract = True

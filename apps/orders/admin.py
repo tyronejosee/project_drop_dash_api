@@ -7,7 +7,7 @@ from .models import Order, OrderItem
 
 @admin.register(Order)
 class OrderAdmin(admin.ModelAdmin):
-    """Admin config for Order model."""
+    """Admin for Order model."""
     search_fields = ["transaction", "user"]
     list_display = ["transaction", "available", "created_at", "status"]
     list_filter = ["status",]
@@ -19,7 +19,7 @@ class OrderAdmin(admin.ModelAdmin):
 
 @admin.register(OrderItem)
 class OrderItemAdmin(admin.ModelAdmin):
-    """Admin config for OrderItem model."""
+    """Admin for OrderItem model."""
     search_fields = ["order", "food"]
     list_display = ["order", "food", "created_at", "available"]
     list_editable = ["available",]

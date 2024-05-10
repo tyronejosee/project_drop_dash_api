@@ -10,7 +10,6 @@ class UserSerializer(UserCreateSerializer):
     """Serializer for User model."""
 
     class Meta(UserCreateSerializer.Meta):
-        """Meta definition for UserSerializer."""
         model = User
         fields = [
             "id",

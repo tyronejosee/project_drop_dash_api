@@ -30,7 +30,6 @@ class Driver(BaseModel):
     objects = DriverManager()
 
     class Meta:
-        """Meta definition for Driver."""
         ordering = ["pk"]
         verbose_name = "Driver"
         verbose_name_plural = "Drivers"

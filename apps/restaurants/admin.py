@@ -7,7 +7,7 @@ from .models import Restaurant, Category
 
 @admin.register(Restaurant)
 class RestaurantAdmin(admin.ModelAdmin):
-    """Admin config for Restaurant model."""
+    """Admin for Restaurant model."""
     search_fields = ["name", "user"]
     list_display = ["name", "available",]
     list_editable = ["available"]
@@ -19,7 +19,7 @@ class RestaurantAdmin(admin.ModelAdmin):
 
 @admin.register(Category)
 class CategoryAdmin(admin.ModelAdmin):
-    """Admin config for Category model."""
+    """Admin for Category model."""
     search_fields = ["name", "restaurant"]
     list_display = ["name", "restaurant", "available",]
     list_per_page = 25

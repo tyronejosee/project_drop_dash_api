@@ -12,9 +12,9 @@ class Region(BaseModel):
     is_metropolitan = models.BooleanField(default=False)
 
     class Meta:
-        """Meta definition for Region."""
-        verbose_name = "Region"
-        verbose_name_plural = "Regions"
+        ordering = ["pk"]
+        verbose_name = "region"
+        verbose_name_plural = "regions"
 
     def __str__(self):
         return str(self.name)
@@ -26,9 +26,9 @@ class Comune(BaseModel):
     region = models.ForeignKey(Region, on_delete=models.CASCADE)
 
     class Meta:
-        """Meta definition for Comune."""
-        verbose_name = "Comune"
-        verbose_name_plural = "Comunes"
+        ordering = ["pk"]
+        verbose_name = "comune"
+        verbose_name_plural = "comunes"
         indexes = [
             models.Index(fields=['region']),
         ]
