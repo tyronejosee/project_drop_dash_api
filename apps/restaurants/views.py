@@ -9,11 +9,12 @@ from rest_framework import status
 from rest_framework.permissions import AllowAny
 from drf_spectacular.utils import extend_schema_view
 
-from apps.users.permissions import IsAdministrator, IsBusiness, IsClient
+from apps.users.permissions import IsBusiness, IsClient
 from apps.utilities.pagination import LargeSetPagination
 from .models import Restaurant, Category, Food
 from .serializers import (
-    RestaurantReadSerializer, RestaurantWriteSerializer, CategorySerializer,
+    RestaurantReadSerializer, RestaurantWriteSerializer,
+    CategoryReadSerializer, CategoryWriteSerializer,
     FoodReadSerializer, FoodWriteSerializer)
 from .schemas import (
     restaurant_list_schema, restaurant_detail_schema,
@@ -120,27 +121,24 @@ class RestaurantDetailView(APIView):
 
 
 @extend_schema_view(**category_list_schema)
-class CategoryList(APIView):
+class CategoryListView(APIView):
     """
     View to list and create categories.
+
+    Endpoints:
+    - GET api/v1/restaurants/{id}/categories/
+    - POST api/v1/restaurants/{id}/categories/
     """
-    permission_classes = [IsAdministrator]
-    serializer_class = CategorySerializer
+    permission_classes = [IsBusiness]
     cache_key = "category_list"
 
-    def get_permissions(self):
-        if self.request.method == "POST":
-            return [IsBusiness()]
-        return super().get_permissions()
-
-    def get(self, request, format=None):
+    def get(self, request, restaurant_id, format=None):
         # Get a list of categories
         paginator = LargeSetPagination()
         cached_data = cache.get(self.cache_key)
 
         if cached_data is None:
-            categories = Category.objects.get_all()
-            # TODO: Fix query only restaurant
+            categories = Category.objects.get_by_restaurant(restaurant_id)
             if not categories.exists():
                 return Response(
                     {"details": "No categories available."},
@@ -148,23 +146,24 @@ class CategoryList(APIView):
                 )
             # Fetches the data from the database and serializes it
             paginated_data = paginator.paginate_queryset(categories, request)
-            serializer = self.serializer_class(paginated_data, many=True)
+            serializer = CategoryReadSerializer(paginated_data, many=True)
             # Set cache
             cache.set(self.cache_key, serializer.data, 7200)
         else:
             # Retrieve the cached data and serialize it
             paginated_cached_data = paginator.paginate_queryset(
                 cached_data, request)
-            serializer = self.serializer_class(
+            serializer = CategoryReadSerializer(
                 paginated_cached_data, many=True)
 
         return paginator.get_paginated_response(serializer.data)
 
-    def post(self, request, format=None):
+    def post(self, request, restaurant_id, format=None):
         # Create a new category
-        serializer = self.serializer_class(data=request.data)
+        serializer = CategoryWriteSerializer(data=request.data)
         if serializer.is_valid():
-            serializer.save()
+            restaurant = get_object_or_404(Restaurant, id=restaurant_id)
+            serializer.save(restaurant=restaurant)
             # Invalidate cache
             cache.delete(self.cache_key)
             return Response(serializer.data, status=status.HTTP_201_CREATED)
@@ -175,30 +174,36 @@ class CategoryList(APIView):
 class CategoryDetailView(APIView):
     """
     View to retrieve, update, and delete a category.
+
+    Endpoints:
+    - GET api/v1/restaurants/{id}/categories/{id}/
+    - PUT api/v1/restaurants/{id}/categories/{id}/
+    - DELETE api/v1/restaurants/{id}/categories/{id}/
     """
     permission_classes = [IsBusiness]
-    serializer_class = CategorySerializer
 
     def get_object(self, category_id):
         # Get a category instance by id
         return get_object_or_404(Category, pk=category_id)
 
-    def get(self, request, category_id):
+    def get(self, request, restaurant_id, category_id):
         # Get details of a category
         category = self.get_object(category_id)
-        serializer = self.serializer_class(category)
+        serializer = CategoryReadSerializer(category)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
-    def put(self, request, category_id, format=None):
+    def patch(self, request, restaurant_id, category_id):
         # Update a category
         category = self.get_object(category_id)
-        serializer = self.serializer_class(category, data=request.data)
+        serializer = CategoryWriteSerializer(
+            category, data=request.data, partial=True
+        )
         if serializer.is_valid():
             serializer.save()
-            return Response(serializer.data, status=status.HTTP_200_OK)
+            return Response(serializer.data)
         return Response(serializer.error, status=status.HTTP_400_BAD_REQUEST)
 
-    def delete(self, request, category_id):
+    def delete(self, request, restaurant_id, category_id):
         # Delete a category
         category = self.get_object(category_id)
         category.available = False  # Logical deletion
@@ -277,7 +282,7 @@ class FoodDetailView(APIView):
         # Get a food instance by id
         return get_object_or_404(Food, pk=food_id)
 
-    def get(self, request, food_id, format=None):
+    def get(self, request, food_id, restaurant_id, format=None):
         # Get details of a food
         food = self.get_object(food_id)
         serializer = FoodReadSerializer(food)

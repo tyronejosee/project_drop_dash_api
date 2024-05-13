@@ -26,10 +26,14 @@ class CategoryManager(models.Manager):
         # Default queryset
         return super().get_queryset()
 
-    def get_all(self):
-        """Return default queryset."""
-        return self.get_queryset().filter(
-            available=True).prefetch_related("restaurant")
+    def get_available(self):
+        """Get all available categories."""
+        return self.get_queryset().filter(available=True)
+
+    def get_by_restaurant(self, restaurant):
+        """Get all categories for a specific restaurant."""
+        return self.get_available().filter(
+            restaurant=restaurant)
 
 
 class FoodManager(models.Manager):
@@ -40,7 +44,7 @@ class FoodManager(models.Manager):
         return super().get_queryset()
 
     def get_available(self):
-        """Get all available foods"""
+        """Get all available foods."""
         return self.get_queryset().filter(available=True)
 
     def get_foods_by_restaurant(self, restaurant):

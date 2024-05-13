@@ -73,8 +73,8 @@ class RestaurantListSerializer(serializers.ModelSerializer):
         ]
 
 
-class CategorySerializer(serializers.ModelSerializer):
-    """Serializer for Category model."""
+class CategoryReadSerializer(serializers.ModelSerializer):
+    """Serializer for Category model (List/retrieve)."""
     restaurant = serializers.StringRelatedField()
 
     class Meta:
@@ -85,6 +85,16 @@ class CategorySerializer(serializers.ModelSerializer):
             "restaurant",
             "created_at",
             "updated_at"
+        ]
+
+
+class CategoryWriteSerializer(serializers.ModelSerializer):
+    """Serializer for Category model (Create/update)."""
+
+    class Meta:
+        model = Category
+        fields = [
+            "name"
         ]
 
 
