@@ -2,7 +2,7 @@
 
 from django.contrib import admin
 
-from .models import Restaurant, Category
+from .models import Restaurant, Category, Food
 
 
 @admin.register(Restaurant)
@@ -25,3 +25,18 @@ class CategoryAdmin(admin.ModelAdmin):
     list_per_page = 25
     readonly_fields = ["pk", "created_at", "updated_at",]
     ordering = ["name",]
+
+
+@admin.register(Food)
+class FoodAdmin(admin.ModelAdmin):
+    """Admin for Driver model."""
+    search_fields = ["name", "restaurant"]
+    list_display = [
+        "name", "restaurant", "available", "created_at", "updated_at"
+    ]
+    list_editable = ["available",]
+    list_filter = ["restaurant", "category"]
+    list_per_page = 25
+    readonly_fields = ["pk", "sale_price", "created_at", "updated_at",]
+    autocomplete_fields = ["restaurant", "category"]
+    ordering = ["pk",]

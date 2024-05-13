@@ -4,7 +4,7 @@ from rest_framework.serializers import (
     ModelSerializer, ReadOnlyField, StringRelatedField,
     ChoiceField, ValidationError)
 
-from apps.foods.serializers import FoodMiniSerializer
+from apps.restaurants.serializers import FoodMiniSerializer
 from apps.payments.choices import PaymentMethod
 from .models import Order, OrderItem
 from .choices import OrderStatus

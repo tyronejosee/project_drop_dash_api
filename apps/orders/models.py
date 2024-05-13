@@ -5,7 +5,7 @@ from django.contrib.auth import get_user_model
 
 from apps.utilities.models import BaseModel
 from apps.restaurants.models import Restaurant
-from apps.foods.models import Food
+from apps.restaurants.models import Food
 from apps.locations.models import Comune, Region
 from apps.payments.choices import PaymentMethod
 from .managers import OrderManager, OrderItemManager

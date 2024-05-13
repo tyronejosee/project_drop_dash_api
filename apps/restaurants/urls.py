@@ -3,8 +3,8 @@
 from django.urls import path
 
 from .views import (
-    RestaurantListView, RestaurantDetailView,
-    RestaurantCategoriesView, RestaurantFoodsView,)
+    RestaurantListView, RestaurantDetailView, RestaurantCategoriesView,
+    RestaurantFoodsView, FoodListView, FoodDetailView, FoodDeletedListView)
 
 
 urlpatterns = [
@@ -24,13 +24,16 @@ urlpatterns = [
         "api/v1/restaurants/<uuid:restaurant_id>/foods/",
         RestaurantFoodsView.as_view()
     ),
+    path(
+        "api/v1/foods/",
+        FoodListView.as_view()
+    ),
+    path(
+        "api/v1/foods/<uuid:food_id>/",
+        FoodDetailView.as_view()
+    ),
+    path(
+        "api/v1/foods/deleted/",
+        FoodDeletedListView.as_view()
+    ),
 ]
-
-# path(
-#     "api/v1/categories/",
-#     CategoryList.as_view()
-# ),
-# path(
-#     "api/v1/categories/<uuid:category_id>/",
-#     CategoryDetail.as_view()
-# )

@@ -25,7 +25,6 @@ PROJECT_APPS = [
     "apps.restaurants",
     "apps.drivers",
     "apps.users",
-    "apps.foods",
     "apps.coupons",
     "apps.orders",
     "apps.payments",
@@ -201,7 +200,4 @@ SPECTACULAR_SETTINGS = {
     "SCHEMA_PATH_PREFIX": r"^/api/v\d+",
     "SCHEMA_PATH_PREFIX_TRIM": True,
     "SERVE_INCLUDE_SCHEMA": False,
-    # "SWAGGER_UI_DIST": "SIDECAR",
-    # "SWAGGER_UI_FAVICON_HREF": "SIDECAR",
-    # "REDOC_DIST": "SIDECAR",
 }
