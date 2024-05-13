@@ -9,9 +9,13 @@ class IsClient(BasePermission):
     """
 
     def has_permission(self, request, view):
-        is_user_authenticated = request.user and request.user.is_authenticated
+        is_user_authenticated = (
+            request.user
+            and request.user.is_authenticated
+        )
         is_user_valid = (
-            request.user.is_active and request.user.role == "client"
+            request.user.is_active
+            and request.user.role in ["client", "administrator"]
         )
         return bool(is_user_authenticated and is_user_valid)
 
@@ -22,9 +26,13 @@ class IsDriver(BasePermission):
     """
 
     def has_permission(self, request, view):
-        is_user_authenticated = request.user and request.user.is_authenticated
+        is_user_authenticated = (
+            request.user
+            and request.user.is_authenticated
+        )
         is_user_valid = (
-            request.user.is_active and request.user.role == "driver"
+            request.user.is_active
+            and request.user.role in ["driver", "administrator"]
         )
         return bool(is_user_authenticated and is_user_valid)
 
@@ -35,9 +43,13 @@ class IsBusiness(BasePermission):
     """
 
     def has_permission(self, request, view):
-        is_user_authenticated = request.user and request.user.is_authenticated
+        is_user_authenticated = (
+            request.user
+            and request.user.is_authenticated
+        )
         is_user_valid = (
-            request.user.is_active and request.user.role == "business"
+            request.user.is_active
+            and request.user.role in ["business", "administrator"]
         )
         return bool(is_user_authenticated and is_user_valid)
 
@@ -48,9 +60,13 @@ class IsSupport(BasePermission):
     """
 
     def has_permission(self, request, view):
-        is_user_authenticated = request.user and request.user.is_authenticated
+        is_user_authenticated = (
+            request.user
+            and request.user.is_authenticated
+        )
         is_user_valid = (
-            request.user.is_active and request.user.role == "support"
+            request.user.is_active
+            and request.user.role in ["support", "administrator"]
         )
         return bool(is_user_authenticated and is_user_valid)
 
@@ -61,8 +77,12 @@ class IsAdministrator(BasePermission):
     """
 
     def has_permission(self, request, view):
-        is_user_authenticated = request.user and request.user.is_authenticated
+        is_user_authenticated = (
+            request.user and
+            request.user.is_authenticated
+        )
         is_user_valid = (
-            request.user.is_active and request.user.role == "administrator"
+            request.user.is_active
+            and request.user.role == "administrator"
         )
         return bool(is_user_authenticated and is_user_valid)
