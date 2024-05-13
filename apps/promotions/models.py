@@ -4,6 +4,7 @@ from django.conf import settings
 from django.db import models
 from django.core.validators import FileExtensionValidator
 
+from apps.utilities.validators import FileSizeValidator
 from apps.utilities.models import BaseModel
 from apps.utilities.paths import image_path
 from .managers import PromotionManager
@@ -23,12 +24,11 @@ class Promotion(BaseModel):
         upload_to=image_path,
         validators=[
             FileExtensionValidator(allowed_extensions=["webp"]),
+            FileSizeValidator(limit_mb=2)
         ]
     )
 
     objects = PromotionManager()
-
-    # TODO: Add max file size, min and max dimensions validators
 
     class Meta:
         ordering = ["pk"]

@@ -6,8 +6,9 @@ from apps.users.serializers import UserSerializer
 from .models import Promotion
 
 
-class PromotionSerializer(ModelSerializer):
-    """Serializer for Promotion model."""
+class PromotionReadSerializer(ModelSerializer):
+    """Serializer for Promotion model (List/retrieve)."""
+    creator = UserSerializer()
 
     class Meta:
         model = Promotion
@@ -22,8 +23,17 @@ class PromotionSerializer(ModelSerializer):
             "image"
         ]
 
-    def to_representation(self, instance):
-        # Overridden method to include serializers for foreign keys
-        data = super().to_representation(instance)
-        data["creator"] = UserSerializer(instance.creator).data
-        return data
+
+class PromotionWriteSerializer(ModelSerializer):
+    """Serializer for Promotion model (Create/update)."""
+
+    class Meta:
+        model = Promotion
+        fields = [
+            "name",
+            "conditions",
+            "start_date",
+            "end_date",
+            "is_active",
+            "image"
+        ]

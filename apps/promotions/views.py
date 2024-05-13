@@ -11,17 +11,21 @@ from drf_spectacular.utils import extend_schema_view
 from apps.users.permissions import IsAdministrator
 from apps.utilities.pagination import MediumSetPagination
 from .models import Promotion
-from .serializers import PromotionSerializer
+from .serializers import PromotionReadSerializer, PromotionWriteSerializer
 from .schemas import promotion_list_schema, promotion_detail_schema
 
 
 @extend_schema_view(**promotion_list_schema)
 class PromotionListView(APIView):
-    """View to list and create promotions."""
+    """
+    View to list and create promotions.
+
+    Endpoints:
+    - GET api/v1/promotions/
+    - POST api/v1/promotions/
+    """
     permission_classes = [IsAdministrator]
-    serializer_class = PromotionSerializer
     cache_key = "promotion_list"
-    cache_timeout = 7200  # 2 hours
 
     def get(self, request):
         # Get a list of promotions
@@ -37,15 +41,14 @@ class PromotionListView(APIView):
                 )
             # Fetches the data from the database and serializes it
             paginated_data = paginator.paginate_queryset(promotions, request)
-            # Set cache
-            cache.set(self.cache_key, paginated_data, self.cache_timeout)
-            serializer = self.serializer_class(paginated_data, many=True)
+            cache.set(self.cache_key, paginated_data, 7200)  # 2 hrs.
+            serializer = PromotionReadSerializer(paginated_data, many=True)
             return paginator.get_paginated_response(serializer.data)
         else:
             # Retrieve the cached data and serialize it
             paginated_cached_data = paginator.paginate_queryset(
                 cached_data, request)
-            serializer = self.serializer_class(
+            serializer = PromotionReadSerializer(
                 paginated_cached_data, many=True)
 
         return paginator.get_paginated_response(serializer.data)
@@ -53,7 +56,7 @@ class PromotionListView(APIView):
     @transaction.atomic
     def post(self, request):
         # Create a new promotion
-        serializer = self.serializer_class(data=request.data)
+        serializer = PromotionWriteSerializer(data=request.data)
         if serializer.is_valid():
             serializer.save()
             # Invalidate cache
@@ -66,7 +69,6 @@ class PromotionListView(APIView):
 class PromotionDetailView(APIView):
     """View to retrieve and delete a promotion."""
     permission_classes = [IsAdministrator]
-    serializer_class = PromotionSerializer
 
     def get_object(self, promotion_id):
         # Get a promotion instance by id
@@ -75,7 +77,7 @@ class PromotionDetailView(APIView):
     def get(self, promotion_id):
         # Get details of a promotion
         promotion = self.get_object(promotion_id)
-        serializer = self.serializer_class(promotion)
+        serializer = PromotionReadSerializer(promotion)
         return Response(serializer.data)
 
     @transaction.atomic
