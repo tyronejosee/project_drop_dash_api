@@ -36,24 +36,6 @@ restaurant_detail_schema = {
 }
 
 
-restaurant_categories_schema = {
-    "get": extend_schema(
-        operation_id="restaurant_categories_retrieve",
-        summary="Get categories from restaurant",
-        description="pending",
-    )
-}
-
-
-restaurant_foods_schema = {
-    "get": extend_schema(
-        operation_id="restaurant_foods_retrieve",
-        summary="Get foods from restaurant",
-        description="pending",
-    )
-}
-
-
 category_list_schema = {
     "get": extend_schema(
         operation_id="category_list_retrieve",

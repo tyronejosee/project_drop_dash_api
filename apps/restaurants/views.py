@@ -6,27 +6,37 @@ from django.shortcuts import get_object_or_404
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
+from rest_framework.permissions import AllowAny
 from drf_spectacular.utils import extend_schema_view
 
-from apps.users.permissions import IsAdministrator, IsBusiness
+from apps.users.permissions import IsAdministrator, IsBusiness, IsClient
 from apps.utilities.pagination import LargeSetPagination
 from .models import Restaurant, Category, Food
 from .serializers import (
-    RestaurantSerializer, CategorySerializer, CategoryListSerializer,
-    FoodSerializer, FoodMiniSerializer)
+    RestaurantReadSerializer, RestaurantWriteSerializer, CategorySerializer,
+    FoodReadSerializer, FoodWriteSerializer)
 from .schemas import (
     restaurant_list_schema, restaurant_detail_schema,
-    restaurant_categories_schema, restaurant_foods_schema,
     category_list_schema, category_detail_schema,
     food_list_schema, food_detail_schema)
 
 
 @extend_schema_view(**restaurant_list_schema)
 class RestaurantListView(APIView):
-    """APIView to list and create restaurants."""
-    permission_classes = [IsAdministrator]
-    serializer_class = RestaurantSerializer
+    """
+    View to list and create restaurants.
+
+    Endpoints:
+    - GET api/v1/restaurants/
+    - POST api/v1/restaurants/
+    """
+    permission_classes = [AllowAny]
     cache_key = "restaurant_list"
+
+    def get_permissions(self):
+        if self.request.method == "POST":
+            return [IsClient()]
+        return super().get_permissions()
 
     def get(self, request):
         # Get a list of restaurants
@@ -44,14 +54,14 @@ class RestaurantListView(APIView):
             paginated_data = paginator.paginate_queryset(restaurants, request)
             # Set cache
             cache.set(self.cache_key, paginated_data, 7200)
-            serializer = self.serializer_class(paginated_data, many=True)
+            serializer = RestaurantReadSerializer(paginated_data, many=True)
             return paginator.get_paginated_response(serializer.data)
 
         else:
             # Retrieve the cached data and serialize it
             paginated_cached_data = paginator.paginate_queryset(
                 cached_data, request)
-            serializer = self.serializer_class(
+            serializer = RestaurantReadSerializer(
                 paginated_cached_data, many=True)
 
         return paginator.get_paginated_response(serializer.data)
@@ -59,9 +69,9 @@ class RestaurantListView(APIView):
     @transaction.atomic
     def post(self, request):
         # Create a new restaurant
-        serializer = self.serializer_class(data=request.data)
+        serializer = RestaurantWriteSerializer(data=request.data)
         if serializer.is_valid():
-            serializer.save()
+            serializer.save(user=request.user)
             # Invalidate cache
             cache.delete(self.cache_key)
             return Response(serializer.data, status=status.HTTP_201_CREATED)
@@ -70,9 +80,15 @@ class RestaurantListView(APIView):
 
 @extend_schema_view(**restaurant_detail_schema)
 class RestaurantDetailView(APIView):
-    """APIView to retrieve, update, and delete a restaurant."""
-    serializer_class = RestaurantSerializer
-    permission_classes = [IsAdministrator]
+    """
+    View to retrieve, update, and delete a restaurant.
+
+    Endpoints:
+    - GET api/v1/restaurants/{id}/
+    - PUT api/v1/restaurants/{id}/
+    - DELETE api/v1/restaurants/{id}/
+    """
+    permission_classes = [IsBusiness]
 
     def get_object(self, restaurant_id):
         # Get a restaurant instance by id
@@ -81,14 +97,14 @@ class RestaurantDetailView(APIView):
     def get(self, request, restaurant_id):
         # Get details of a restaurant
         restaurant = self.get_object(restaurant_id)
-        serializer = self.serializer_class(restaurant)
+        serializer = RestaurantReadSerializer(restaurant)
         return Response(serializer.data)
 
     @transaction.atomic
     def put(self, request, restaurant_id):
         # Update a restaurant
         restaurant = self.get_object(restaurant_id)
-        serializer = self.serializer_class(restaurant, data=request.data)
+        serializer = RestaurantWriteSerializer(restaurant, data=request.data)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data)
@@ -103,48 +119,11 @@ class RestaurantDetailView(APIView):
         return Response(status=status.HTTP_204_NO_CONTENT)
 
 
-@extend_schema_view(**restaurant_categories_schema)
-class RestaurantCategoriesView(APIView):
-    permission_classes = [IsAdministrator]
-    serializer_class = CategoryListSerializer
-
-    def get(self, request, restaurant_id, format=None):
-        # Get a list of categories associated with a restaurant
-        categories = Category.objects.filter(restaurant=restaurant_id)
-        if categories.exists():
-            paginator = LargeSetPagination()
-            paginated_data = paginator.paginate_queryset(categories, request)
-            serializer = self.serializer_class(paginated_data, many=True)
-            return paginator.get_paginated_response(serializer.data)
-        return Response(
-            {"detail": "No categories available."},
-            status=status.HTTP_404_NOT_FOUND
-        )
-
-
-@extend_schema_view(**restaurant_foods_schema)
-class RestaurantFoodsView(APIView):
-    permission_classes = [IsAdministrator]
-    serializer_class = FoodMiniSerializer
-
-    def get(self, request, restaurant_id, format=None):
-        # Get a list of foods for a restaurant
-        restaurant = get_object_or_404(Restaurant, id=restaurant_id)
-        foods = Food.objects.get_foods_by_restaurant(restaurant)
-        if foods.exists():
-            paginator = LargeSetPagination()
-            paginated_data = paginator.paginate_queryset(foods, request)
-            serializer = self.serializer_class(paginated_data, many=True)
-            return paginator.get_paginated_response(serializer.data)
-        return Response(
-            {"detail": "No foods available."},
-            status=status.HTTP_404_NOT_FOUND
-        )
-
-
 @extend_schema_view(**category_list_schema)
 class CategoryList(APIView):
-    """APIView to list and create categories."""
+    """
+    View to list and create categories.
+    """
     permission_classes = [IsAdministrator]
     serializer_class = CategorySerializer
     cache_key = "category_list"
@@ -194,7 +173,9 @@ class CategoryList(APIView):
 
 @extend_schema_view(**category_detail_schema)
 class CategoryDetailView(APIView):
-    """APIView to retrieve, update, and delete a category."""
+    """
+    View to retrieve, update, and delete a category.
+    """
     permission_classes = [IsBusiness]
     serializer_class = CategorySerializer
 
@@ -227,18 +208,28 @@ class CategoryDetailView(APIView):
 
 @extend_schema_view(**food_list_schema)
 class FoodListView(APIView):
-    """APIView to list and create foods."""
-    permission_classes = [IsBusiness]
-    serializer_class = FoodSerializer
+    """
+    View to list and create foods.
+
+    Endpoints:
+    - GET api/v1/restaurants/{id}/foods/
+    - POST api/v1/restaurants/{id}/foods/
+    """
+    permission_classes = [AllowAny]
     cache_key = "food_list"
 
-    def get(self, request, format=None):
+    def get_permissions(self):
+        if self.request.method == "POST":
+            return [IsBusiness()]
+        return super().get_permissions()
+
+    def get(self, request, restaurant_id, format=None):
         # Get a list of foods
         paginator = LargeSetPagination()
         cached_data = cache.get(self.cache_key)
 
         if cached_data is None:
-            foods = Food.objects.get_available()
+            foods = Food.objects.get_foods_by_restaurant(restaurant_id)
             if not foods.exists():
                 return Response(
                     {"detail": "No Foods Available."},
@@ -246,23 +237,24 @@ class FoodListView(APIView):
                 )
             # Fetches the data from the database and serializes it
             paginated_data = paginator.paginate_queryset(foods, request)
-            serializer = self.serializer_class(paginated_data, many=True)
+            serializer = FoodReadSerializer(paginated_data, many=True)
             # Set cache
             cache.set(self.cache_key, serializer.data, 7200)
         else:
             # Retrieve the cached data and serialize it
             paginated_cached_data = paginator.paginate_queryset(
                 cached_data, request)
-            serializer = self.serializer_class(
+            serializer = FoodReadSerializer(
                 paginated_cached_data, many=True)
 
         return paginator.get_paginated_response(serializer.data)
 
-    def post(self, request, format=None):
+    def post(self, request, restaurant_id, format=None):
         # Create a new food
-        serializer = self.serializer_class(data=request.data)
+        serializer = FoodWriteSerializer(data=request.data)
         if serializer.is_valid():
-            serializer.save()
+            restaurant = get_object_or_404(Restaurant, id=restaurant_id)
+            serializer.save(restaurant=restaurant)
             # Invalidate cache
             cache.delete(self.cache_key)
             return Response(serializer.data, status=status.HTTP_201_CREATED)
@@ -271,9 +263,15 @@ class FoodListView(APIView):
 
 @extend_schema_view(**food_detail_schema)
 class FoodDetailView(APIView):
-    """APIView to retrieve, update, and delete a food."""
+    """
+    View to retrieve, update, and delete a food.
+
+    Endpoints:
+    - GET api/v1/restaurants/{id}/foods/{id}/
+    - PUT api/v1/restaurants/{id}/foods/{id}/
+    - DELETE api/v1/restaurants/{id}/foods/{id}/
+    """
     permission_classes = [IsBusiness]
-    serializer_class = FoodSerializer
 
     def get_object(self, food_id):
         # Get a food instance by id
@@ -282,13 +280,13 @@ class FoodDetailView(APIView):
     def get(self, request, food_id, format=None):
         # Get details of a food
         food = self.get_object(food_id)
-        serializer = self.serializer_class(food)
+        serializer = FoodReadSerializer(food)
         return Response(serializer.data)
 
     def put(self, request, food_id, format=None):
         # Update a food
         food = self.get_object(food_id)
-        serializer = self.serializer_class(food, data=request.data)
+        serializer = FoodWriteSerializer(food, data=request.data)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data)
@@ -305,11 +303,14 @@ class FoodDetailView(APIView):
 
 
 class FoodDeletedListView(APIView):
-    """APIView to list deleted foods."""
+    """
+    View to list deleted foods.
+
+    Endpoints:
+    - GET api/v1/restaurants/{id}/foods/deleted/
+    """
     permission_classes = [IsBusiness]
-    serializer_class = FoodSerializer
-    cache_key = "food_deleted"
-    cache_timeout = 7200  # 2 hours
+    cache_key = "food_deleted_list"
 
     def get(self, request, format=None):
         # Get a list of deleted foods
@@ -325,14 +326,14 @@ class FoodDeletedListView(APIView):
                 )
             # Fetches the data from the database and serializes it
             paginated_data = paginator.paginate_queryset(foods, request)
-            serializer = self.serializer_class(paginated_data, many=True)
+            serializer = FoodReadSerializer(paginated_data, many=True)
             # Set cache
-            cache.set(self.cache_key, serializer.data, self.cache_timeout)
+            cache.set(self.cache_key, serializer.data, 7200)
         else:
             # Retrieve the cached data and serialize it
             paginated_cached_data = paginator.paginate_queryset(
                 cached_data, request)
-            serializer = self.serializer_class(
+            serializer = FoodReadSerializer(
                 paginated_cached_data, many=True)
 
         return paginator.get_paginated_response(serializer.data)

@@ -5,8 +5,8 @@ from rest_framework import serializers
 from .models import Restaurant, Category, Food
 
 
-class RestaurantSerializer(serializers.ModelSerializer):
-    """Serializer for Restaurant model."""
+class RestaurantReadSerializer(serializers.ModelSerializer):
+    """Serializer for Restaurant model (List/retrieve)."""
 
     class Meta:
         model = Restaurant
@@ -19,6 +19,8 @@ class RestaurantSerializer(serializers.ModelSerializer):
             "description",
             "specialty",
             "address",
+            "comune",
+            "region",
             "opening_time",
             "closing_time",
             "phone",
@@ -30,6 +32,31 @@ class RestaurantSerializer(serializers.ModelSerializer):
             "is_open",
             "created_at",
             "updated_at"
+        ]
+
+
+class RestaurantWriteSerializer(serializers.ModelSerializer):
+    """Serializer for Restaurant model."""
+
+    class Meta:
+        model = Restaurant
+        fields = [
+            "name",
+            "image",
+            "banner",
+            "description",
+            "specialty",
+            "address",
+            "comune",
+            "region",
+            "opening_time",
+            "closing_time",
+            "phone",
+            "email",
+            "facebook",
+            "instagram",
+            "tiktok",
+            "website"
         ]
 
 
@@ -61,20 +88,8 @@ class CategorySerializer(serializers.ModelSerializer):
         ]
 
 
-class CategoryListSerializer(serializers.ModelSerializer):
-    """Serializer for Category model (List only)."""
-
-    class Meta:
-        model = Category
-        fields = [
-            "id",
-            "name"
-        ]
-
-
-class FoodSerializer(serializers.ModelSerializer):
-    """Serializer for Food model."""
-    restaurant = RestaurantListSerializer(read_only=True)
+class FoodReadSerializer(serializers.ModelSerializer):
+    """Serializer for Food model (List/retrieve)."""
     category = serializers.StringRelatedField()
 
     class Meta:
@@ -85,7 +100,6 @@ class FoodSerializer(serializers.ModelSerializer):
             "price",
             "sale_price",
             "image",
-            "restaurant",
             "category",
             "is_vegetarian",
             "is_gluten_free",
@@ -94,6 +108,26 @@ class FoodSerializer(serializers.ModelSerializer):
             "created_at",
             "updated_at"
         ]
+
+
+class FoodWriteSerializer(serializers.ModelSerializer):
+    """Serializer for Food model (Create/update)."""
+
+    class Meta:
+        model = Food
+        fields = [
+            "name",
+            "price",
+            "image",
+            "category",
+            "is_vegetarian",
+            "is_gluten_free",
+            "is_spicy",
+            "is_featured"
+        ]
+        extra_kwargs = {
+            "category": {"required": True}
+        }
 
 
 class FoodMiniSerializer(serializers.ModelSerializer):

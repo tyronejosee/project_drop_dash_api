@@ -7,6 +7,7 @@ from django.utils.text import slugify
 from apps.utilities.models import BaseModel
 from apps.utilities.paths import image_path, image_banner_path
 from apps.utilities.validators import validate_phone
+from apps.locations.models import Comune, Region
 from .managers import RestaurantManager, CategoryManager, FoodManager
 from .choices import Specialty
 
@@ -24,6 +25,8 @@ class Restaurant(BaseModel):
     specialty = models.CharField(
         max_length=20, choices=Specialty.choices, default=Specialty.VARIED)
     address = models.CharField(max_length=255)
+    comune = models.ForeignKey(Comune, on_delete=models.PROTECT)
+    region = models.ForeignKey(Region, on_delete=models.PROTECT)
     opening_time = models.TimeField()
     closing_time = models.TimeField()
     phone = models.CharField(

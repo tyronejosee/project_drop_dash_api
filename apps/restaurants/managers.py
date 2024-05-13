@@ -43,10 +43,6 @@ class FoodManager(models.Manager):
         """Get all available foods"""
         return self.get_queryset().filter(available=True)
 
-    def get_unavailable(self):
-        """Get all unavailable foods"""
-        return self.get_queryset().filter(available=False)
-
     def get_foods_by_restaurant(self, restaurant):
         """Get all foods for a specific restaurant."""
         return self.get_available().filter(
