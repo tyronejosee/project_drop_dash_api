@@ -34,6 +34,12 @@ class RestaurantReadSerializer(serializers.ModelSerializer):
             "updated_at"
         ]
 
+    def to_representation(self, instance):
+        data = super().to_representation(instance)
+        data["image"] = data.get("image", "") or ""
+        data["banner"] = data.get("banner", "") or ""
+        return data
+
 
 class RestaurantWriteSerializer(serializers.ModelSerializer):
     """Serializer for Restaurant model."""
@@ -71,6 +77,11 @@ class RestaurantListSerializer(serializers.ModelSerializer):
             "slug",
             "image",
         ]
+
+    def to_representation(self, instance):
+        data = super().to_representation(instance)
+        data["image"] = data.get("image", "") or ""
+        return data
 
 
 class CategoryReadSerializer(serializers.ModelSerializer):
@@ -118,6 +129,11 @@ class FoodReadSerializer(serializers.ModelSerializer):
             "created_at",
             "updated_at"
         ]
+
+    def to_representation(self, instance):
+        data = super().to_representation(instance)
+        data["image"] = data.get("image", "") or ""
+        return data
 
 
 class FoodWriteSerializer(serializers.ModelSerializer):

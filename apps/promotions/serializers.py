@@ -26,8 +26,7 @@ class PromotionReadSerializer(ModelSerializer):
 
     def to_representation(self, instance):
         data = super().to_representation(instance)
-        if data["image"] is None:
-            data["image"] = ""
+        data["image"] = data.get("image", "") or ""
         return data
 
 

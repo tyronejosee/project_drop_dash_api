@@ -1,9 +1,9 @@
 """Managers for Restaurants App."""
 
-from django.db import models
+from django.db.models import Manager, Q
 
 
-class RestaurantManager(models.Manager):
+class RestaurantManager(Manager):
     """Manager for Restaurant model."""
 
     def get_queryset(self):
@@ -18,8 +18,16 @@ class RestaurantManager(models.Manager):
         """Get all unavailable restaurants"""
         return self.get_queryset().filter(available=False)
 
+    def get_search(self, search_term):
+        """Filter restaurants based on a search term."""
+        return self.get_available().filter(
+            Q(name__icontains=search_term)
+            | Q(description__icontains=search_term)
+            | Q(address__icontains=search_term)
+        )
 
-class CategoryManager(models.Manager):
+
+class CategoryManager(Manager):
     """Manager for Category model."""
 
     def get_queryset(self):
@@ -36,7 +44,7 @@ class CategoryManager(models.Manager):
             restaurant=restaurant)
 
 
-class FoodManager(models.Manager):
+class FoodManager(Manager):
     """Manager for Food Model."""
 
     def get_queryset(self):

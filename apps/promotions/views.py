@@ -1,5 +1,6 @@
 """Views for Promotions App."""
 
+import re
 from django.db import transaction
 from django.core.cache import cache
 from django.shortcuts import get_object_or_404
@@ -39,19 +40,15 @@ class PromotionListView(APIView):
                     {"detail": "No promotions available."},
                     status=status.HTTP_404_NOT_FOUND
                 )
-            # Fetches the data from the database and serializes it
-            paginated_data = paginator.paginate_queryset(promotions, request)
-            cache.set(self.cache_key, paginated_data, 7200)  # 2 hrs.
-            serializer = PromotionReadSerializer(paginated_data, many=True)
-            return paginator.get_paginated_response(serializer.data)
-        else:
-            # Retrieve the cached data and serialize it
-            paginated_cached_data = paginator.paginate_queryset(
-                cached_data, request)
-            serializer = PromotionReadSerializer(
-                paginated_cached_data, many=True)
 
-        return paginator.get_paginated_response(serializer.data)
+            page = paginator.paginate_queryset(promotions, request)
+            serializer = PromotionReadSerializer(page, many=True)
+            cache.set(self.cache_key, serializer.data, 7200)  # 2 hrs.
+            return paginator.get_paginated_response(serializer.data)
+
+        page = paginator.paginate_queryset(cached_data, request)
+        serializer = PromotionReadSerializer(page, many=True)
+        return paginator.get_paginated_response(cached_data)
 
     @transaction.atomic
     def post(self, request):
@@ -99,20 +96,21 @@ class PromotionSearchView(APIView):
     View to search promotions.
 
     Endpoints:
-    - GET api/v1/promotions/?query=<search_query>
+    - GET api/v1/promotions/?q=<search_term>
     """
 
     def get(self, request):
         # Search for promotions for name and conditions fields
-        search_query = request.query_params.get("query", "")
+        search_term = request.query_params.get("q", "")
+        search_term = re.sub(r'[^\w\s\-\(\)\.,]', '', search_term).strip()
 
-        if not search_query:
+        if not search_term:
             return Response(
                 {"details": "No search query provided"},
                 status=status.HTTP_400_BAD_REQUEST
             )
 
-        promotions = Promotion.objects.get_search(search_query)
+        promotions = Promotion.objects.get_search(search_term)
 
         if not promotions.exists():
             return Response(

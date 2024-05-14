@@ -1,5 +1,6 @@
 """Views for Restaurants App."""
 
+import re
 from django.db import transaction
 from django.core.cache import cache
 from django.shortcuts import get_object_or_404
@@ -118,6 +119,37 @@ class RestaurantDetailView(APIView):
         restaurant.available = False  # Logical deletion
         restaurant.save()
         return Response(status=status.HTTP_204_NO_CONTENT)
+
+
+class RestaurantSearchView(APIView):
+    """
+    View to search restaurants.
+
+    Endpoints:
+    - GET api/v1/restaurants/search/?q=<search_term>
+    """
+
+    def get(self, request):
+        # Search for promotions for name and conditions fields
+        search_term = request.query_params.get("q", "")
+        search_term = re.sub(r'[^\w\s\-\(\)\.,]', '', search_term).strip()
+
+        if not search_term:
+            return Response(
+                {"details": "No search query provided"},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
+        restaurants = Restaurant.objects.get_search(search_term)
+
+        if not restaurants.exists():
+            return Response(
+                {"details": "No results found."},
+                status=status.HTTP_404_NOT_FOUND
+            )
+
+        serializer = RestaurantReadSerializer(restaurants, many=True)
+        return Response(serializer.data)
 
 
 @extend_schema_view(**category_list_schema)
