@@ -66,7 +66,13 @@ class PromotionListView(APIView):
 
 @extend_schema_view(**promotion_detail_schema)
 class PromotionDetailView(APIView):
-    """View to retrieve and delete a promotion."""
+    """
+    View to retrieve and delete a promotion.
+
+    Endpoints:
+    - GET api/v1/promotions/{id}/
+    - DELETE api/v1/promotions/{id}/
+    """
     permission_classes = [IsAdministrator]
 
     def get_object(self, promotion_id):
