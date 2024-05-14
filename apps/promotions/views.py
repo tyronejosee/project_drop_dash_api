@@ -92,3 +92,33 @@ class PromotionDetailView(APIView):
         promotion.available = False  # Logical deletion
         promotion.save()
         return Response(status=status.HTTP_204_NO_CONTENT)
+
+
+class PromotionSearchView(APIView):
+    """
+    View to search promotions.
+
+    Endpoints:
+    - GET api/v1/promotions/?query=<search_query>
+    """
+
+    def get(self, request):
+        # Search for promotions for name and conditions fields
+        search_query = request.query_params.get("query", "")
+
+        if not search_query:
+            return Response(
+                {"details": "No search query provided"},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
+        promotions = Promotion.objects.get_search(search_query)
+
+        if not promotions.exists():
+            return Response(
+                {"details": "No results found."},
+                status=status.HTTP_404_NOT_FOUND
+            )
+
+        serializer = PromotionReadSerializer(promotions, many=True)
+        return Response(serializer.data)

@@ -56,7 +56,7 @@ category_detail_schema = {
         summary="Get category",
         description="pending",
     ),
-    "put": extend_schema(
+    "patch": extend_schema(
         operation_id="category_detail_update",
         summary="Update category",
         description="pending",

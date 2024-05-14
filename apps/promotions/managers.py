@@ -1,6 +1,6 @@
 """Managers for Promotions App."""
 
-from django.db.models import Manager
+from django.db.models import Manager, Q
 
 
 class PromotionManager(Manager):
@@ -17,3 +17,10 @@ class PromotionManager(Manager):
     def get_unavailable(self):
         """Return a queryset of unavailable promotions."""
         return self.get_queryset().filter(available=False)
+
+    def get_search(self, search_query):
+        """Filter promotions based on a search query."""
+        return self.get_available().filter(
+            Q(name__icontains=search_query)
+            | Q(conditions__icontains=search_query)
+        )
