@@ -1,8 +1,8 @@
 """"Validators for Drivers App."""
 
-from datetime import date
+from datetime import date, datetime, timedelta
+from django.core.validators import BaseValidator, RegexValidator
 from django.core.exceptions import ValidationError
-from django.core.validators import RegexValidator
 from django.template.defaultfilters import filesizeformat
 from django.utils.deconstruct import deconstructible
 
@@ -27,6 +27,7 @@ def validate_birth_date(value):
 
 @deconstructible
 class FileSizeValidator:
+    """Pending."""
     message = "File size must be under %(limit)s. Current size is %(size)s."
     code = "invalid_size"
 
@@ -58,3 +59,30 @@ class FileSizeValidator:
             and self.message == other.message
             and self.code == other.code
         )
+
+
+class DateRangeValidator(BaseValidator):
+    """Validator that checks if the date is within a range of days."""
+    message = "Date must be within {days} days from the current date."
+    code = "invalid_date_range"
+
+    # TODO: Fix format date
+
+    def __init__(self, days=0, *args, **kwargs):
+        self.days = days
+
+    def compare(self, value, current_date_plus_days):
+        return value <= current_date_plus_days
+
+    def clean(self, x):
+        return x
+
+    def get_limit_value(self):
+        return datetime.now() + timedelta(days=self.days)
+
+    def __call__(self, value):
+        if isinstance(value, datetime.date):
+            value = datetime.combine(value, datetime.min.time())
+        if not self.compare(value, self.get_limit_value()):
+            raise ValidationError(
+                self.message.format(days=self.days), code=self.code)
