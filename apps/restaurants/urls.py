@@ -21,7 +21,8 @@ urlpatterns = [
         CategoryListView.as_view()
     ),
     path(
-        "api/v1/restaurants/<uuid:restaurant_id>/categories/<uuid:category_id>/",
+        ("api/v1/restaurants/<uuid:restaurant_id>/"
+         "categories/<uuid:category_id>/"),
         CategoryDetailView.as_view()
     ),
     path(
