@@ -58,9 +58,8 @@ class PromotionListView(APIView):
         # Create a new promotion
         serializer = PromotionWriteSerializer(data=request.data)
         if serializer.is_valid():
-            serializer.save()
-            # Invalidate cache
-            cache.delete(self.cache_key)
+            serializer.save(creator=request.user)
+            cache.delete(self.cache_key)  # Invalidate cache
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
@@ -74,14 +73,14 @@ class PromotionDetailView(APIView):
         # Get a promotion instance by id
         return get_object_or_404(Promotion, pk=promotion_id)
 
-    def get(self, promotion_id):
+    def get(self, request, promotion_id):
         # Get details of a promotion
         promotion = self.get_object(promotion_id)
         serializer = PromotionReadSerializer(promotion)
         return Response(serializer.data)
 
     @transaction.atomic
-    def delete(self, promotion_id):
+    def delete(self, request, promotion_id):
         # Delete a promotion
         promotion = self.get_object(promotion_id)
         promotion.available = False  # Logical deletion

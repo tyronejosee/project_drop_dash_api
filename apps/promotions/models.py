@@ -4,7 +4,8 @@ from django.conf import settings
 from django.db import models
 from django.core.validators import FileExtensionValidator
 
-from apps.utilities.validators import FileSizeValidator
+from apps.utilities.validators import (
+    FileSizeValidator, DateRangeValidator)
 from apps.utilities.models import BaseModel
 from apps.utilities.paths import image_path
 from .managers import PromotionManager
@@ -17,14 +18,14 @@ class Promotion(BaseModel):
     creator = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
     name = models.CharField(max_length=255)
     conditions = models.TextField()
-    start_date = models.DateField()
+    start_date = models.DateField(DateRangeValidator(days=90))
     end_date = models.DateField()
     is_active = models.BooleanField(default=True)
     image = models.ImageField(
         upload_to=image_path,
         validators=[
             FileExtensionValidator(allowed_extensions=["webp"]),
-            FileSizeValidator(limit_mb=2)
+            FileSizeValidator(limit_mb=1)
         ]
     )
 
