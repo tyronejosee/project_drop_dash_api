@@ -136,7 +136,7 @@ class RestaurantSearchView(APIView):
 
         if not search_term:
             return Response(
-                {"details": "No search query provided"},
+                {"detail": "No search query provided"},
                 status=status.HTTP_400_BAD_REQUEST
             )
 
@@ -144,7 +144,7 @@ class RestaurantSearchView(APIView):
 
         if not restaurants.exists():
             return Response(
-                {"details": "No results found."},
+                {"detail": "No results found."},
                 status=status.HTTP_404_NOT_FOUND
             )
 
@@ -173,7 +173,7 @@ class CategoryListView(APIView):
             categories = Category.objects.get_by_restaurant(restaurant_id)
             if not categories.exists():
                 return Response(
-                    {"details": "No categories available."},
+                    {"detail": "No categories available."},
                     status=status.HTTP_404_NOT_FOUND
                 )
             # Fetches the data from the database and serializes it

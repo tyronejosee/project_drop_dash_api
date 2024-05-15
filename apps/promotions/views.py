@@ -96,7 +96,7 @@ class PromotionSearchView(APIView):
     View to search promotions.
 
     Endpoints:
-    - GET api/v1/promotions/?q=<search_term>
+    - GET api/v1/promotions/?q={query}
     """
 
     def get(self, request):
@@ -106,7 +106,7 @@ class PromotionSearchView(APIView):
 
         if not search_term:
             return Response(
-                {"details": "No search query provided"},
+                {"detail": "No search query provided"},
                 status=status.HTTP_400_BAD_REQUEST
             )
 
@@ -114,7 +114,7 @@ class PromotionSearchView(APIView):
 
         if not promotions.exists():
             return Response(
-                {"details": "No results found."},
+                {"detail": "No results found."},
                 status=status.HTTP_404_NOT_FOUND
             )
 

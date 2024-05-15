@@ -2,12 +2,20 @@
 
 ## Apps
 
-### Users
+### Posts
 
-- [ ] `GET /api/users/{user_id}/orders/`
+- [x] GET /api/posts/
+- [x] POST /api/posts/
+- [x] GET /api/posts/{id}/
+- [x] PATCH /api/posts/{id}/
+- [x] DELETE /api/posts/{id}
+- [x] GET /api/posts/tags/
+- [x] POST /api/posts/tags/
+- [x] GET /api/posts/search/?q={query}
 
 ### Orders
 
+- [ ] `GET /api/ordders/me`
 - [ ] `GET /api/orders/`
 - [ ] `POST /api/orders/`
 - [ ] `GET /api/orders/{id}/`

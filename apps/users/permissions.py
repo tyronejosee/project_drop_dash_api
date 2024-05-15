@@ -78,8 +78,8 @@ class IsAdministrator(BasePermission):
 
     def has_permission(self, request, view):
         is_user_authenticated = (
-            request.user and
-            request.user.is_authenticated
+            request.user
+            and request.user.is_authenticated
         )
         is_user_valid = (
             request.user.is_active
