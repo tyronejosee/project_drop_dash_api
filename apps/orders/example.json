@@ -1,0 +1,15 @@
+{
+  "restaurant": "068d594b-403e-4396-b0e9-dae235a84d83",
+  "address": "123 Street",
+  "comune": "a0d046df-2883-419d-8788-921c94cc6e77",
+  "region": "9b7414d3-cd3a-4a13-95e0-60a0042267b4",
+  "phone": "+56912345678",
+  "note": "Some note",
+  "payment_method": "credit card",
+  "foods": [
+    {
+      "food": "6db2cc54-b6ed-4e86-a5bf-8b8f78a4d77e",
+      "quantity": 2
+    }
+  ]
+}

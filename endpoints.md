@@ -2,17 +2,6 @@
 
 ## Apps
 
-### Posts
-
-- [x] GET /api/posts/
-- [x] POST /api/posts/
-- [x] GET /api/posts/{id}/
-- [x] PATCH /api/posts/{id}/
-- [x] DELETE /api/posts/{id}
-- [x] GET /api/posts/tags/
-- [x] POST /api/posts/tags/
-- [x] GET /api/posts/search/?q={query}
-
 ### Orders
 
 - [ ] `GET /api/ordders/me`
@@ -23,8 +12,7 @@
 - [ ] `DELETE /api/orders/{id}/`
 - [ ] `GET /api/orders/pending/`
 - [ ] `GET /api/orders/completed/`
-
-- `PUT /api/orders/{id}/update-status/`
+- [ ] `PUT /api/orders/{id}/update-status/`
 - [ ] `POST /api/orders/{order_id}/apply-coupon/`
 
 **Logica de negocio**:
@@ -103,3 +91,14 @@
 - [x] `DELETE /api/restaurants/{restaurant_id}/`
 - [x] `GET /api/restaurants/{restaurant_id}/foods/`
 - [ ] `GET /api/restaurants/{restaurant_id}/orders/`
+
+### Posts
+
+- [x] GET /api/posts/
+- [x] POST /api/posts/
+- [x] GET /api/posts/{id}/
+- [x] PATCH /api/posts/{id}/
+- [x] DELETE /api/posts/{id}
+- [x] GET /api/posts/tags/
+- [x] POST /api/posts/tags/
+- [x] GET /api/posts/search/?q={query}
