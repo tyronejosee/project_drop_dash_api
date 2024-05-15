@@ -1,5 +1,6 @@
 """Views for Blogs App."""
 
+import re
 from django.db import transaction
 from django.core.cache import cache
 from django.shortcuts import get_object_or_404
@@ -8,10 +9,41 @@ from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.permissions import AllowAny
 
-from apps.users.permissions import IsAdministrator
+from apps.users.permissions import IsSupport
 from .models import Post, Tag
 from .serializers import (
-    PostWriteSerializer, PostReadSerializer, TagReadSerializer)
+    PostWriteSerializer, PostReadSerializer, TagWriteSerializer, TagReadSerializer)
+
+
+class TagListView(APIView):
+    """
+    View to list and create tags.
+
+    Endpoints:
+    - GET api/v1/posts/tags/
+    - POST api/v1/posts/tags/
+    """
+    permission_classes = [IsSupport]
+    cache_key = "promotion_list"
+
+    def get(self, request):
+        # Get all tags
+        tags = Tag.objects.get_available()
+        if tags.exists():
+            serializer = TagReadSerializer(tags, many=True)
+            return Response(serializer.data)
+        return Response(
+            {"detail": "No tags available."},
+            status=status.HTTP_404_NOT_FOUND
+        )
+
+    def post(self, request):
+        # Create a new tag
+        serializer = TagWriteSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 class PostListView(APIView):
@@ -26,18 +58,18 @@ class PostListView(APIView):
 
     def get_permissions(self):
         if self.request.method == "POST":
-            return [IsAdministrator()]
+            return [IsSupport()]
         return super().get_permissions()
 
     def get(self, request):
-        # Get a list of posts
+        # Get all posts
         posts_cache = cache.get(self.cache_key)
 
         if posts_cache is None:
             posts = Post.objects.get_available()
             if not posts.exists():
                 return Response(
-                    {"details": "No posts available."},
+                    {"detail": "No posts available."},
                     status=status.HTTP_404_NOT_FOUND
                 )
             cache.set(self.cache_key, posts, 7200)  # Set cache
@@ -67,7 +99,7 @@ class PostDetailView(APIView):
     - PATCH api/v1/posts/{id}/
     - DELETE api/v1/posts/{id}/
     """
-    permission_classes = [IsAdministrator]
+    permission_classes = [IsSupport]
 
     def get_permissions(self):
         if self.request.method == "GET":
@@ -75,18 +107,17 @@ class PostDetailView(APIView):
         return super().get_permissions()
 
     def get_object(self, post_id):
-        # Get a post instance by id
         return get_object_or_404(Post, pk=post_id)
 
     def get(self, request, post_id):
-        # Get details of a post
+        # Get a post
         post = self.get_object(post_id)
         serializer = PostReadSerializer(post)
         return Response(serializer.data)
 
     @transaction.atomic
     def patch(self, request, post_id):
-        # Partial update a post
+        # Update a post (Partial)
         post = self.get_object(post_id)
         serializer = PostWriteSerializer(post, data=request.data, partial=True)
         if serializer.is_valid():
@@ -98,9 +129,43 @@ class PostDetailView(APIView):
     def delete(self, request, post_id):
         # Delete a post
         post = self.get_object(post_id)
+        if post.author != request.user:
+            return Response(status=status.HTTP_401_UNAUTHORIZED)
         post.available = False  # Logical deletion
         post.save()
         return Response(status=status.HTTP_204_NO_CONTENT)
+
+
+class PostSearchView(APIView):
+    """
+    View to search posts.
+
+    Endpoints:
+    - GET api/v1/posts/?q={query}
+    """
+
+    def get(self, request):
+        # Search posts for title, content and tag fields
+        search_term = request.query_params.get("q", "")
+        search_term = re.sub(r'[^\w\s\-\(\)\.,]', '', search_term).strip()
+        print(search_term)
+
+        if not search_term:
+            return Response(
+                {"detail": "No search query provided"},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
+        posts = Post.objects.get_search(search_term)
+
+        if not posts.exists():
+            return Response(
+                {"detail": "No results found."},
+                status=status.HTTP_404_NOT_FOUND
+            )
+
+        serializer = PostReadSerializer(posts, many=True)
+        return Response(serializer.data)
 
 
 class FeaturedPostsView(APIView):
@@ -113,14 +178,14 @@ class FeaturedPostsView(APIView):
     cache_key = "featured_posts"
 
     def get(self, request):
-        # Get a list of featured posts
+        # Get all featured posts
         featured_posts_cache = cache.get(self.cache_key)
 
         if featured_posts_cache is None:
             featured_posts = Post.objects.get_featured()
             if not featured_posts.exists():
                 return Response(
-                    {"details": "No featured posts available."},
+                    {"detail": "No featured posts available."},
                     status=status.HTTP_404_NOT_FOUND
                 )
             cache.set(self.cache_key, featured_posts, 7200)  # Set cache
@@ -141,14 +206,14 @@ class RecentPostsView(APIView):
     cache_key = "recent_posts"
 
     def get(self, request):
-        # Get a list of recent posts (7 days)
+        # Get all recent posts (7 days)
         recent_posts_cache = cache.get(self.cache_key)
 
         if recent_posts_cache is None:
             recent_posts = Post.objects.get_recent()
             if not recent_posts.exists():
                 return Response(
-                    {"details": "No recent posts available."},
+                    {"detail": "No recent posts available."},
                     status=status.HTTP_404_NOT_FOUND
                 )
             cache.set(self.cache_key, recent_posts, 7200)  # Set cache
@@ -157,18 +222,3 @@ class RecentPostsView(APIView):
 
         serializer = PostReadSerializer(recent_posts_cache, many=True)
         return Response(serializer.data)
-
-
-class TagListView(APIView):
-    """Pending."""
-
-    def get(self, request):
-        #
-        tags = Tag.objects.filter(available=True)
-        if tags.exists():
-            serializer = TagReadSerializer(tags, many=True)
-            return Response(serializer.data)
-        return Response(
-            {"detail": "No tags available."},
-            status=status.HTTP_404_NOT_FOUND
-        )

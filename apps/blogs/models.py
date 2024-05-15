@@ -5,7 +5,7 @@ from django.db import models
 from django.utils.text import slugify
 
 from apps.utilities.models import BaseModel
-from .managers import PostManager
+from .managers import TagManager, PostManager
 
 User = settings.AUTH_USER_MODEL
 
@@ -14,6 +14,8 @@ class Tag(BaseModel):
     """Model definition for Tag (Catalog)."""
     name = models.CharField(max_length=50, unique=True)
     slug = models.SlugField(unique=True, blank=True, null=True)
+
+    objects = TagManager()
 
     class Meta:
         ordering = ["pk"]

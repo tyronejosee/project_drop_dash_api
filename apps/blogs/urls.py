@@ -3,7 +3,7 @@
 from django.urls import path
 
 from .views import (
-    PostListView, PostDetailView, FeaturedPostsView,
+    PostListView, PostDetailView, PostSearchView, FeaturedPostsView,
     RecentPostsView, TagListView)
 
 
@@ -15,6 +15,10 @@ urlpatterns = [
     path(
         "api/v1/posts/<uuid:post_id>/",
         PostDetailView.as_view()
+    ),
+    path(
+        "api/v1/posts/search/",
+        PostSearchView.as_view()
     ),
     path(
         "api/v1/posts/featured/",
