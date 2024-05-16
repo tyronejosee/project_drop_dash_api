@@ -163,9 +163,9 @@ DJOSER = {
         "http://localhost:8000/google", "http://localhost:8000/facebook"
     ],
     "SERIALIZERS": {
-        "user_create": "apps.users.serializers.UserSerializer",
-        "user": "apps.users.serializers.UserCreateSerializer",
-        "current_user": "apps.users.serializers.UserSerializer",
+        "user_create": "apps.users.serializers.UserWriteSerializer",
+        "user": "apps.users.serializers.UserWriteSerializer",
+        "current_user": "apps.users.serializers.UserWriteSerializer",
         "user_delete": "djoser.serializers.UserDeleteSerializer",
     },
 }

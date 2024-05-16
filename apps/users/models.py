@@ -3,24 +3,31 @@
 import uuid
 from django.db import models
 from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin
-from django.utils import timezone
 
+from apps.utilities.validators import validate_phone, validate_identity_number
 from .managers import UserManager
-from .choices import ROLE_CHOICES
+from .choices import Role
 
 
 class User(AbstractBaseUser, PermissionsMixin):
     """Model definition for User (Entity)."""
+
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     email = models.EmailField(max_length=100, unique=True, db_index=True)
-    username = models.CharField(max_length=100, unique=True, db_index=True)
+    username = models.CharField(max_length=100, unique=True)
     first_name = models.CharField(max_length=255, blank=True, null=True)
     last_name = models.CharField(max_length=255, blank=True, null=True)
-    role = models.CharField(
-        max_length=15, choices=ROLE_CHOICES, default="client")
+    date_birth = models.DateField(null=True, blank=True)
+    identity_number = models.CharField(
+        max_length=10, blank=True, unique=True, validators=[validate_identity_number]
+    )
+    phone = models.CharField(max_length=12, unique=True, validators=[validate_phone])
+    points = models.IntegerField(default=0)
+    role = models.CharField(max_length=15, choices=Role.choices, default=Role.CLIENT)
     is_active = models.BooleanField(default=True)
     is_staff = models.BooleanField(default=False)
-    date_joined = models.DateTimeField(default=timezone.now)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
 
     objects = UserManager()
 

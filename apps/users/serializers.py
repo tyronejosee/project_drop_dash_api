@@ -6,7 +6,20 @@ from djoser.serializers import UserCreateSerializer
 User = get_user_model()
 
 
-class UserSerializer(UserCreateSerializer):
+class UserReadSerializer(UserCreateSerializer):
+    """Serializer for User model."""
+
+    class Meta(UserCreateSerializer.Meta):
+        model = User
+        fields = [
+            "id",
+            "username",
+            "points",
+            "role",
+        ]
+
+
+class UserWriteSerializer(UserCreateSerializer):
     """Serializer for User model."""
 
     class Meta(UserCreateSerializer.Meta):
@@ -17,10 +30,15 @@ class UserSerializer(UserCreateSerializer):
             "username",
             "first_name",
             "last_name",
+            "date_birth",
+            "identity_number",
+            "phone",
+            "points",
             "role",
             "is_active",
             "is_staff",
-            "date_joined"
+            "created_at",
+            "updated_at",
         ]
 
 
@@ -33,5 +51,5 @@ class UserMinimalSerializer(UserCreateSerializer):
             "id",
             "email",
             "role",
-            "is_staff"
+            "is_staff",
         ]
