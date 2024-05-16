@@ -2,24 +2,77 @@
 
 from django.contrib import admin
 
-from .models import Region, Comune
+from .models import Country, State, City
 
 
-@admin.register(Region)
-class RegionAdmin(admin.ModelAdmin):
-    """Admin for Region model."""
-    search_fields = ["name",]
-    list_display = ["name", "number", "available", "created_at",]
+@admin.register(Country)
+class CountryAdmin(admin.ModelAdmin):
+    """Admin for Country model."""
+
     list_per_page = 25
-    readonly_fields = ["pk", "created_at", "updated_at",]
-    ordering = ["number",]
+    search_fields = [
+        "name",
+    ]
+    list_display = [
+        "name",
+        "available",
+        "created_at",
+    ]
+    readonly_fields = [
+        "pk",
+        "created_at",
+        "updated_at",
+    ]
+    ordering = [
+        "pk",
+    ]
 
 
-@admin.register(Comune)
-class ComuneAdmin(admin.ModelAdmin):
-    """Admin for Comune model."""
-    search_fields = ["name", "region"]
-    list_display = ["name", "region", "available", "created_at", "updated_at"]
+@admin.register(State)
+class StateAdmin(admin.ModelAdmin):
+    """Admin for State model."""
+
     list_per_page = 25
-    readonly_fields = ["pk", "created_at", "updated_at",]
-    ordering = ["pk",]
+    search_fields = [
+        "name",
+        "country",
+    ]
+    list_display = [
+        "name",
+        "available",
+        "created_at",
+        "updated_at",
+    ]
+    readonly_fields = [
+        "pk",
+        "created_at",
+        "updated_at",
+    ]
+    ordering = [
+        "pk",
+    ]
+
+
+@admin.register(City)
+class CityAdmin(admin.ModelAdmin):
+    """Admin for City model."""
+
+    list_per_page = 25
+    search_fields = [
+        "name",
+        "state",
+    ]
+    list_display = [
+        "name",
+        "available",
+        "created_at",
+        "updated_at",
+    ]
+    readonly_fields = [
+        "pk",
+        "created_at",
+        "updated_at",
+    ]
+    ordering = [
+        "pk",
+    ]

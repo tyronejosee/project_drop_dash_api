@@ -5,32 +5,53 @@ from django.db import models
 from apps.utilities.models import BaseModel
 
 
-class Region(BaseModel):
-    """Model definition for Region (Entity)."""
+class Country(BaseModel):
+    """Model definition for Country (Entity)."""
+
     name = models.CharField(max_length=100, unique=True)
-    number = models.PositiveSmallIntegerField(default=0)
-    is_metropolitan = models.BooleanField(default=False)
 
     class Meta:
         ordering = ["pk"]
-        verbose_name = "region"
-        verbose_name_plural = "regions"
+        verbose_name = "country"
+        verbose_name_plural = "countries"
+        indexes = [
+            models.Index(fields=["name"]),
+        ]
 
     def __str__(self):
         return str(self.name)
 
 
-class Comune(BaseModel):
-    """Model definition for Comune (Entity)."""
+class State(BaseModel):
+    """Model definition for State (Entity)."""
+
     name = models.CharField(max_length=100, unique=True)
-    region = models.ForeignKey(Region, on_delete=models.CASCADE)
+    country = models.ForeignKey(Country, on_delete=models.CASCADE)
 
     class Meta:
         ordering = ["pk"]
-        verbose_name = "comune"
-        verbose_name_plural = "comunes"
+        verbose_name = "state"
+        verbose_name_plural = "states"
         indexes = [
-            models.Index(fields=['region']),
+            models.Index(fields=["name"]),
+        ]
+
+    def __str__(self):
+        return str(self.name)
+
+
+class City(BaseModel):
+    """Model definition for City (Entity)."""
+
+    name = models.CharField(max_length=100, unique=True)
+    state = models.ForeignKey(State, on_delete=models.CASCADE)
+
+    class Meta:
+        ordering = ["pk"]
+        verbose_name = "city"
+        verbose_name_plural = "cities"
+        indexes = [
+            models.Index(fields=["name"]),
         ]
 
     def __str__(self):

@@ -2,56 +2,68 @@
 
 from rest_framework.serializers import ModelSerializer
 
-from .models import Region, Comune
+from .models import Country, State, City
 
 
-class RegionSerializer(ModelSerializer):
-    """Serializer for Region model."""
+class CountryReadSerializer(ModelSerializer):
+    """Serializer for Country model (List/retrieve)."""
 
     class Meta:
-        model = Region
+        model = Country
         fields = [
             "id",
             "name",
-            "number",
-            "is_metropolitan",
             "created_at",
-            "updated_at"
+            "updated_at",
         ]
 
 
-class RegionListSerializer(ModelSerializer):
-    """Serializer for Region model (List only)."""
+class StateReadSerializer(ModelSerializer):
+    """Serializer for State model (List/retrieve)."""
 
     class Meta:
-        model = Region
+        model = State
         fields = [
             "id",
             "name",
-        ]
-
-
-class ComuneSerializer(ModelSerializer):
-    """Serializer for Comune model."""
-    region = RegionSerializer()
-
-    class Meta:
-        model = Comune
-        fields = [
-            "id",
-            "name",
-            "region",
             "created_at",
-            "updated_at"
+            "updated_at",
         ]
 
 
-class ComuneListSerializer(ModelSerializer):
-    """Serializer for Comune model (List only)."""
+class StateMinimalSerializer(ModelSerializer):
+    """Serializer for State model (Minimal)."""
 
     class Meta:
-        model = Comune
+        model = State
         fields = [
             "id",
-            "name"
+            "name",
+        ]
+
+
+class CityReadSerializer(ModelSerializer):
+    """Serializer for City model (List/retrieve)."""
+
+    state = StateReadSerializer()
+
+    class Meta:
+        model = City
+        fields = [
+            "id",
+            "name",
+            "state",
+            "created_at",
+            "updated_at",
+        ]
+
+
+class CityMinimalSerializer(ModelSerializer):
+    """Serializer for City model (Minimal)."""
+
+    class Meta:
+        model = City
+        fields = [
+            "id",
+            "name",
         ]
