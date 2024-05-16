@@ -18,6 +18,6 @@ class DriverManager(models.Manager):
         """Return a queryset of drivers with the specified status."""
         return self.get_available().filter(status=status)
 
-    def get_drivers_by_region(self, region_id):
-        """Return a queryset of drivers in a specific region."""
-        return self.get_available().filter(region=region_id)
+    def get_drivers_by_city(self, city_id):
+        """Return a queryset of drivers in a specific city."""
+        return self.get_available().filter(city=city_id)

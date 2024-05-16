@@ -12,6 +12,7 @@ User = settings.AUTH_USER_MODEL
 
 class Tag(BaseModel):
     """Model definition for Tag (Catalog)."""
+
     name = models.CharField(max_length=50, unique=True)
     slug = models.SlugField(unique=True, blank=True, null=True)
 
@@ -34,12 +35,13 @@ class Tag(BaseModel):
 
 class Post(BaseModel):
     """Model definition for Post (Entity)."""
+
     title = models.CharField(max_length=100)
     slug = models.SlugField(unique=True, blank=True, null=True)
     content = models.TextField()
-    is_featured = models.BooleanField(default=False)
     tags = models.ManyToManyField(Tag)
     author = models.ForeignKey(User, on_delete=models.CASCADE)
+    is_featured = models.BooleanField(default=False)
 
     objects = PostManager()
 

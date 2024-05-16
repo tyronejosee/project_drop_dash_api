@@ -13,7 +13,7 @@ fixed_coupon_list_schema = {
         operation_id="fixed_coupon_list_create",
         summary="Create fixed coupon",
         description="pending",
-    )
+    ),
 }
 
 
@@ -32,7 +32,7 @@ fixed_coupon_detail_schema = {
         operation_id="fixed_coupon_detail_destroy",
         summary="Delete fixed coupon",
         description="pending",
-    )
+    ),
 }
 
 
@@ -46,7 +46,7 @@ percentage_coupon_list_schema = {
         operation_id="percentage_coupon_list_create",
         summary="Create percentage coupon",
         description="pending",
-    )
+    ),
 }
 
 
@@ -65,5 +65,5 @@ percentage_coupon_detail_schema = {
         operation_id="percentage_coupon_detail_destroy",
         summary="Delete percentage coupon",
         description="pending",
-    )
+    ),
 }

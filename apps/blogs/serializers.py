@@ -10,14 +10,8 @@ class TagReadSerializer(ModelSerializer):
 
     class Meta:
         model = Tag
-        fields = [
-            "id",
-            "name",
-            "slug"
-        ]
-        read_only_fields = [
-            "id", "slug"
-        ]
+        fields = ["id", "name", "slug"]
+        read_only_fields = ["id", "slug"]
 
 
 class TagWriteSerializer(ModelSerializer):
@@ -25,13 +19,12 @@ class TagWriteSerializer(ModelSerializer):
 
     class Meta:
         model = Tag
-        fields = [
-            "name"
-        ]
+        fields = ["name"]
 
 
 class PostReadSerializer(ModelSerializer):
     """Serializer for Post model (List/retrieve)."""
+
     tags = TagReadSerializer(many=True)
 
     class Meta:
@@ -44,13 +37,9 @@ class PostReadSerializer(ModelSerializer):
             "tags",
             "author",
             "created_at",
-            "updated_at"
+            "updated_at",
         ]
-        read_only_fields = [
-            "slug",
-            "created_at",
-            "updated_at"
-        ]
+        read_only_fields = ["slug", "created_at", "updated_at"]
 
 
 class PostWriteSerializer(ModelSerializer):
@@ -58,8 +47,4 @@ class PostWriteSerializer(ModelSerializer):
 
     class Meta:
         model = Post
-        fields = [
-            "title",
-            "content",
-            "tags"
-        ]
+        fields = ["title", "content", "tags"]

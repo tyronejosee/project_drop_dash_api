@@ -10,10 +10,12 @@ from .validators import validate_discount_price
 
 class FixedCoupon(BaseModel):
     """Model definition for FixedCoupon (Entity)."""
+
     name = models.CharField(max_length=255, unique=True)
     code = models.CharField(max_length=36, unique=True, blank=True)
     discount_price = models.DecimalField(
-        max_digits=7, decimal_places=2, validators=[validate_discount_price])
+        max_digits=7, decimal_places=2, validators=[validate_discount_price]
+    )
     start_date = models.DateField()
     end_date = models.DateField()
     quantity = models.PositiveIntegerField(default=50)
@@ -38,10 +40,12 @@ class FixedCoupon(BaseModel):
 
 class PercentageCoupon(BaseModel):
     """Model definition for PercentageCoupon (Entity)."""
+
     name = models.CharField(max_length=255, unique=True)
     code = models.CharField(max_length=36, unique=True, blank=True)
     discount_percentage = models.IntegerField(
-        validators=[MinValueValidator(5), MaxValueValidator(25)])
+        validators=[MinValueValidator(5), MaxValueValidator(25)]
+    )
     start_date = models.DateField()
     end_date = models.DateField()
     quantity = models.PositiveIntegerField(default=50)

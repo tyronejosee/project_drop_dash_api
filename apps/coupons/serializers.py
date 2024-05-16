@@ -18,7 +18,7 @@ class FixedCouponSerializer(ModelSerializer):
             "start_date",
             "end_date",
             "quantity",
-            "is_active"
+            "is_active",
         ]
 
 
@@ -35,5 +35,5 @@ class PercentageCouponSerializer(ModelSerializer):
             "start_date",
             "end_date",
             "quantity",
-            "is_active"
+            "is_active",
         ]

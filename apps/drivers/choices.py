@@ -1,11 +1,12 @@
 """Choices for Drivers App."""
 
-from django.db import models
+from django.db.models import TextChoices
 
 
-class Status(models.TextChoices):
-    """Choices for status of a driver."""
-    BRONCE = "Bronce"
-    SILVER = "Silver"
-    DIAMOND = "Diamond"
-    ALERT = "Alert"
+class Status(TextChoices):
+    """Choices for driver status."""
+
+    BRONCE = "bronce", "Bronce"
+    SILVER = "silver", "Silver"
+    DIAMOND = "diamond", "Diamond"
+    ALERT = "alert", "Alert"
