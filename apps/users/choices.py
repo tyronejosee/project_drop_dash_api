@@ -3,17 +3,9 @@
 from django.db.models import TextChoices
 
 
-# ROLE_CHOICES = [
-#     ("client", "Client"),
-#     ("driver", "Driver"),
-#     ("business", "Business"),
-#     ("support", "Support"),
-#     ("administrator", "Administrator")
-# ]
-
-
 class Role(TextChoices):
     """Choices for user roles."""
+
     CLIENT = "client", "Client"
     ADVERTISER = "advertiser", "Advertiser"
     DRIVER = "driver", "Driver"

@@ -2,6 +2,8 @@
 
 from django.contrib.auth.models import BaseUserManager
 
+from .choices import Role
+
 
 class UserManager(BaseUserManager):
     """Manager for User instances."""
@@ -13,8 +15,7 @@ class UserManager(BaseUserManager):
 
         email = self.normalize_email(email)
         user = self.model(email=email, **kwargs)
-        kwargs.setdefault("role", "client")
-
+        kwargs.setdefault("role", Role.CLIENT)
         user.set_password(password)
         user.save()
 
@@ -24,7 +25,7 @@ class UserManager(BaseUserManager):
         """Creates a superuser with the given email and password."""
         kwargs.setdefault("is_staff", True)
         kwargs.setdefault("is_superuser", True)
-        kwargs.setdefault("role", "administrator")
+        kwargs.setdefault("role", Role.ADMINISTRATOR)
 
         if kwargs.get("is_staff") is not True:
             raise ValueError("Superuser must have is_staff=True.")

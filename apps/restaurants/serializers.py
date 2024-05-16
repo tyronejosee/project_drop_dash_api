@@ -19,19 +19,14 @@ class RestaurantReadSerializer(serializers.ModelSerializer):
             "description",
             "specialty",
             "address",
-            "comune",
-            "region",
+            "city",
+            "state",
+            "country",
             "opening_time",
             "closing_time",
             "phone",
             "email",
-            "facebook",
-            "instagram",
-            "tiktok",
             "website",
-            "is_open",
-            "created_at",
-            "updated_at"
         ]
 
     def to_representation(self, instance):
@@ -53,16 +48,18 @@ class RestaurantWriteSerializer(serializers.ModelSerializer):
             "description",
             "specialty",
             "address",
-            "comune",
-            "region",
+            "city",
+            "state",
+            "country",
+            "phone",
             "opening_time",
             "closing_time",
-            "phone",
-            "email",
-            "facebook",
-            "instagram",
-            "tiktok",
-            "website"
+            "website",
+            "banking_certificate",
+            "e_rut",
+            "legal_rep_email",
+            "legal_rep_identity_document",
+            "legal_rep_power_of_attorney",
         ]
 
 
@@ -86,6 +83,7 @@ class RestaurantListSerializer(serializers.ModelSerializer):
 
 class CategoryReadSerializer(serializers.ModelSerializer):
     """Serializer for Category model (List/retrieve)."""
+
     restaurant = serializers.StringRelatedField()
 
     class Meta:
@@ -95,7 +93,7 @@ class CategoryReadSerializer(serializers.ModelSerializer):
             "name",
             "restaurant",
             "created_at",
-            "updated_at"
+            "updated_at",
         ]
 
 
@@ -105,12 +103,13 @@ class CategoryWriteSerializer(serializers.ModelSerializer):
     class Meta:
         model = Category
         fields = [
-            "name"
+            "name",
         ]
 
 
 class FoodReadSerializer(serializers.ModelSerializer):
     """Serializer for Food model (List/retrieve)."""
+
     category = serializers.StringRelatedField()
 
     class Meta:
@@ -127,7 +126,7 @@ class FoodReadSerializer(serializers.ModelSerializer):
             "is_spicy",
             "is_featured",
             "created_at",
-            "updated_at"
+            "updated_at",
         ]
 
     def to_representation(self, instance):
@@ -149,11 +148,9 @@ class FoodWriteSerializer(serializers.ModelSerializer):
             "is_vegetarian",
             "is_gluten_free",
             "is_spicy",
-            "is_featured"
+            "is_featured",
         ]
-        extra_kwargs = {
-            "category": {"required": True}
-        }
+        extra_kwargs = {"category": {"required": True}}
 
 
 class FoodMiniSerializer(serializers.ModelSerializer):
@@ -163,5 +160,5 @@ class FoodMiniSerializer(serializers.ModelSerializer):
         model = Food
         fields = [
             "id",
-            "name"
+            "name",
         ]

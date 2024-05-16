@@ -33,8 +33,7 @@ class IsDriver(BasePermission):
         return bool(is_user_authenticated and is_user_valid)
 
 
-# TODO: Change partner
-class IsBusiness(BasePermission):
+class IsPartner(BasePermission):
     """
     Allows access only to users with the role "business".
     """

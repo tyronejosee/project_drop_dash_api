@@ -10,9 +10,18 @@ from django.utils.deconstruct import deconstructible
 def validate_phone(value):
     """Validate a phone number according to the Chilean format."""
     validator = RegexValidator(
-        regex=r'^\+56\d{9}$',
-        message="Invalid phone number.",
-        code="invalid_name"
+        regex=r"^\+56\d{9}$", message="Invalid phone number.", code="invalid_name"
+    )
+    validator(value)
+
+
+def validate_identity_number(value):
+    """Validate an identity number."""
+    validator = RegexValidator(
+        regex=r"^\d{7,8}[-]?[0-9K]$",
+        # regex=r'^\d{1,2}\.\d{3}\.\d{3}-[0-9K]$',
+        message="Invalid identity number.",
+        code="invalid_identity_number",
     )
     validator(value)
 
@@ -28,6 +37,7 @@ def validate_birth_date(value):
 @deconstructible
 class FileSizeValidator:
     """Pending."""
+
     message = "File size must be under %(limit)s. Current size is %(size)s."
     code = "invalid_size"
 
@@ -63,6 +73,7 @@ class FileSizeValidator:
 
 class DateRangeValidator(BaseValidator):
     """Validator that checks if the date is within a range of days."""
+
     message = "Date must be within {days} days from the current date."
     code = "invalid_date_range"
 
@@ -84,5 +95,4 @@ class DateRangeValidator(BaseValidator):
         if isinstance(value, datetime.date):
             value = datetime.combine(value, datetime.min.time())
         if not self.compare(value, self.get_limit_value()):
-            raise ValidationError(
-                self.message.format(days=self.days), code=self.code)
+            raise ValidationError(self.message.format(days=self.days), code=self.code)

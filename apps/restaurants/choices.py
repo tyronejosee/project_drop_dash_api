@@ -1,10 +1,11 @@
 """Choices for Restaurants App."""
 
-from django.db import models
+from django.db.models import TextChoices
 
 
-class Specialty(models.TextChoices):
+class Specialty(TextChoices):
     """Choices for specialty of a restaurant."""
+
     VARIED = "varied", "Varied"
     CHILEAN = "chilean", "Chilean"
     PERUVIAN = "peruvian", "Peruvian"

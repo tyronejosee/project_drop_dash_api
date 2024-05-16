@@ -40,8 +40,7 @@ class CategoryManager(Manager):
 
     def get_by_restaurant(self, restaurant):
         """Get all categories for a specific restaurant."""
-        return self.get_available().filter(
-            restaurant=restaurant)
+        return self.get_available().filter(restaurant=restaurant)
 
 
 class FoodManager(Manager):
@@ -57,10 +56,16 @@ class FoodManager(Manager):
 
     def get_foods_by_restaurant(self, restaurant):
         """Get all foods for a specific restaurant."""
-        return self.get_available().filter(
-            restaurant=restaurant).select_related("restaurant", "category")
+        return (
+            self.get_available()
+            .filter(restaurant=restaurant)
+            .select_related("restaurant", "category")
+        )
 
     def get_featured_foods(self):
         """Get all featured foods."""
-        return self.get_available().filter(
-            is_featured=True).select_related("restaurant", "category")
+        return (
+            self.get_available()
+            .filter(is_featured=True)
+            .select_related("restaurant", "category")
+        )

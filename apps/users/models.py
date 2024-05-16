@@ -4,7 +4,7 @@ import uuid
 from django.db import models
 from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin
 
-from apps.utilities.validators import validate_phone, validate_identity_number
+from apps.utilities.validators import validate_identity_number
 from .managers import UserManager
 from .choices import Role
 
@@ -21,7 +21,6 @@ class User(AbstractBaseUser, PermissionsMixin):
     identity_number = models.CharField(
         max_length=10, blank=True, unique=True, validators=[validate_identity_number]
     )
-    phone = models.CharField(max_length=12, unique=True, validators=[validate_phone])
     points = models.IntegerField(default=0)
     role = models.CharField(max_length=15, choices=Role.choices, default=Role.CLIENT)
     is_active = models.BooleanField(default=True)

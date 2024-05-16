@@ -43,13 +43,12 @@ class UserWriteSerializer(UserCreateSerializer):
 
 
 class UserMinimalSerializer(UserCreateSerializer):
-    """Serializer for User model (Minimal version)."""
+    """Serializer for User model (Minimal)."""
 
     class Meta(UserCreateSerializer.Meta):
         model = User
         fields = [
             "id",
-            "email",
+            "username",
             "role",
-            "is_staff",
         ]
