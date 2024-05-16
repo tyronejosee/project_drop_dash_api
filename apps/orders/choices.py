@@ -4,7 +4,8 @@ from django.db import models
 
 
 class OrderStatus(models.TextChoices):
-    """Choices for status of a order."""
+    """Choices for order status."""
+
     NOT_PROCESSED = "not_processed", "Not Processed"
     PROCESSED = "processed", "Processed"
     SHIPPING = "shipping", "Shipping"

@@ -8,18 +8,25 @@ from rest_framework import status
 
 from apps.users.permissions import IsClient
 from apps.restaurants.models import Food, Restaurant
-from apps.locations.models import Region, Comune
+from apps.locations.models import Country, State, City
 from .models import Order, OrderItem
 from .serializers import OrderReadSerializer
 
 
 class OrderCreateView(APIView):
     """Pending."""
+
     permission_classes = [IsClient]
 
     def get(self, request):
-        # Get my orders
-        orders = Order.objects.select_related('user', 'restaurant', 'comune', 'region').prefetch_related('orderitem_set__food').filter(user=request.user)
+        """Get my orders."""
+        orders = (
+            Order.objects.select_related(
+                "user", "restaurant", "city", "state", "country"
+            )
+            .prefetch_related("orderitem_set__food")
+            .filter(user=request.user)
+        )
         serializer = OrderReadSerializer(orders, many=True)
         return Response(serializer.data)
 
@@ -30,24 +37,26 @@ class OrderCreateView(APIView):
 
         with transaction.atomic():
             restaurant = get_object_or_404(Restaurant, id=data["restaurant"])
-            comune = get_object_or_404(Comune, id=data["comune"])
-            region = get_object_or_404(Region, id=data["region"])
+            city = get_object_or_404(City, id=data["city"])
+            state = get_object_or_404(State, id=data["state"])
+            country = get_object_or_404(Country, id=data["country"])
 
             order = Order.objects.create(
                 user=user,
                 restaurant=restaurant,
                 address=data["address"],
-                comune=comune,
-                region=region,
+                city=city,
+                state=state,
+                country=country,
                 phone=data["phone"],
                 note=data.get("note", ""),
-                payment_method=data["payment_method"]
+                payment_method=data["payment_method"],
             )
 
             if not order:
                 return Response(
                     {"detail": "Failed to create order"},
-                    status=status.HTTP_400_BAD_REQUEST
+                    status=status.HTTP_400_BAD_REQUEST,
                 )
 
             foods_data = data.get("foods", [])
@@ -64,7 +73,7 @@ class OrderCreateView(APIView):
                     food=food,
                     quantity=quantity,
                     price=price,
-                    subtotal=price * quantity
+                    subtotal=price * quantity,
                 )
                 order_items.append(order_item)
                 subtotal += order_item.subtotal
@@ -75,4 +84,6 @@ class OrderCreateView(APIView):
             order.subtotal = subtotal
             order.save()
 
-        return Response({"detail": "Order created successfully"}, status=status.HTTP_201_CREATED)
+        return Response(
+            {"detail": "Order created successfully"}, status=status.HTTP_201_CREATED
+        )

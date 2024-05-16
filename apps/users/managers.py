@@ -1,6 +1,8 @@
 """Managers for Users App."""
 
+import re
 from django.contrib.auth.models import BaseUserManager
+from django.utils.text import slugify
 
 from .choices import Role
 
@@ -14,6 +16,17 @@ class UserManager(BaseUserManager):
             raise ValueError("Users must have an email address")
 
         email = self.normalize_email(email)
+
+        def create_slug(username):
+            # Normalize a username by removing special characters
+            pattern = r'\badmin\b|[!@#$%^&*()_+-=[]{}|;:",.<>/?]|\s'
+
+            if re.search(pattern, username):
+                raise ValueError("Username contains invalid characters.")
+            username = re.sub(pattern, "", username)
+            return slugify(username)
+
+        kwargs["slug"] = create_slug(kwargs["username"])
         user = self.model(email=email, **kwargs)
         kwargs.setdefault("role", Role.CLIENT)
         user.set_password(password)

@@ -15,6 +15,7 @@ class User(AbstractBaseUser, PermissionsMixin):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     email = models.EmailField(max_length=100, unique=True, db_index=True)
     username = models.CharField(max_length=100, unique=True)
+    slug = models.SlugField(unique=True, blank=True, null=True)
     first_name = models.CharField(max_length=255, blank=True, null=True)
     last_name = models.CharField(max_length=255, blank=True, null=True)
     date_birth = models.DateField(null=True, blank=True)
