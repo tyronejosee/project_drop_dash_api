@@ -6,17 +6,17 @@ from djoser.serializers import UserCreateSerializer
 User = get_user_model()
 
 
-class UserReadSerializer(UserCreateSerializer):
-    """Serializer for User model."""
+# class UserReadSerializer():
+#     """Serializer for User model."""
 
-    class Meta(UserCreateSerializer.Meta):
-        model = User
-        fields = [
-            "id",
-            "username",
-            "points",
-            "role",
-        ]
+#     class Meta(UserCreateSerializer.Meta):
+#         model = User
+#         fields = [
+#             "id",
+#             "username",
+#             "points",
+#             "role",
+#         ]
 
 
 class UserWriteSerializer(UserCreateSerializer):

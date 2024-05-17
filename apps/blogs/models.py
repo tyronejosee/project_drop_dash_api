@@ -6,6 +6,7 @@ from django.utils.text import slugify
 
 from apps.utilities.models import BaseModel
 from .managers import TagManager, PostManager
+from .choices import Priority, Status
 
 User = settings.AUTH_USER_MODEL
 
@@ -41,6 +42,7 @@ class Post(BaseModel):
     content = models.TextField()
     tags = models.ManyToManyField(Tag)
     author = models.ForeignKey(User, on_delete=models.CASCADE)
+    points = models.IntegerField(default=100)
     is_featured = models.BooleanField(default=False)
 
     objects = PostManager()
@@ -58,3 +60,25 @@ class Post(BaseModel):
         if not self.slug or self.slug != self.title:
             self.slug = slugify(self.title)
         super().save(*args, **kwargs)
+
+
+class PostReport(BaseModel):
+    """Model definition for PostReport (Pivot)."""
+
+    user = models.ForeignKey(User, on_delete=models.DO_NOTHING)
+    post = models.ForeignKey(Post, on_delete=models.CASCADE)
+    reason = models.TextField()
+    priority = models.CharField(
+        max_length=10, choices=Priority.choices, default=Priority.LOW
+    )
+    status = models.CharField(
+        max_length=10, choices=Status.choices, default=Status.PENDING
+    )
+
+    class Meta:
+        ordering = ["pk"]
+        verbose_name = "post report"
+        verbose_name_plural = "post reports"
+
+    def __str__(self):
+        return str(f"{self.user} > {self.post}")

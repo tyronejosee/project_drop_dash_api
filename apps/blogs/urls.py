@@ -3,8 +3,14 @@
 from django.urls import path
 
 from .views import (
-    PostListView, PostDetailView, PostSearchView, FeaturedPostsView,
-    RecentPostsView, TagListView)
+    PostListView,
+    PostDetailView,
+    PostSearchView,
+    FeaturedPostsView,
+    RecentPostsView,
+    TagListView,
+    PostReportView
+)
 
 
 urlpatterns = [
@@ -15,6 +21,10 @@ urlpatterns = [
     path(
         "api/v1/posts/<uuid:post_id>/",
         PostDetailView.as_view()
+    ),
+    path(
+        "api/v1/posts/<uuid:post_id>/report/",
+        PostReportView.as_view()
     ),
     path(
         "api/v1/posts/search/",

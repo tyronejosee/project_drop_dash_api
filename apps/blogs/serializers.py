@@ -2,7 +2,7 @@
 
 from rest_framework.serializers import ModelSerializer
 
-from .models import Post, Tag
+from .models import Post, Tag, PostReport
 
 
 class TagReadSerializer(ModelSerializer):
@@ -10,8 +10,15 @@ class TagReadSerializer(ModelSerializer):
 
     class Meta:
         model = Tag
-        fields = ["id", "name", "slug"]
-        read_only_fields = ["id", "slug"]
+        fields = [
+            "id",
+            "name",
+            "slug",
+        ]
+        read_only_fields = [
+            "id",
+            "slug",
+        ]
 
 
 class TagWriteSerializer(ModelSerializer):
@@ -39,7 +46,11 @@ class PostReadSerializer(ModelSerializer):
             "created_at",
             "updated_at",
         ]
-        read_only_fields = ["slug", "created_at", "updated_at"]
+        read_only_fields = [
+            "slug",
+            "created_at",
+            "updated_at",
+        ]
 
 
 class PostWriteSerializer(ModelSerializer):
@@ -47,4 +58,18 @@ class PostWriteSerializer(ModelSerializer):
 
     class Meta:
         model = Post
-        fields = ["title", "content", "tags"]
+        fields = [
+            "title",
+            "content",
+            "tags",
+        ]
+
+
+class PostReportWriteSerializer(ModelSerializer):
+    """Serializer for PostReport model (Create/update)."""
+
+    class Meta:
+        model = PostReport
+        fields = [
+            "reason",
+        ]
