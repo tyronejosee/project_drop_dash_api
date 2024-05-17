@@ -10,12 +10,14 @@ from rest_framework import status
 from rest_framework.permissions import AllowAny
 
 from apps.users.permissions import IsSupport, IsClient
+from apps.utilities.pagination import LargeSetPagination
 from .models import Post, Tag, PostReport
 from .serializers import (
     PostWriteSerializer,
     PostReadSerializer,
     TagWriteSerializer,
     TagReadSerializer,
+    PostReportReadSerializer,
     PostReportWriteSerializer,
 )
 from .choices import Priority
@@ -277,3 +279,28 @@ class PostReportView(APIView):
                 status=status.HTTP_201_CREATED,
             )
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class ReportsView(APIView):
+    """View for listing all reports.
+
+    Endpoints:
+    - GET api/v1/posts/reports/
+    """
+
+    permission_classes = [IsSupport]
+
+    # TODO: Add filters
+
+    def get(self, request):
+        # Get all reports from users to the posts
+        reports = PostReport.objects.filter(available=True)
+
+        paginator = LargeSetPagination()
+        page = paginator.paginate_queryset(reports, request)
+        if page is not None:
+            serializer = PostReportReadSerializer(reports, many=True)
+            return paginator.get_paginated_response(serializer.data)
+
+        serializer = PostReportReadSerializer(reports, many=True)
+        return Response(serializer.data)

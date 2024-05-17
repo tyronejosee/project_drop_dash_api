@@ -9,6 +9,7 @@ from .views import (
     FeaturedPostsView,
     RecentPostsView,
     TagListView,
+    ReportsView,
     PostReportView
 )
 
@@ -31,12 +32,16 @@ urlpatterns = [
         PostSearchView.as_view()
     ),
     path(
+        "api/v1/posts/recent/",
+        RecentPostsView.as_view()
+    ),
+    path(
         "api/v1/posts/featured/",
         FeaturedPostsView.as_view()
     ),
     path(
-        "api/v1/posts/recent/",
-        RecentPostsView.as_view()
+        "api/v1/posts/reports/",
+        ReportsView.as_view()
     ),
     path(
         "api/v1/posts/tags/",

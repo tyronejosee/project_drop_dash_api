@@ -1,6 +1,6 @@
 """Serializers for Blogs App."""
 
-from rest_framework.serializers import ModelSerializer
+from rest_framework.serializers import ModelSerializer, CharField
 
 from .models import Post, Tag, PostReport
 
@@ -65,8 +65,28 @@ class PostWriteSerializer(ModelSerializer):
         ]
 
 
+class PostReportReadSerializer(ModelSerializer):
+    """Serializer for PostReport model (List)."""
+
+    priority = CharField(source="get_priority_display")
+    status = CharField(source="get_status_display")
+
+    class Meta:
+        model = PostReport
+        fields = [
+            "id",
+            "user",
+            "post",
+            "reason",
+            "priority",
+            "status",
+            "created_at",
+            "updated_at",
+        ]
+
+
 class PostReportWriteSerializer(ModelSerializer):
-    """Serializer for PostReport model (Create/update)."""
+    """Serializer for PostReport model (Create)."""
 
     class Meta:
         model = PostReport
