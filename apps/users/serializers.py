@@ -31,8 +31,6 @@ class UserWriteSerializer(UserCreateSerializer):
             "first_name",
             "last_name",
             "date_birth",
-            "identity_number",
-            "phone",
             "points",
             "role",
             "is_active",
