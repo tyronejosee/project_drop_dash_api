@@ -25,6 +25,7 @@ class PromotionListView(APIView):
     - GET api/v1/promotions/
     - POST api/v1/promotions/
     """
+
     permission_classes = [IsAdministrator]
     cache_key = "promotion_list"
 
@@ -38,7 +39,7 @@ class PromotionListView(APIView):
             if not promotions.exists():
                 return Response(
                     {"detail": "No promotions available."},
-                    status=status.HTTP_404_NOT_FOUND
+                    status=status.HTTP_404_NOT_FOUND,
                 )
 
             page = paginator.paginate_queryset(promotions, request)
@@ -70,6 +71,7 @@ class PromotionDetailView(APIView):
     - GET api/v1/promotions/{id}/
     - DELETE api/v1/promotions/{id}/
     """
+
     permission_classes = [IsAdministrator]
 
     def get_object(self, promotion_id):
@@ -102,20 +104,19 @@ class PromotionSearchView(APIView):
     def get(self, request):
         # Search for promotions for name and conditions fields
         search_term = request.query_params.get("q", "")
-        search_term = re.sub(r'[^\w\s\-\(\)\.,]', '', search_term).strip()
+        search_term = re.sub(r"[^\w\s\-\(\)\.,]", "", search_term).strip()
 
         if not search_term:
             return Response(
                 {"detail": "No search query provided"},
-                status=status.HTTP_400_BAD_REQUEST
+                status=status.HTTP_400_BAD_REQUEST,
             )
 
         promotions = Promotion.objects.get_search(search_term)
 
         if not promotions.exists():
             return Response(
-                {"detail": "No results found."},
-                status=status.HTTP_404_NOT_FOUND
+                {"detail": "No results found."}, status=status.HTTP_404_NOT_FOUND
             )
 
         serializer = PromotionReadSerializer(promotions, many=True)

@@ -5,11 +5,11 @@
 ### Orders
 
 - [ ] `GET /api/ordders/me`
-- [ ] `GET /api/orders/`
-- [ ] `POST /api/orders/`
-- [ ] `GET /api/orders/{id}/`
-- [ ] `PUT /api/orders/{id}/`
-- [ ] `DELETE /api/orders/{id}/`
+- [x] `GET /api/orders/`
+- [x] `POST /api/orders/`
+- [x] `GET /api/orders/{id}/`
+- [x] `PUT /api/orders/{id}/`
+- [x] `DELETE /api/orders/{id}/`
 - [ ] `GET /api/orders/pending/`
 - [ ] `GET /api/orders/completed/`
 - [ ] `PUT /api/orders/{id}/update-status/`

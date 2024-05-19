@@ -11,16 +11,19 @@ from drf_spectacular.utils import extend_schema_view
 
 from apps.utilities.pagination import MediumSetPagination
 from .models import FixedCoupon, PercentageCoupon
-from .serializers import (
-    FixedCouponSerializer, PercentageCouponSerializer)
+from .serializers import FixedCouponSerializer, PercentageCouponSerializer
 from .schemas import (
-    fixed_coupon_list_schema, fixed_coupon_detail_schema,
-    percentage_coupon_list_schema, percentage_coupon_detail_schema)
+    fixed_coupon_list_schema,
+    fixed_coupon_detail_schema,
+    percentage_coupon_list_schema,
+    percentage_coupon_detail_schema,
+)
 
 
 @extend_schema_view(**fixed_coupon_list_schema)
 class FixedCouponListView(APIView):
     """View for listing and creating fixed coupons."""
+
     permission_classes = [IsAuthenticated]
     serializer_class = FixedCouponSerializer
     cache_key = "fixed_coupon_list"
@@ -35,7 +38,7 @@ class FixedCouponListView(APIView):
             if not coupons.exists():
                 return Response(
                     {"detail": "No fixed coupons available."},
-                    status=status.HTTP_404_NOT_FOUND
+                    status=status.HTTP_404_NOT_FOUND,
                 )
             # Fetches the data from the database and serializes it
             paginated_data = paginator.paginate_queryset(coupons, request)
@@ -44,10 +47,8 @@ class FixedCouponListView(APIView):
             cache.set(self.cache_key, serializer.data, 7200)
         else:
             # Retrieve the cached data and serialize it
-            paginated_cached_data = paginator.paginate_queryset(
-                cached_data, request)
-            serializer = self.serializer_class(
-                paginated_cached_data, many=True)
+            paginated_cached_data = paginator.paginate_queryset(cached_data, request)
+            serializer = self.serializer_class(paginated_cached_data, many=True)
 
         return paginator.get_paginated_response(serializer.data)
 
@@ -61,13 +62,13 @@ class FixedCouponListView(APIView):
             # Invalidate cache
             cache.delete(self.cache_key)
             return Response(serializer.data, status=status.HTTP_201_CREATED)
-        return Response(
-            serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 @extend_schema_view(**fixed_coupon_detail_schema)
 class FixedCouponDetailView(APIView):
     """View to retrieve, update, and delete a fixed coupon."""
+
     permission_classes = [IsAuthenticated]
     serializer_class = FixedCouponSerializer
 
@@ -103,6 +104,7 @@ class FixedCouponDetailView(APIView):
 @extend_schema_view(**percentage_coupon_list_schema)
 class PercentageCouponListView(APIView):
     """View for listing and creating percentage coupons."""
+
     permission_classes = [IsAuthenticated]
     serializer_class = PercentageCouponSerializer
     cache_key = "percentage_coupon"
@@ -118,7 +120,7 @@ class PercentageCouponListView(APIView):
             if not coupons.exists():
                 return Response(
                     {"detail": "No percentage coupons available."},
-                    status=status.HTTP_404_NOT_FOUND
+                    status=status.HTTP_404_NOT_FOUND,
                 )
 
             paginated_data = paginator.paginate_queryset(coupons, request)
@@ -127,10 +129,8 @@ class PercentageCouponListView(APIView):
             cache.set(self.cache_key, serializer.data, self.cache_timeout)
         else:
             # Retrieve the cached data and serialize it
-            paginated_cached_data = paginator.paginate_queryset(
-                cached_data, request)
-            serializer = self.serializer_class(
-                paginated_cached_data, many=True)
+            paginated_cached_data = paginator.paginate_queryset(cached_data, request)
+            serializer = self.serializer_class(paginated_cached_data, many=True)
 
         return paginator.get_paginated_response(serializer.data)
 
@@ -149,6 +149,7 @@ class PercentageCouponListView(APIView):
 @extend_schema_view(**percentage_coupon_detail_schema)
 class PercentageCouponDetailView(APIView):
     """View to retrieve, update, and delete a percentage coupon."""
+
     permission_classes = [IsAuthenticated]
     serializer_class = PercentageCouponSerializer
 
@@ -166,8 +167,7 @@ class PercentageCouponDetailView(APIView):
     def put(self, request, percentage_coupon_id):
         # Update a percentage coupon
         percentage_coupon = self.get_object(percentage_coupon_id)
-        serializer = self.serializer_class(
-            percentage_coupon, data=request.data)
+        serializer = self.serializer_class(percentage_coupon, data=request.data)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data)
@@ -191,25 +191,23 @@ class CheckCouponView(APIView):
             coupon_code = request.query_params.get("coupon_code")
             # coupon_code = request.data.get("coupon_code")
 
-            fixed_coupon = FixedCoupon.objects.filter(
-                code=coupon_code).first()
+            fixed_coupon = FixedCoupon.objects.filter(code=coupon_code).first()
             percentage_coupon = PercentageCoupon.objects.filter(
-                code=coupon_code).first()
+                code=coupon_code
+            ).first()
 
             if fixed_coupon:
                 serializer = FixedCouponSerializer(fixed_coupon)
                 return Response(serializer.data)
             elif percentage_coupon:
-                serializer = PercentageCouponSerializer(
-                    percentage_coupon)
+                serializer = PercentageCouponSerializer(percentage_coupon)
                 return Response(serializer.data)
             else:
                 return Response(
                     {"errors": "Coupon code not found"},
-                    status=status.HTTP_404_NOT_FOUND
+                    status=status.HTTP_404_NOT_FOUND,
                 )
         except Exception as e:
             return Response(
-                {"errors": str(e)},
-                status=status.HTTP_500_INTERNAL_SERVER_ERROR
+                {"errors": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR
             )

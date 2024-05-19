@@ -9,6 +9,7 @@ from .models import Promotion
 
 class PromotionReadSerializer(ModelSerializer):
     """Serializer for Promotion model (List/retrieve)."""
+
     creator = UserMinimalSerializer()
 
     class Meta:
@@ -21,7 +22,7 @@ class PromotionReadSerializer(ModelSerializer):
             "start_date",
             "end_date",
             "is_active",
-            "image"
+            "image",
         ]
 
     def to_representation(self, instance):
@@ -35,14 +36,7 @@ class PromotionWriteSerializer(ModelSerializer):
 
     class Meta:
         model = Promotion
-        fields = [
-            "name",
-            "conditions",
-            "start_date",
-            "end_date",
-            "is_active",
-            "image"
-        ]
+        fields = ["name", "conditions", "start_date", "end_date", "is_active", "image"]
 
     def validate_start_date(self, value):
         """Validate that start_date is not earlier than the current month."""

@@ -4,8 +4,7 @@ from django.conf import settings
 from django.db import models
 from django.core.validators import FileExtensionValidator
 
-from apps.utilities.validators import (
-    FileSizeValidator, DateRangeValidator)
+from apps.utilities.validators import FileSizeValidator, DateRangeValidator
 from apps.utilities.models import BaseModel
 from apps.utilities.paths import image_path
 from .managers import PromotionManager
@@ -15,6 +14,7 @@ User = settings.AUTH_USER_MODEL
 
 class Promotion(BaseModel):
     """Model definition for Promotion (Entity)."""
+
     creator = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
     name = models.CharField(max_length=255)
     conditions = models.TextField()
@@ -25,8 +25,8 @@ class Promotion(BaseModel):
         upload_to=image_path,
         validators=[
             FileExtensionValidator(allowed_extensions=["webp"]),
-            FileSizeValidator(limit_mb=1)
-        ]
+            FileSizeValidator(limit_mb=1),
+        ],
     )
 
     objects = PromotionManager()

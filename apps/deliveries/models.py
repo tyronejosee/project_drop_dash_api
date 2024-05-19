@@ -1,31 +1,25 @@
 """Models for Deliveries App."""
 
 # from django.db import models
+# from django.contrib.auth import get_user_model
+
+# from apps.orders.models import Order
+# from .choices import Status
+
+# User = get_user_model()
 
 
 # class Delivery(models.Model):
-#     DELIVERY_STATUS_CHOICES = [
-#         ('IN_PROGRESS', 'In Progress'),
-#         ('COMPLETED', 'Completed'),
-#         ('CANCELLED', 'Cancelled')
-#     ]
-#     order = models.OneToOneField(Order, on_delete=models.CASCADE)
-#     user = models.ForeignKey(User, on_delete=models.CASCADE)
-#     driver = models.ForeignKey(
-#         User, on_delete=models.SET_NULL, null=True,
-#         blank=True, related_name='deliveries')
-#     status = models.CharField(
-#         max_length=20, choices=DELIVERY_STATUS_CHOICES,
-#         default='IN_PROGRESS')
-#     delivery_date = models.DateTimeField()
+#     """Model definition for Delivery."""
 
-#     user = models.ForeignKey(User, on_delete=models.CASCADE)
+#     order = models.OneToOneField(Order, on_delete=models.CASCADE)
 #     driver = models.ForeignKey(
-#         User, on_delete=models.SET_NULL,
-#         null=True, blank=True, related_name='deliveries')
-#     status = models.CharField(
-#         max_length=20, choices=DELIVERY_STATUS_CHOICES,
-#         default='IN_PROGRESS')
+#         User,
+#         on_delete=models.SET_NULL,
+#         null=True,
+#         blank=True,
+#         related_name="deliveries",
+#     )
 #     delivery_date = models.DateTimeField()
 #     pickup_address = models.CharField(max_length=255)
 #     delivery_address = models.CharField(max_length=255)
@@ -33,8 +27,11 @@
 #     special_instructions = models.TextField(blank=True)
 #     delivery_type = models.CharField(max_length=50)
 #     delivery_cost = models.DecimalField(max_digits=10, decimal_places=2)
-#     order_details = models.ForeignKey('Order', on_delete=models.CASCADE)
+#     order_details = models.ForeignKey("Order", on_delete=models.CASCADE)
 #     estimated_delivery_time = models.DateTimeField()
 #     payment_status = models.BooleanField(default=False)
-#     signature = models.ImageField(upload_to='signatures/', blank=True)
+#     signature = models.ImageField(upload_to="deliveries/signatures/", blank=True)
 #     internal_notes = models.TextField(blank=True)
+#     status = models.CharField(
+#         max_length=20, choices=Status.choices, default=Status.IN_PROGRESS
+#     )

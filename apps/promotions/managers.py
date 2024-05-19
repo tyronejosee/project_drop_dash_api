@@ -21,6 +21,5 @@ class PromotionManager(Manager):
     def get_search(self, search_term):
         """Filter promotions based on a search term."""
         return self.get_available().filter(
-            Q(name__icontains=search_term)
-            | Q(conditions__icontains=search_term)
+            Q(name__icontains=search_term) | Q(conditions__icontains=search_term)
         )

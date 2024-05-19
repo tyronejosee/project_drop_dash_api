@@ -4,6 +4,7 @@
 
 - [Representante Legal](https://www.sii.cl/portales/investors/registrese/representante_legal.htm)
 - [E-RUT](https://www.sii.cl/destacados/erut/quees_erut.html)
+- [Tipos de Contrato](https://firmavirtual.legal/tipos-de-contrato-de-trabajo/)
 
 ## Verificación
 

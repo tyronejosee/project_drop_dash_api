@@ -5,7 +5,7 @@ from django.db import models
 
 from apps.utilities.models import BaseModel
 from apps.locations.models import Country, State, City
-from .choices import Status
+from .choices import Status, ContractType
 
 User = settings.AUTH_USER_MODEL
 
@@ -14,7 +14,7 @@ User = settings.AUTH_USER_MODEL
 
 
 class Position(BaseModel):
-    """Model definition for JobPosition."""
+    """Model definition for JobPosition (Catalog)."""
 
     position = models.CharField(max_length=100, unique=True)
     description = models.TextField()
@@ -29,7 +29,7 @@ class Position(BaseModel):
 
 
 class Worker(BaseModel):
-    """Model definition for Worker."""
+    """Model definition for Worker (Entity)."""
 
     user = models.OneToOneField(User, on_delete=models.DO_NOTHING)
     phone_number = models.CharField(max_length=15)
@@ -38,11 +38,13 @@ class Worker(BaseModel):
     state = models.ForeignKey(State, on_delete=models.PROTECT)
     country = models.ForeignKey(Country, on_delete=models.PROTECT)
     position = models.ForeignKey(Position, on_delete=models.PROTECT)
-    is_active = models.BooleanField(default=True)
     hired_date = models.DateField()
     termination_date = models.DateField(null=True, blank=True)
     hourly_rate = models.DecimalField(max_digits=10, decimal_places=2)
-    contract = models.FileField(upload_to="jobs/contracts/", null=True, blank=True)
+    contract_type = models.CharField(
+        max_length=15, choices=ContractType.choices, default=ContractType.FIXED_TERM
+    )
+    contract_file = models.FileField(upload_to="jobs/contracts/", null=True, blank=True)
 
     class Meta:
         ordering = ["pk"]
@@ -54,13 +56,14 @@ class Worker(BaseModel):
 
 
 class Applicant(BaseModel):
-    """Model definition for Applicant."""
+    """Model definition for Applicant (Entity)."""
 
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     phone_number = models.CharField(max_length=15)
-    address = models.CharField(max_length=255)
+    email = models.EmailField(max_length=100)
     applied_for = models.ForeignKey(Position, on_delete=models.CASCADE)
     cv = models.FileField(upload_to="jobs/applicants/cv/")
+    message = models.TextField()
     submitted_at = models.DateTimeField(auto_now_add=True)
     status = models.CharField(
         max_length=10, choices=Status.choices, default=Status.PENDING

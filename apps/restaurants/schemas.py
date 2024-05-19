@@ -13,7 +13,7 @@ restaurant_list_schema = {
         operation_id="restaurant_list_create",
         summary="Create restaurant",
         description="pending",
-    )
+    ),
 }
 
 
@@ -32,7 +32,7 @@ restaurant_detail_schema = {
         operation_id="restaurant_detail_destroy",
         summary="Delete restaurant",
         description="pending",
-    )
+    ),
 }
 
 
@@ -46,7 +46,7 @@ category_list_schema = {
         operation_id="category_list_create",
         summary="Create category",
         description="pending",
-    )
+    ),
 }
 
 
@@ -65,7 +65,7 @@ category_detail_schema = {
         operation_id="category_detail_destroy",
         summary="Delete category",
         description="pending",
-    )
+    ),
 }
 
 
@@ -79,7 +79,7 @@ food_list_schema = {
         operation_id="food_list_create",
         summary="Create food",
         description="pending",
-    )
+    ),
 }
 
 
@@ -98,5 +98,5 @@ food_detail_schema = {
         operation_id="food_detail_destroy",
         summary="Delete food",
         description="pending",
-    )
+    ),
 }

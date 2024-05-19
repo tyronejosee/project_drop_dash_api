@@ -9,10 +9,29 @@ from .models import User
 class UserAdmin(admin.ModelAdmin):
     """Admin for User model."""
 
-    list_display = ["username", "email", "role"]
-    list_display_links = ["username"]
-    search_fields = ["username", "email", "first_name", "last_name"]
-    list_filter = ["is_staff", "is_superuser", "is_active"]
     list_per_page = 25
-    readonly_fields = ["pk"]
-    ordering = ["username"]
+    list_display = [
+        "username",
+        "email",
+        "role",
+    ]
+    list_display_links = [
+        "username",
+    ]
+    search_fields = [
+        "username",
+        "email",
+        "first_name",
+        "last_name",
+    ]
+    list_filter = [
+        "is_staff",
+        "is_superuser",
+        "is_active",
+    ]
+    readonly_fields = [
+        "pk",
+    ]
+    ordering = [
+        "username",
+    ]

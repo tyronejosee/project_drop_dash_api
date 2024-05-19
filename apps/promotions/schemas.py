@@ -10,20 +10,14 @@ promotion_list_schema = {
         operation_id="promotion_list_retrieve",
         summary="Get promotions",
         description="Get all promotions, the 'administrator' role is required",
-        responses={
-            200: PromotionReadSerializer(),
-            500: None
-        }
+        responses={200: PromotionReadSerializer(), 500: None},
     ),
     "post": extend_schema(
         operation_id="promotion_list_create",
         summary="Create promotion",
         description="Create a promotion, the 'administrator' role is required",
-        responses={
-            201: PromotionWriteSerializer(),
-            400: None
-        }
-    )
+        responses={201: PromotionWriteSerializer(), 400: None},
+    ),
 }
 
 
@@ -34,7 +28,7 @@ promotion_detail_schema = {
         description="Get a promotion, the 'administrator' role is required",
         responses={
             200: PromotionReadSerializer(),
-        }
+        },
     ),
     "delete": extend_schema(
         operation_id="promotion_detail_destroy",
@@ -42,6 +36,6 @@ promotion_detail_schema = {
         description="Delete a promotion, the 'administrator' role is required",
         responses={
             204: None,
-        }
-    )
+        },
+    ),
 }

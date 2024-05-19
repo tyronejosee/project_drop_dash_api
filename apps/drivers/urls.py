@@ -8,13 +8,12 @@ from .views import DriverListView, DriverDetailView
 urlpatterns = [
     path(
         "api/v1/drivers/",
-        DriverListView.as_view()
+        DriverListView.as_view(),
     ),
     path(
         "api/v1/drivers/<uuid:driver_id>/",
-        DriverDetailView.as_view()
+        DriverDetailView.as_view(),
     ),
-
     # GET drivers/{driver_id}/orders
     # POST drivers/{driver_id}/assign_order
     # GET drivers/{driver_id}/order-history
