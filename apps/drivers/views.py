@@ -11,8 +11,13 @@ from drf_spectacular.utils import extend_schema_view
 from apps.users.permissions import IsAdministrator, IsClient, IsDriver
 from apps.utilities.pagination import LargeSetPagination
 from apps.users.choices import Role
-from .models import Driver
-from .serializers import DriverReadSerializer, DriverWriteSerializer
+from .models import Driver, Resource
+from .serializers import (
+    DriverReadSerializer,
+    DriverWriteSerializer,
+    ResourceReadSerializer,
+    ResourceWriteSerializer,
+)
 from .schemas import driver_list_schema, driver_detail_schema
 
 
@@ -116,9 +121,43 @@ class DriverDetailView(APIView):
 
 class DriverResourceRequestView(APIView):
     """
+    View for requesting resources.
 
     Endpoints:
-    - resources/request/
+    - POST api/v1/resources/request/
     """
 
-    pass
+    permission_classes = [IsDriver]
+
+    def post(self, request):
+        # Submit a resource request
+        serializer = ResourceWriteSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        driver = get_object_or_404(Driver, user=request.user)
+        serializer.save(driver=driver)
+        return Response(
+            {"detail": "Request successful."}, status=status.HTTP_201_CREATED
+        )
+
+
+class DriverResourceHistoryView(APIView):
+    """
+    View for retrieving a driver's resource history.
+
+    Endpoints:
+    - GET api/v1/drivers/resources/history/
+    """
+
+    permission_classes = [IsDriver]
+
+    def get(self, request, *args, **kwargs):
+        # Retrieve a driver's resource history
+        driver = get_object_or_404(Driver, user=request.user)
+        resources = Resource.objects.filter(driver=driver)
+        if not resources:
+            return Response(
+                {"detail": "There are no resources available."},
+                status=status.HTTP_404_NOT_FOUND,
+            )
+        serializer = ResourceReadSerializer(resources, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)

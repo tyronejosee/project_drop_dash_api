@@ -2,7 +2,12 @@
 
 from django.urls import path
 
-from .views import DriverListView, DriverDetailView
+from .views import (
+    DriverListView,
+    DriverDetailView,
+    DriverResourceRequestView,
+    DriverResourceHistoryView,
+)
 
 
 urlpatterns = [
@@ -13,6 +18,14 @@ urlpatterns = [
     path(
         "api/v1/drivers/<uuid:driver_id>/",
         DriverDetailView.as_view(),
+    ),
+    path(
+        "api/v1/drivers/request/",
+        DriverResourceRequestView.as_view(),
+    ),
+    path(
+        "api/v1/drivers/history/",
+        DriverResourceHistoryView.as_view(),
     ),
     # GET drivers/{driver_id}/orders
     # POST drivers/{driver_id}/assign_order

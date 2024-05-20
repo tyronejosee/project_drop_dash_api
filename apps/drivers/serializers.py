@@ -47,6 +47,18 @@ class DriverWriteSerializer(serializers.ModelSerializer):
         ]
 
 
+class ResourceReadSerializer(serializers.ModelSerializer):
+    """Serializer for Resource model (List/retrieve)."""
+
+    class Meta:
+        model = Resource
+        fields = [
+            "resource_type",
+            "note",
+            "status",
+        ]
+
+
 class ResourceWriteSerializer(serializers.ModelSerializer):
     """Serializer for Resource model (Create/update)."""
 
@@ -56,3 +68,7 @@ class ResourceWriteSerializer(serializers.ModelSerializer):
             "resource_type",
             "note",
         ]
+        extra_kwargs = {
+            "resource_type": {"required": True},
+            "note": {"required": True},
+        }
