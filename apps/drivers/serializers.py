@@ -2,7 +2,7 @@
 
 from rest_framework import serializers
 
-from .models import Driver
+from .models import Driver, Resource
 from .choices import Status
 
 
@@ -44,4 +44,15 @@ class DriverWriteSerializer(serializers.ModelSerializer):
             "city",
             "state",
             "country",
+        ]
+
+
+class ResourceWriteSerializer(serializers.ModelSerializer):
+    """Serializer for Resource model (Create/update)."""
+
+    class Meta:
+        model = Resource
+        fields = [
+            "resource_type",
+            "note",
         ]

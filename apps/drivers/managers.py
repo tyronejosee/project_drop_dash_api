@@ -21,3 +21,15 @@ class DriverManager(models.Manager):
     def get_drivers_by_city(self, city_id):
         """Return a queryset of drivers in a specific city."""
         return self.get_available().filter(city=city_id)
+
+
+class ResourceManager(models.Manager):
+    """Manager for Resource Model."""
+
+    def get_queryset(self):
+        # Default queryset
+        return super().get_queryset()
+
+    def get_available(self):
+        """Return a queryset of available resources."""
+        return self.get_queryset().filter(available=True)

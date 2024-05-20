@@ -6,14 +6,14 @@ from django.db import models
 from apps.utilities.validators import validate_phone, validate_birth_date
 from apps.utilities.models import BaseModel
 from apps.locations.models import Country, State, City
-from .managers import DriverManager
-from .choices import Status
+from .managers import DriverManager, ResourceManager
+from .choices import Status, ResourceType, RequestStatus
 
 User = settings.AUTH_USER_MODEL
 
 
 class Driver(BaseModel):
-    """Model definition for Driver (Entity)."""
+    """Model definition for Driver."""
 
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     address = models.CharField(max_length=255)
@@ -36,3 +36,27 @@ class Driver(BaseModel):
 
     def __str__(self):
         return str(self.user.username)
+
+
+class Resource(BaseModel):
+    """Model definition for Resource."""
+
+    driver = models.ForeignKey(Driver, on_delete=models.CASCADE)
+    resource_type = models.CharField(
+        max_length=15, choices=ResourceType.choices, default=ResourceType.BACKPACKS
+    )
+    note = models.TextField(blank=True)
+    status = models.CharField(
+        max_length=15, choices=RequestStatus.choices, default=RequestStatus.PENDING
+    )
+    # request_date = created_at (BaseModel)
+
+    objects = ResourceManager()
+
+    class Meta:
+        ordering = ["pk"]
+        verbose_name = "resource"
+        verbose_name_plural = "resources"
+
+    def __str__(self):
+        return f"Resources for {self.driver}"
