@@ -25,3 +25,16 @@ def image_banner_path(instance, filename):
     filename = f"{name_slug}-banner.{extension}"
 
     return f"{appname}/{modelname}/{filename}"
+
+
+def docs_path(instance, filename):
+    """Generates storage path for associated model docs."""
+    # appname = apps.contents.models
+    appname = instance.__class__.__module__.split(".")[1]
+    modelname = instance.__class__.__name__.lower()
+    extension = filename.split(".")[-1]
+    username = instance.user.username
+    name_slug = slugify(instance.user.pk)[:50]
+    filename = f"{name_slug}.{extension}"
+
+    return f"{appname}/{modelname}/{username}/{filename}"

@@ -2,9 +2,11 @@
 
 from django.conf import settings
 from django.db import models
+from django.core.validators import FileExtensionValidator
 
 from apps.utilities.validators import validate_phone, validate_birth_date
 from apps.utilities.models import BaseModel
+from apps.utilities.paths import docs_path
 from apps.locations.models import Country, State, City
 from .managers import DriverManager, ResourceManager
 from .choices import Status, ResourceType, RequestStatus
@@ -16,16 +18,31 @@ class Driver(BaseModel):
     """Model definition for Driver."""
 
     user = models.OneToOneField(User, on_delete=models.CASCADE)
-    address = models.CharField(max_length=255)
     phone = models.CharField(max_length=12, unique=True, validators=[validate_phone])
     email = models.EmailField(blank=True)
     birth_date = models.DateField(validators=[validate_birth_date])
+    driver_license = models.FileField(
+        upload_to=docs_path,
+        validators=[FileExtensionValidator(["pdf", "jpg"])],
+    )
+    identification_document = models.FileField(
+        upload_to=docs_path,
+        validators=[FileExtensionValidator(["pdf", "jpg"])],
+    )
+    social_security_certificate = models.FileField(
+        upload_to=docs_path,
+        validators=[FileExtensionValidator(["pdf", "jpg"])],
+    )
+    address = models.CharField(max_length=255)
     city = models.ForeignKey(City, on_delete=models.PROTECT)
     state = models.ForeignKey(State, on_delete=models.PROTECT)
     country = models.ForeignKey(Country, on_delete=models.PROTECT)
+    is_verified = models.BooleanField(default=False)
     status = models.CharField(
         max_length=10, choices=Status.choices, default=Status.BRONCE
-    )  # TODO: Add crontab or signals for logic
+    )
+
+    # TODO: Add crontab or signals for logic, Add more validators
 
     objects = DriverManager()
 
