@@ -4,7 +4,6 @@ from django.conf import settings
 from django.db import models
 from django.core.validators import FileExtensionValidator
 
-from apps.utilities.validators import validate_phone, validate_birth_date
 from apps.utilities.models import BaseModel
 from apps.utilities.paths import docs_path
 from apps.locations.models import Country, State, City
@@ -18,9 +17,8 @@ class Driver(BaseModel):
     """Model definition for Driver."""
 
     user = models.OneToOneField(User, on_delete=models.CASCADE)
-    phone = models.CharField(max_length=12, unique=True, validators=[validate_phone])
-    email = models.EmailField(blank=True)
-    birth_date = models.DateField(validators=[validate_birth_date])
+    phone = models.CharField()
+    birth_date = models.CharField()
     driver_license = models.FileField(
         upload_to=docs_path,
         validators=[FileExtensionValidator(["pdf", "jpg"])],
@@ -33,7 +31,7 @@ class Driver(BaseModel):
         upload_to=docs_path,
         validators=[FileExtensionValidator(["pdf", "jpg"])],
     )
-    address = models.CharField(max_length=255)
+    address = models.CharField()
     city = models.ForeignKey(City, on_delete=models.PROTECT)
     state = models.ForeignKey(State, on_delete=models.PROTECT)
     country = models.ForeignKey(Country, on_delete=models.PROTECT)

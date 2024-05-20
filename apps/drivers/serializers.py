@@ -2,6 +2,7 @@
 
 from rest_framework import serializers
 
+from apps.utilities.validators import validate_phone, validate_birth_date
 from .models import Driver, Resource
 from .choices import Status
 
@@ -22,7 +23,6 @@ class DriverReadSerializer(serializers.ModelSerializer):
             "user",
             "address",
             "phone",
-            "email",
             "birth_date",
             "city",
             "state",
@@ -34,12 +34,18 @@ class DriverReadSerializer(serializers.ModelSerializer):
 class DriverWriteSerializer(serializers.ModelSerializer):
     """Serializer for Driver model (Create/update)."""
 
+    phone = serializers.CharField(max_length=12, validators=[validate_phone])
+    birth_date = serializers.DateField(validators=[validate_birth_date])
+    address = serializers.CharField(max_length=255)
+
     class Meta:
         model = Driver
         fields = [
             "phone",
-            "email",
             "birth_date",
+            "driver_license",
+            "identification_document",
+            "social_security_certificate",
             "address",
             "city",
             "state",

@@ -1,5 +1,6 @@
 """Views for Drivers App."""
 
+from django.http import JsonResponse
 from django.db import transaction
 from django.core.cache import cache
 from django.shortcuts import get_object_or_404
@@ -7,6 +8,7 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
 from drf_spectacular.utils import extend_schema_view
+from cryptography.fernet import Fernet
 
 from apps.users.permissions import IsAdministrator, IsClient, IsDriver
 from apps.utilities.pagination import LargeSetPagination
@@ -19,6 +21,10 @@ from .serializers import (
     ResourceWriteSerializer,
 )
 from .schemas import driver_list_schema, driver_detail_schema
+
+
+key = Fernet.generate_key()
+cipher_suite = Fernet(key)
 
 
 @extend_schema_view(**driver_list_schema)
@@ -34,7 +40,6 @@ class DriverListView(APIView):
     permission_classes = [IsAdministrator]
     serializer_class = DriverReadSerializer
     cache_key = "driver_list"
-    cache_timeout = 7200  # 2 hours
 
     def get_permissions(self):
         if self.request.method == "POST":
@@ -43,32 +48,53 @@ class DriverListView(APIView):
 
     def get(self, request):
         # Get a list of drivers
+        drivers = Driver.objects.get_available()
+
         paginator = LargeSetPagination()
-        cached_data = cache.get(self.cache_key)
+        page = paginator.paginate_queryset(drivers, request)
+        if page is not None:
+            serializer = DriverReadSerializer(drivers, many=True)
+            serialized_data = serializer.data
 
-        if cached_data is None:
-            drivers = Driver.objects.get_available()
-            if not drivers.exists():
-                return Response(
-                    {"detail": "No drivers available"},
-                    status=status.HTTP_204_NO_CONTENT,
-                )
-            # Fetches the data from the database and serializes it
-            paginated_data = paginator.paginate_queryset(drivers, request)
-            serializer = self.serializer_class(paginated_data, many=True)
-            cache.set(self.cache_key, serializer.data, self.cache_timeout)
-        else:
-            # Retrieve the cached data and serialize it
-            paginated_cached_data = paginator.paginate_queryset(cached_data, request)
-            serializer = self.serializer_class(paginated_cached_data, many=True)
+            # Pending
+            for driver in serialized_data:
+                driver["address"] = cipher_suite.decrypt(driver["address"]).decode()
+                driver["phone"] = cipher_suite.decrypt(driver["phone"]).decode()
 
-        return paginator.get_paginated_response(serializer.data)
+            return paginator.get_paginated_response(serializer.data)
+
+        serializer = DriverReadSerializer(drivers, many=True)
+        serialized_data = serializer.data
+
+        # Pending
+        for driver in serialized_data:
+            driver["address"] = cipher_suite.decrypt(driver["address"]).decode()
+            driver["phone"] = cipher_suite.decrypt(driver["phone"]).decode()
+        # TODO: Fix serializer
+        return JsonResponse(serialized_data, safe=False)
 
     @transaction.atomic
     def post(self, request):
         # Create a new driver
         serializer = DriverWriteSerializer(data=request.data)
         if serializer.is_valid():
+            validated_data = serializer.validated_data
+
+            # Encrypt the sensitive fields
+            encrypted_phone = cipher_suite.encrypt(validated_data["phone"].encode())
+            encrypted_address = cipher_suite.encrypt(validated_data["address"].encode())
+            # encrypted_birth_date = cipher_suite.encrypt(
+            #     validated_data["birth_date"].encode()
+            # )
+            print(encrypted_phone)
+            print(encrypted_address)
+            # print(encrypted_birth_date)
+
+            # Update the sensitive fields
+            validated_data["phone"] = encrypted_phone
+            validated_data["address"] = encrypted_address
+            # validated_data["birth_date"] = encrypted_birth_date
+
             serializer.save(user=request.user)
             request.user.role = Role.DRIVER  # Update role
             request.user.save()
