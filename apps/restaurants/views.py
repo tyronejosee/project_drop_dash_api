@@ -11,6 +11,8 @@ from rest_framework.permissions import AllowAny
 from drf_spectacular.utils import extend_schema_view
 
 from apps.users.permissions import IsPartner, IsClient
+from apps.orders.models import Order
+from apps.orders.serializers import OrderReadSerializer
 from apps.utilities.pagination import LargeSetPagination
 from .models import Restaurant, Category, Food
 from .serializers import (
@@ -156,6 +158,29 @@ class RestaurantSearchView(APIView):
             )
 
         serializer = RestaurantReadSerializer(restaurants, many=True)
+        return Response(serializer.data)
+
+
+class RestaurantOrderListView(APIView):
+    """
+    View to retrieve orders for a specific restaurant.
+
+    Endpoints:
+    - GET api/v1/restaurants/{id}/orders/
+    """
+
+    def get(self, request, restaurant_id, format=None):
+        restaurant = get_object_or_404(Restaurant, pk=restaurant_id)
+        orders = Order.objects.filter(restaurant=restaurant)
+
+        paginator = LargeSetPagination()
+        page = paginator.paginate_queryset(orders, request)
+
+        if page is not None:
+            serializer = OrderReadSerializer(page, many=True)
+            return paginator.get_paginated_response(serializer.data)
+
+        serializer = OrderReadSerializer(orders, many=True)
         return Response(serializer.data)
 
 
