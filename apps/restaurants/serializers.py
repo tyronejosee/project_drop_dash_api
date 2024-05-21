@@ -8,6 +8,10 @@ from .models import Restaurant, Category, Food
 class RestaurantReadSerializer(serializers.ModelSerializer):
     """Serializer for Restaurant model (List/retrieve)."""
 
+    city = serializers.StringRelatedField()
+    state = serializers.StringRelatedField()
+    country = serializers.StringRelatedField()
+
     class Meta:
         model = Restaurant
         fields = [
@@ -25,7 +29,6 @@ class RestaurantReadSerializer(serializers.ModelSerializer):
             "opening_time",
             "closing_time",
             "phone",
-            "email",
             "website",
         ]
 

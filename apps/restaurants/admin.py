@@ -16,6 +16,7 @@ class RestaurantAdmin(admin.ModelAdmin):
     ]
     list_display = [
         "name",
+        "is_verified",
         "available",
     ]
     list_editable = [

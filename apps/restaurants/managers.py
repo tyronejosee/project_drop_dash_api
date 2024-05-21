@@ -12,7 +12,7 @@ class RestaurantManager(Manager):
 
     def get_available(self):
         """Get all available restaurants"""
-        return self.get_queryset().filter(available=True)
+        return self.get_queryset().filter(available=True, is_verified=True)
 
     def get_unavailable(self):
         """Get all unavailable restaurants"""
