@@ -11,6 +11,9 @@ BASE_DIR = Path(__file__).resolve().parent.parent.parent
 env = environ.Env()
 environ.Env.read_env("config/.env")
 
+ENCRYPT_KEY = b"UxzFA2QzSu_1-mJkxiWvMgG3TuMT0us_Glz2Guv-4iw="
+# ENCRYPT_KEY = env('ENCRYPT_KEY')
+
 
 BASE_APPS = [
     "django.contrib.admin",
@@ -119,7 +122,7 @@ REST_FRAMEWORK = {
     ],
     "DEFAULT_THROTTLE_CLASSES": [
         "rest_framework.throttling.AnonRateThrottle",
-        "rest_framework.throttling.UserRateThrottle"
+        "rest_framework.throttling.UserRateThrottle",
     ],
     "DEFAULT_SCHEMA_CLASS": "drf_spectacular.openapi.AutoSchema",
     # "DEFAULT_VERSIONING_CLASS": "rest_framework.versioning.NamespaceVersioning",
@@ -160,7 +163,8 @@ DJOSER = {
     "SEND_ACTIVATION_EMAIL": True,
     "SOCIAL_AUTH_TOKEN_STRATEGY": "djoser.social.token.jwt.TokenStrategy",
     "SOCIAL_AUTH_ALLOWED_REDIRECT_URIS": [
-        "http://localhost:8000/google", "http://localhost:8000/facebook"
+        "http://localhost:8000/google",
+        "http://localhost:8000/facebook",
     ],
     "SERIALIZERS": {
         "user_create": "apps.users.serializers.UserWriteSerializer",
@@ -171,14 +175,12 @@ DJOSER = {
 }
 
 SIMPLE_JWT = {
-    "AUTH_HEADER_TYPES": ("JWT", ),
+    "AUTH_HEADER_TYPES": ("JWT",),
     "ACCESS_TOKEN_LIFETIME": timedelta(minutes=10080),
     "REFRESH_TOKEN_LIFETIME": timedelta(days=30),
     "ROTATE_REFRESFH_TOKENS": True,
     "BLACKLIST_AFTER_ROTATION": True,
-    "AUTH_TOKEN_CLASSES": (
-        "rest_framework_simplejwt.tokens.AccessToken",
-    )
+    "AUTH_TOKEN_CLASSES": ("rest_framework_simplejwt.tokens.AccessToken",),
 }
 
 AUTHENTICATION_BACKENDS = (
@@ -194,7 +196,7 @@ SPECTACULAR_SETTINGS = {
     "VERSION": "v1",
     "LICENSE": {
         "name": "Apache Licence 2.0",
-        "url": "https://github.com/tyronejosee/project_drop_dash_api/blob/main/LICENSE"
+        "url": "https://github.com/tyronejosee/project_drop_dash_api/blob/main/LICENSE",
     },
     "CONTACT": {"name": "Developer", "url": "https://github.com/tyronejosee"},
     "SCHEMA_PATH_PREFIX": r"^/api/v\d+",

@@ -2,6 +2,7 @@
 
 from rest_framework import serializers
 
+from apps.utilities.functions import decrypt_field
 from apps.utilities.validators import validate_phone, validate_birth_date
 from .models import Driver, Resource
 from .choices import Status
@@ -29,6 +30,12 @@ class DriverReadSerializer(serializers.ModelSerializer):
             "country",
             "status",
         ]
+
+    def to_representation(self, instance):
+        data = super().to_representation(instance)
+        data["phone"] = decrypt_field(data["phone"])
+        data["address"] = decrypt_field(data["address"])
+        return data
 
 
 class DriverWriteSerializer(serializers.ModelSerializer):

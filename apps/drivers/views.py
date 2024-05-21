@@ -1,6 +1,5 @@
 """Views for Drivers App."""
 
-from django.http import JsonResponse
 from django.db import transaction
 from django.core.cache import cache
 from django.shortcuts import get_object_or_404
@@ -8,8 +7,8 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
 from drf_spectacular.utils import extend_schema_view
-from cryptography.fernet import Fernet
 
+from apps.utilities.functions import encrypt_field
 from apps.users.permissions import IsAdministrator, IsClient, IsDriver
 from apps.utilities.pagination import LargeSetPagination
 from apps.users.choices import Role
@@ -23,10 +22,6 @@ from .serializers import (
 from .schemas import driver_list_schema, driver_detail_schema
 
 
-key = Fernet.generate_key()
-cipher_suite = Fernet(key)
-
-
 @extend_schema_view(**driver_list_schema)
 class DriverListView(APIView):
     """
@@ -38,7 +33,6 @@ class DriverListView(APIView):
     """
 
     permission_classes = [IsAdministrator]
-    serializer_class = DriverReadSerializer
     cache_key = "driver_list"
 
     def get_permissions(self):
@@ -52,48 +46,31 @@ class DriverListView(APIView):
 
         paginator = LargeSetPagination()
         page = paginator.paginate_queryset(drivers, request)
+
         if page is not None:
-            serializer = DriverReadSerializer(drivers, many=True)
-            serialized_data = serializer.data
-
-            # Pending
-            for driver in serialized_data:
-                driver["address"] = cipher_suite.decrypt(driver["address"]).decode()
-                driver["phone"] = cipher_suite.decrypt(driver["phone"]).decode()
-
+            serializer = DriverReadSerializer(page, many=True)
             return paginator.get_paginated_response(serializer.data)
 
         serializer = DriverReadSerializer(drivers, many=True)
-        serialized_data = serializer.data
-
-        # Pending
-        for driver in serialized_data:
-            driver["address"] = cipher_suite.decrypt(driver["address"]).decode()
-            driver["phone"] = cipher_suite.decrypt(driver["phone"]).decode()
-        # TODO: Fix serializer
-        return JsonResponse(serialized_data, safe=False)
+        return Response(serializer.data)
 
     @transaction.atomic
     def post(self, request):
         # Create a new driver
+        # Check if the user already has a driver profile
+        if Driver.objects.filter(user=request.user).exists():
+            return Response(
+                {"detail": "This user already has a driver profile."},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
         serializer = DriverWriteSerializer(data=request.data)
         if serializer.is_valid():
+
+            # Encrypt specific fields after they have been validated
             validated_data = serializer.validated_data
-
-            # Encrypt the sensitive fields
-            encrypted_phone = cipher_suite.encrypt(validated_data["phone"].encode())
-            encrypted_address = cipher_suite.encrypt(validated_data["address"].encode())
-            # encrypted_birth_date = cipher_suite.encrypt(
-            #     validated_data["birth_date"].encode()
-            # )
-            print(encrypted_phone)
-            print(encrypted_address)
-            # print(encrypted_birth_date)
-
-            # Update the sensitive fields
-            validated_data["phone"] = encrypted_phone
-            validated_data["address"] = encrypted_address
-            # validated_data["birth_date"] = encrypted_birth_date
+            validated_data["phone"] = encrypt_field(validated_data["phone"])
+            validated_data["address"] = encrypt_field(validated_data["address"])
 
             serializer.save(user=request.user)
             request.user.role = Role.DRIVER  # Update role
