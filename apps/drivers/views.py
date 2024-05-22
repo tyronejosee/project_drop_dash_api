@@ -9,8 +9,7 @@ from rest_framework import status
 from drf_spectacular.utils import extend_schema_view
 
 from apps.utilities.functions import encrypt_field
-from apps.users.permissions import IsAdministrator, IsClient, IsDriver
-from apps.utilities.pagination import LargeSetPagination
+from apps.users.permissions import IsClient, IsDriver
 from apps.users.choices import Role
 from .models import Driver, Resource
 from .serializers import (
@@ -19,40 +18,75 @@ from .serializers import (
     ResourceReadSerializer,
     ResourceWriteSerializer,
 )
-from .schemas import driver_list_schema, driver_detail_schema
+from .schemas import driver_create_schema
 
 
-@extend_schema_view(**driver_list_schema)
-class DriverListView(APIView):
+class DriverProfileView(APIView):
     """
-    View to list and create drivers.
+    View to manage the driver profile.
 
     Endpoints:
-    - GET api/v1/drivers/
+    - GET api/v1/drivers/profile/
+    - PATCH api/v1/drivers/profile/
+    - DELETE api/v1/drivers/profile/
+    """
+
+    permission_classes = [IsDriver]
+
+    def get_object(self, request):
+        # Get a driver instance by user
+        user = request.user
+        return get_object_or_404(Driver, user=user)
+
+    def get(self, request):
+        # Get driver profile
+        driver_profile = self.get_object(request)
+        serializer = DriverReadSerializer(driver_profile)
+        return Response(serializer.data)
+
+    @transaction.atomic
+    def patch(self, request):
+        # Update driver profile
+        driver_profile = self.get_object(request)
+
+        if driver_profile.user == request.user:
+            serializer = DriverReadSerializer(
+                driver_profile, data=request.data, partial=True
+            )
+            if serializer.is_valid():
+                serializer.save()
+                return Response(serializer.data)
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        return Response(
+            {"detail": "You are not the owner of this profile."},
+            status=status.HTTP_403_FORBIDDEN,
+        )
+
+    @transaction.atomic
+    def delete(self, request):
+        # Delete driver profile
+        driver_profile = self.get_object(request)
+        if driver_profile.user == request.user:
+            driver_profile.available = False  # Logical deletion
+            # TODO: Add signal
+            driver_profile.save()
+            return Response(status=status.HTTP_204_NO_CONTENT)
+        return Response(
+            {"detail": "You are not the owner of this profile."},
+            status=status.HTTP_403_FORBIDDEN,
+        )
+
+
+@extend_schema_view(**driver_create_schema)
+class DriverCreateView(APIView):
+    """
+    View to create a driver profile.
+
+    Endpoints:
     - POST api/v1/drivers/
     """
 
-    permission_classes = [IsAdministrator]
-    cache_key = "driver_list"
-
-    def get_permissions(self):
-        if self.request.method == "POST":
-            return [IsClient()]
-        return super().get_permissions()
-
-    def get(self, request):
-        # Get a list of drivers
-        drivers = Driver.objects.get_available()
-
-        paginator = LargeSetPagination()
-        page = paginator.paginate_queryset(drivers, request)
-
-        if page is not None:
-            serializer = DriverReadSerializer(page, many=True)
-            return paginator.get_paginated_response(serializer.data)
-
-        serializer = DriverReadSerializer(drivers, many=True)
-        return Response(serializer.data)
+    permission_classes = [IsClient()]
 
     @transaction.atomic
     def post(self, request):
@@ -80,48 +114,6 @@ class DriverListView(APIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
-@extend_schema_view(**driver_detail_schema)
-class DriverDetailView(APIView):
-    """
-    View to retrieve, update, and delete a driver.
-
-    Endpoints:
-    - GET api/v1/drivers/{id}/
-    - PATCH api/v1/drivers/{id}/
-    - DELETE api/v1/drivers/{id}/
-    """
-
-    permission_classes = [IsDriver]
-    serializer_class = DriverReadSerializer
-
-    def get_object(self, driver_id):
-        # Get a driver instance by id
-        return get_object_or_404(Driver, pk=driver_id)
-
-    def get(self, request, driver_id, format=None):
-        driver = self.get_object(driver_id)
-        serializer = self.serializer_class(driver)
-        return Response(serializer.data)
-
-    @transaction.atomic
-    def patch(self, request, driver_id):
-        # Update a driver
-        driver = self.get_object(driver_id)
-        serializer = self.serializer_class(driver, data=request.data, partial=True)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-    @transaction.atomic
-    def delete(self, request, driver_id):
-        # Delete a driver
-        driver = self.get_object(driver_id)
-        driver.available = False  # Logical deletion
-        driver.save()
-        return Response(status=status.HTTP_204_NO_CONTENT)
-
-
 class DriverResourceRequestView(APIView):
     """
     View for requesting resources.
@@ -132,6 +124,7 @@ class DriverResourceRequestView(APIView):
 
     permission_classes = [IsDriver]
 
+    @transaction.atomic
     def post(self, request):
         # Submit a resource request
         serializer = ResourceWriteSerializer(data=request.data)

@@ -17,8 +17,8 @@ class Driver(BaseModel):
     """Model definition for Driver."""
 
     user = models.OneToOneField(User, on_delete=models.CASCADE)
-    phone = models.CharField(max_length=50)
-    birth_date = models.CharField(max_length=50)
+    phone = models.CharField(max_length=100)
+    birth_date = models.CharField(max_length=100)
     driver_license = models.FileField(
         upload_to=docs_path,
         validators=[FileExtensionValidator(["pdf", "jpg"])],
@@ -31,7 +31,7 @@ class Driver(BaseModel):
         upload_to=docs_path,
         validators=[FileExtensionValidator(["pdf", "jpg"])],
     )
-    address = models.CharField(max_length=50)
+    address = models.CharField(max_length=100)
     city = models.ForeignKey(City, on_delete=models.PROTECT)
     state = models.ForeignKey(State, on_delete=models.PROTECT)
     country = models.ForeignKey(Country, on_delete=models.PROTECT)
