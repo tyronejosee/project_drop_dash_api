@@ -11,9 +11,6 @@ BASE_DIR = Path(__file__).resolve().parent.parent.parent
 env = environ.Env()
 environ.Env.read_env("config/.env")
 
-ENCRYPT_KEY = b"UxzFA2QzSu_1-mJkxiWvMgG3TuMT0us_Glz2Guv-4iw="
-# ENCRYPT_KEY = env('ENCRYPT_KEY')
-
 
 BASE_APPS = [
     "django.contrib.admin",
@@ -102,6 +99,11 @@ PASSWORD_HASHERS = [
     "django.contrib.auth.hashers.PBKDF2SHA1PasswordHasher",
     "django.contrib.auth.hashers.BCryptSHA256PasswordHasher",
 ]
+
+
+# Keep this key hidden,it is exposed for sharing code to avoid developers having to generate it again
+ENCRYPT_KEY = b"UxzFA2QzSu_1-mJkxiWvMgG3TuMT0us_Glz2Guv-4iw="
+# ENCRYPT_KEY = env("ENCRYPT_KEY")
 
 
 LANGUAGE_CODE = "en-us"
