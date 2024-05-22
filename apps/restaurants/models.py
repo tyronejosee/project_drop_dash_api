@@ -2,11 +2,16 @@
 
 from django.conf import settings
 from django.db import models
+from django.core.validators import FileExtensionValidator
 from django.utils.text import slugify
 
 from apps.utilities.models import BaseModel
 from apps.utilities.paths import image_path, image_banner_path
-from apps.utilities.validators import validate_phone
+from apps.utilities.validators import (
+    FileSizeValidator,
+    validate_phone,
+    validate_food_image,
+)
 from apps.locations.models import Country, State, City
 from .managers import RestaurantManager, CategoryManager, FoodManager
 from .choices import Specialty
@@ -82,11 +87,19 @@ class Food(BaseModel):
     """Model definition for Food (Entity)."""
 
     name = models.CharField(max_length=255)
+    description = models.TextField(blank=True)
     price = models.DecimalField(max_digits=10, decimal_places=2)
     sale_price = models.DecimalField(
         max_digits=10, decimal_places=2, blank=True, null=True
     )
-    image = models.ImageField(upload_to=image_path)
+    image = models.ImageField(
+        upload_to=image_path,
+        validators=[
+            FileExtensionValidator(allowed_extensions=["webp"]),
+            FileSizeValidator(limit_mb=1),
+            validate_food_image,
+        ],
+    )
     restaurant = models.ForeignKey(
         Restaurant, on_delete=models.CASCADE, related_name="foods"
     )

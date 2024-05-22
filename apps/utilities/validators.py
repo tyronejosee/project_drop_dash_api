@@ -1,5 +1,6 @@
 """"Validators for Drivers App."""
 
+from PIL import Image
 from datetime import date, datetime, timedelta
 from django.core.validators import BaseValidator, RegexValidator
 from django.core.exceptions import ValidationError
@@ -31,6 +32,20 @@ def validate_birth_date(value):
     if (date.today() - value).days < 6570:  # 6570 days = 18 years
         raise ValidationError(
             "You must be at least 18 years old to register as a driver."
+        )
+
+
+def validate_food_image(image):
+    """Validate that the uploaded image for a food item meets the required dimensions."""
+    max_width = 500
+    max_height = 500
+    img = Image.open(image)
+    width, height = img.size
+
+    if width > max_width or height > max_height:
+        raise ValidationError(
+            f"Image dimensions should not exceed {max_width}x{max_height}px. "
+            f"Uploaded image size is {width}x{height}px."
         )
 
 
