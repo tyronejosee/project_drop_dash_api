@@ -41,8 +41,13 @@ class DriverProfileView(APIView):
     def get(self, request):
         # Get driver profile
         driver_profile = self.get_object(request)
-        serializer = DriverReadSerializer(driver_profile)
-        return Response(serializer.data)
+        if driver_profile.available:
+            serializer = DriverReadSerializer(driver_profile)
+            return Response(serializer.data)
+        return Response(
+            {"detail": "Your profile has been deactivated."},
+            status=status.HTTP_400_BAD_REQUEST,
+        )
 
     @transaction.atomic
     def patch(self, request):

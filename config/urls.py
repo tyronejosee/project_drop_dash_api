@@ -36,6 +36,7 @@ urlpatterns = [
     # Apps urls
     path("", include("apps.restaurants.urls")),
     path("", include("apps.drivers.urls")),
+    # path("", include("apps.reviews.urls")),
     path("", include("apps.orders.urls")),
     path("", include("apps.promotions.urls")),
     path("", include("apps.coupons.urls")),
