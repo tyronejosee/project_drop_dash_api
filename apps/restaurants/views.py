@@ -2,6 +2,7 @@
 
 import re
 from django.db import transaction
+from django.contrib.contenttypes.models import ContentType
 from django.core.cache import cache
 from django.shortcuts import get_object_or_404
 from rest_framework.views import APIView
@@ -10,9 +11,11 @@ from rest_framework import status
 from rest_framework.permissions import AllowAny
 from drf_spectacular.utils import extend_schema_view
 
-from apps.users.permissions import IsPartner, IsClient
 from apps.orders.models import Order
 from apps.orders.serializers import OrderReadSerializer
+from apps.reviews.models import Review
+from apps.reviews.serializers import ReviewReadSerializer
+from apps.users.permissions import IsPartner, IsClient
 from apps.utilities.pagination import LargeSetPagination
 from .models import Restaurant, Category, Food
 from .serializers import (
@@ -182,6 +185,31 @@ class RestaurantOrderListView(APIView):
 
         serializer = OrderReadSerializer(orders, many=True)
         return Response(serializer.data)
+
+
+class RestaurantReviewListView(APIView):
+    """
+    View to list and create reviews for a restaurant
+
+    Endpoints:
+    - GET api/v1/restaurants/{id}/reviews/
+    - POST api/v1/restaurants/{id}/reviews/
+    """
+
+    def get(self, request, restaurant_id):
+        restaurant = get_object_or_404(Restaurant, pk=restaurant_id)
+
+        restaurant_content_type = ContentType.objects.get_for_model(Restaurant)
+        reviews = Review.objects.filter(
+            content_type=restaurant_content_type, object_id=restaurant.pk
+        ).order_by("-created_at")
+        print(reviews)
+        serializer = ReviewReadSerializer(reviews, many=True)
+        return Response(serializer.data)
+
+    def post(self, request, restaurant_id):
+        pass
+        # TODO: Finish
 
 
 @extend_schema_view(**category_list_schema)

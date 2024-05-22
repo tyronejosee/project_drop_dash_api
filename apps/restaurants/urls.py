@@ -6,6 +6,7 @@ from .views import (
     RestaurantListView,
     RestaurantDetailView,
     RestaurantSearchView,
+    RestaurantReviewListView,
     CategoryListView,
     CategoryDetailView,
     RestaurantOrderListView,
@@ -29,11 +30,15 @@ urlpatterns = [
         RestaurantSearchView.as_view(),
     ),
     path(
+        "api/v1/restaurants/<uuid:restaurant_id>/reviews/",
+        RestaurantReviewListView.as_view(),
+    ),
+    path(
         "api/v1/restaurants/<uuid:restaurant_id>/categories/",
         CategoryListView.as_view(),
     ),
     path(
-        ("api/v1/restaurants/<uuid:restaurant_id>/" "categories/<uuid:category_id>/"),
+        ("api/v1/restaurants/<uuid:restaurant_id>/categories/<uuid:category_id>/"),
         CategoryDetailView.as_view(),
     ),
     path(
