@@ -6,7 +6,7 @@ from apps.utilities.models import BaseModel
 
 
 class Country(BaseModel):
-    """Model definition for Country (Entity)."""
+    """Model definition for Country."""
 
     name = models.CharField(max_length=100, unique=True)
 
@@ -23,7 +23,7 @@ class Country(BaseModel):
 
 
 class State(BaseModel):
-    """Model definition for State (Entity)."""
+    """Model definition for State."""
 
     name = models.CharField(max_length=100, unique=True)
     country = models.ForeignKey(Country, on_delete=models.CASCADE)
@@ -41,7 +41,7 @@ class State(BaseModel):
 
 
 class City(BaseModel):
-    """Model definition for City (Entity)."""
+    """Model definition for City."""
 
     name = models.CharField(max_length=100, unique=True)
     state = models.ForeignKey(State, on_delete=models.CASCADE)

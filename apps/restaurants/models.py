@@ -20,7 +20,7 @@ User = settings.AUTH_USER_MODEL
 
 
 class Restaurant(BaseModel):
-    """Model definition for Restaurant (Entity)."""
+    """Model definition for Restaurant."""
 
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     name = models.CharField(max_length=50, unique=True, db_index=True)

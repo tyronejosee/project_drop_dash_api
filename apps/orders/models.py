@@ -16,7 +16,7 @@ User = get_user_model()
 
 
 class Order(BaseModel):
-    """Model definition for Order (Entity)."""
+    """Model definition for Order."""
 
     user = models.ForeignKey(User, on_delete=models.DO_NOTHING)
     shipping_name = models.CharField(max_length=255)
@@ -66,7 +66,7 @@ class Order(BaseModel):
 
 
 class OrderItem(BaseModel):
-    """Model definition for OrderItem (Pivot)."""
+    """Model definition for OrderItem."""
 
     order = models.ForeignKey(Order, on_delete=models.CASCADE)
     food = models.ForeignKey(Food, on_delete=models.DO_NOTHING)
