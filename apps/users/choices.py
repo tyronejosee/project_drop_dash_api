@@ -4,7 +4,6 @@ from django.db.models import TextChoices
 
 
 class Role(TextChoices):
-    """Choices for user roles."""
 
     CLIENT = "client", "Client"
     ADVERTISER = "advertiser", "Advertiser"
