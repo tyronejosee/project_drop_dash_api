@@ -14,7 +14,7 @@ from drf_spectacular.utils import extend_schema_view
 from apps.orders.models import Order
 from apps.orders.serializers import OrderReadSerializer
 from apps.reviews.models import Review
-from apps.reviews.serializers import ReviewReadSerializer
+from apps.reviews.serializers import ReviewReadSerializer, ReviewWriteSerializer
 from apps.users.permissions import IsPartner, IsClient
 from apps.utilities.pagination import LargeSetPagination
 from .models import Restaurant, Category, Food
@@ -196,20 +196,102 @@ class RestaurantReviewListView(APIView):
     - POST api/v1/restaurants/{id}/reviews/
     """
 
-    def get(self, request, restaurant_id):
-        restaurant = get_object_or_404(Restaurant, pk=restaurant_id)
+    permission_classes = [IsClient]
 
+    def get_permissions(self):
+        if self.request.method == "GET":
+            return [AllowAny()]
+        return super().get_permissions()
+
+    def get(self, request, restaurant_id):
+        # List reviews for a restaurant
+        restaurant = get_object_or_404(Restaurant, pk=restaurant_id)
         restaurant_content_type = ContentType.objects.get_for_model(Restaurant)
+
         reviews = Review.objects.filter(
             content_type=restaurant_content_type, object_id=restaurant.pk
         ).order_by("-created_at")
-        print(reviews)
+
         serializer = ReviewReadSerializer(reviews, many=True)
         return Response(serializer.data)
 
     def post(self, request, restaurant_id):
-        pass
-        # TODO: Finish
+        # Create a review for a restaurant.
+        restaurant = get_object_or_404(Restaurant, pk=restaurant_id)
+        restaurant_content_type = ContentType.objects.get_for_model(Restaurant)
+        serializer = ReviewWriteSerializer(data=request.data)
+
+        if Review.objects.filter(
+            user=request.user,
+            content_type=restaurant_content_type,
+            object_id=restaurant.pk,
+        ).exists():
+            return Response(
+                {"detail": "Only one review per user is allowed."},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+        if serializer.is_valid():
+            serializer.save(
+                user=request.user,
+                content_type=restaurant_content_type,
+                object_id=restaurant.pk,
+            )
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class RestaurantReviewDetailView(APIView):
+    """
+    View for retrieving, updating, or deleting a review of a restaurant.
+
+    Endpoints:
+    - GET api/v1/restaurants/{id}/reviews/{id}/
+    - PATCH api/v1/restaurants/{id}/reviews/{id}/
+    - DELETE api/v1/restaurants/{id}/reviews/{id}/
+    """
+
+    permission_classes = [IsClient]
+
+    def get_permissions(self):
+        if self.request.method == "GET":
+            return [AllowAny()]
+        return super().get_permissions()
+
+    def get(self, request, restaurant_id, review_id):
+        # Retrieve a review of a restaurant
+        review = get_object_or_404(Review, pk=review_id, object_id=restaurant_id)
+        serializer = ReviewReadSerializer(review)
+        return Response(serializer.data)
+
+    def patch(self, request, restaurant_id, review_id):
+        # Update a review of a restaurant
+        review = get_object_or_404(Review, pk=review_id, object_id=restaurant_id)
+
+        if review.user != request.user:
+            return Response(
+                {"detail": "You can only modify or delete your own reviews."},
+                status=status.HTTP_403_FORBIDDEN,
+            )
+
+        serializer = ReviewWriteSerializer(review, data=request.data, partial=True)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    def delete(self, request, restaurant_id, review_id):
+        # Remove a review of a restaurant
+        review = get_object_or_404(Review, pk=review_id, object_id=restaurant_id)
+
+        if review.user != request.user:
+            return Response(
+                {"detail": "You can only delete your own reviews."},
+                status=status.HTTP_403_FORBIDDEN,
+            )
+
+        review.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
 
 
 @extend_schema_view(**category_list_schema)

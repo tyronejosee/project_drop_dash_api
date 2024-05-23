@@ -20,3 +20,14 @@ class ReviewReadSerializer(serializers.ModelSerializer):
             "created_at",
             "updated_at",
         ]
+
+
+class ReviewWriteSerializer(serializers.ModelSerializer):
+    """Serializer for Review model (Create/update)."""
+
+    class Meta:
+        model = Review
+        fields = [
+            "comment",
+            "rating",
+        ]
