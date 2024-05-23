@@ -4,7 +4,7 @@ from datetime import datetime, timedelta
 from rest_framework.serializers import ModelSerializer, ValidationError
 
 from apps.users.serializers import UserMinimalSerializer
-from .models import Promotion
+from .models import Promotion, FixedCoupon, PercentageCoupon
 
 
 class PromotionReadSerializer(ModelSerializer):
@@ -56,3 +56,37 @@ class PromotionWriteSerializer(ModelSerializer):
                 "End date cannot be more than 90 days from the current date."
             )
         return value
+
+
+class FixedCouponSerializer(ModelSerializer):
+    """Serializer for FixedCoupon model."""
+
+    class Meta:
+        model = FixedCoupon
+        fields = [
+            "id",
+            "name",
+            "code",
+            "discount_price",
+            "start_date",
+            "end_date",
+            "quantity",
+            "is_active",
+        ]
+
+
+class PercentageCouponSerializer(ModelSerializer):
+    """Serializer for PercentageCoupon model."""
+
+    class Meta:
+        model = PercentageCoupon
+        fields = [
+            "id",
+            "name",
+            "code",
+            "discount_percentage",
+            "start_date",
+            "end_date",
+            "quantity",
+            "is_active",
+        ]

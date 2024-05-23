@@ -26,7 +26,6 @@ PROJECT_APPS = [
     "apps.drivers",
     "apps.reviews",
     "apps.users",
-    "apps.coupons",
     "apps.orders",
     "apps.payments",
     "apps.promotions",

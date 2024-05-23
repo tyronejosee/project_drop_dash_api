@@ -1,8 +1,14 @@
 """Admin for Restaurants App."""
 
 from django.contrib import admin
+from django.contrib.contenttypes.admin import GenericTabularInline
 
+from apps.reviews.models import Review
 from .models import Restaurant, Category, Food
+
+
+class ReviewInline(GenericTabularInline):
+    model = Review
 
 
 @admin.register(Restaurant)
@@ -35,6 +41,9 @@ class RestaurantAdmin(admin.ModelAdmin):
     ]
     ordering = [
         "name",
+    ]
+    inlines = [
+        ReviewInline,
     ]
 
 

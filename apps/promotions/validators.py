@@ -1,4 +1,4 @@
-"""Validators for Coupons App."""
+"""Validators for Promotions App."""
 
 from django.core.exceptions import ValidationError
 

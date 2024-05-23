@@ -23,3 +23,19 @@ class PromotionManager(Manager):
         return self.get_available().filter(
             Q(name__icontains=search_term) | Q(conditions__icontains=search_term)
         )
+
+
+class FixedCouponManager(Manager):
+    """Manager for FixedCoupon model."""
+
+    def get_all(self):
+        """Return default queryset."""
+        return self.filter(available=True, is_active=True)
+
+
+class PercentageCouponManager(Manager):
+    """Manager for PercentageCoupon model."""
+
+    def get_all(self):
+        """Return default queryset."""
+        return self.filter(available=True, is_active=True)

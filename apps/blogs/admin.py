@@ -6,6 +6,11 @@ from .models import Tag, Post, PostReport
 from .choices import Status
 
 
+class TagInline(admin.TabularInline):
+    model = Post.tags.through
+    extra = 1
+
+
 @admin.register(Tag)
 class TagAdmin(admin.ModelAdmin):
     """Admin for Tag model."""
@@ -65,6 +70,7 @@ class PostAdmin(admin.ModelAdmin):
     ordering = [
         "title",
     ]
+    inlines = [TagInline]
 
 
 @admin.register(PostReport)
