@@ -4,7 +4,6 @@ from django.db.models import TextChoices
 
 
 class Status(TextChoices):
-    """Choices for applicant status."""
 
     PENDING = "pending", "Pending"
     REVIEWED = "reviewed", "Reviewed"
@@ -13,7 +12,6 @@ class Status(TextChoices):
 
 
 class ContractType(TextChoices):
-    """Choices for contract types."""
 
     FIXED_TERM = "fixed_term", "Fixed-term Contract"
     PROJECT_BASED = "project_based", "Project-based Contract"

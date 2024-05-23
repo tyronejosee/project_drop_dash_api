@@ -12,7 +12,7 @@ User = settings.AUTH_USER_MODEL
 
 
 class Tag(BaseModel):
-    """Model definition for Tag (Catalog)."""
+    """Model definition for Tag."""
 
     name = models.CharField(max_length=50, unique=True)
     slug = models.SlugField(unique=True, blank=True, null=True)
@@ -35,7 +35,7 @@ class Tag(BaseModel):
 
 
 class Post(BaseModel):
-    """Model definition for Post (Entity)."""
+    """Model definition for Post."""
 
     title = models.CharField(max_length=100)
     slug = models.SlugField(unique=True, blank=True, null=True)
@@ -63,7 +63,7 @@ class Post(BaseModel):
 
 
 class PostReport(BaseModel):
-    """Model definition for PostReport (Pivot)."""
+    """Model definition for PostReport."""
 
     user = models.ForeignKey(User, on_delete=models.DO_NOTHING)
     post = models.ForeignKey(Post, on_delete=models.CASCADE)

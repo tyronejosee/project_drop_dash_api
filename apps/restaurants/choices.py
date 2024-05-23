@@ -4,7 +4,6 @@ from django.db.models import TextChoices
 
 
 class Specialty(TextChoices):
-    """Choices for specialty of a restaurant."""
 
     VARIED = "varied", "Varied"
     CHILEAN = "chilean", "Chilean"

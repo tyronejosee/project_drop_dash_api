@@ -3,6 +3,7 @@
 from django.contrib import admin
 
 from .models import Tag, Post, PostReport
+from .choices import Status
 
 
 @admin.register(Tag)
@@ -94,3 +95,21 @@ class PostReportAdmin(admin.ModelAdmin):
     ordering = [
         "-priority",
     ]
+
+    actions = [
+        "make_approved",
+        "make_rejected",
+        "make_archived",
+    ]
+
+    @admin.action(description="Mark selected reports as Approved")
+    def make_approved(modeladmin, request, queryset):
+        queryset.update(status=Status.APPROVED)
+
+    @admin.action(description="Mark selected reports as Rejected")
+    def make_rejected(modeladmin, request, queryset):
+        queryset.update(status=Status.REJECTED)
+
+    @admin.action(description="Mark selected reports as Rejected")
+    def make_archived(modeladmin, request, queryset):
+        queryset.update(status=Status.ARCHIVED)

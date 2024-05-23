@@ -4,7 +4,6 @@ from django.db import models
 
 
 class PaymentMethod(models.TextChoices):
-    """Choices for payment methods of a payment."""
 
     CASH = "cash", "Cash"
     BANK_TRANSFER = "bank transfer", "Bank Transfer"
