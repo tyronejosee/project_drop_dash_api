@@ -9,6 +9,15 @@ DEBUG = True
 
 SECRET_KEY = env("SECRET_KEY")
 
+INTERNAL_IPS = [
+    "127.0.0.1",
+    "http://127.0.0.1:8000/",
+    "localhost",
+]
+
+INSTALLED_APPS.append("debug_toolbar")
+
+MIDDLEWARE.append("debug_toolbar.middleware.DebugToolbarMiddleware")
 
 if "test" in sys.argv:
     DATABASES = {
@@ -44,7 +53,7 @@ CACHES = {
 EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
 
 STATIC_URL = "static/"
-STATIC_ROOT = os.path.join(BASE_DIR, "static_root")
+STATIC_ROOT = os.path.join(BASE_DIR, "static")
 
 MEDIA_URL = "/media/"
 MEDIA_ROOT = os.path.join(BASE_DIR, "media")

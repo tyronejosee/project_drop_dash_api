@@ -102,8 +102,8 @@ PASSWORD_HASHERS = [
 
 
 # Keep this key hidden,it is exposed for sharing code to avoid developers having to generate it again
-ENCRYPT_KEY = b"UxzFA2QzSu_1-mJkxiWvMgG3TuMT0us_Glz2Guv-4iw="
 # ENCRYPT_KEY = env("ENCRYPT_KEY")
+ENCRYPT_KEY = b"UxzFA2QzSu_1-mJkxiWvMgG3TuMT0us_Glz2Guv-4iw="
 
 
 LANGUAGE_CODE = "en-us"
@@ -134,21 +134,30 @@ REST_FRAMEWORK = {
         "rest_framework.filters.SearchFilter",
         "rest_framework.filters.OrderingFilter",
     ],
-    # "DEFAULT_THROTTLE_RATES": {
-    #     "anon": "100/day",
-    #     "user": "1000/day"
-    # },
+    "DEFAULT_THROTTLE_RATES": {"anon": "100/day", "user": "1000/day"},
     "NUM_PROXIES": None,
     "PAGE_SIZE": 25,
     "SEARCH_PARAM": "q",
     "ORDERING_PARAM": "ordering",
-    # "DEFAULT_VERSION": "v2",
+    # "DEFAULT_VERSION": "v1",
     # "ALLOWED_VERSIONS": ["v1", "v2"],
     # "VERSION_PARAM": "version",
 }
 
 
 AUTH_USER_MODEL = "users.User"
+
+CORS_ALLOW_HEADERS = [
+    "Authorization",
+    "Content-Type",
+    "accept",
+    "accept-encoding",
+    "content-disposition",
+    "origin",
+    "user-agent",
+    "x-csrftoken",
+    "x-requested-with",
+]
 
 DJOSER = {
     "LOGIN_FIELD": "email",
@@ -190,7 +199,6 @@ AUTHENTICATION_BACKENDS = (
     "social_core.backends.facebook.FacebookOAuth2",
     "django.contrib.auth.backends.ModelBackend",
 )
-
 
 SPECTACULAR_SETTINGS = {
     "TITLE": "Drop Dash (API)",

@@ -1,8 +1,5 @@
 // Drop Dash - Database Structure
 
-// Ref: Playlist.user_id < User.id
-// Ref: Playlist.Content_id <g Content.id
-
 // Utilities App
 
 Table Base {

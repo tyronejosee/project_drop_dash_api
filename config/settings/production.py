@@ -13,10 +13,7 @@ env = environ.Env()
 environ.Env.read_env("config/.env")
 
 
-ALLOWED_HOSTS = [
-    "example.com",
-    "www.example.com"
-]
+ALLOWED_HOSTS = ["example.com", "www.example.com"]
 
 DATABASES = {
     "default": {
@@ -54,8 +51,3 @@ CORS_ALLOWED_ORIGINS = [
 # CORS_ALLOW_ALL_ORIGINS = True
 
 CORS_ALLOW_CREDENTIALS = True
-
-CORS_ALLOW_HEADERS = [
-    "Authorization",
-    "Content-Type",
-]
