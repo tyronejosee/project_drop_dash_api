@@ -86,6 +86,33 @@ class FileSizeValidator:
         )
 
 
+@deconstructible
+class ImageSizeValidator:
+    """Validator to ensure the image does not exceed a specified size."""
+
+    message = "The image must have a maximum size of %(max_width)sx%(max_height)spx"
+    code = "invalid_max_size"
+
+    def __init__(self, max_width, max_height):
+        if not isinstance(max_width, int) or not isinstance(max_height, int):
+            raise TypeError("max_width and max_height must be integers")
+        self.max_width = max_width
+        self.max_height = max_height
+
+    def __call__(self, image):
+        img = Image.open(image)
+        width, height = img.size
+        if width > self.max_width or height > self.max_height:
+            raise ValidationError(
+                self.message,
+                code=self.code,
+                params={
+                    "max_width": self.max_width,
+                    "max_height": self.max_width,
+                },
+            )
+
+
 class DateRangeValidator(BaseValidator):
     """Validator that checks if the date is within a range of days."""
 
