@@ -1,7 +1,7 @@
 // Drop Dash - Database Structure
 
 // Ref: Playlist.user_id < User.id
-// Ref: Playlist.Content_id < Content.id
+// Ref: Playlist.Content_id <g Content.id
 
 // Utilities App
 
@@ -16,15 +16,15 @@ Table Base {
 
 Table User {
   id uuid [pk]
-  email varchar(100) [unique]
-  username varchar(100)
-  slug slug [unique]
-  first_name varchar(255)
-  last_name varchar(255)
+  email varchar
+  username varchar
+  slug slug
+  first_name varchar
+  last_name varchar
   date_birth date
-  points int(0)
-  is_active bool(true)
-  is_staff bool(false)
+  points int
+  is_active bool
+  is_staff bool
   created_at date
   updated_at date
 }
@@ -49,22 +49,22 @@ Table Review {
 Table Restaurant {
   id uuid [pk]
   user FK
-  name varchar(50)
-  slug slug(50)
+  name varchar
+  slug slug
   image image
   banner image
   description text
-  specialty varchar(20) CHOICES
-  address varchar(255)
+  specialty choices
+  address varchar
   city FK
   state FK
   country FK
   opening_time datetime
   closing_time datetime
-  phone varchar(12)
-  website url(255)
-  is_open bool(false)
-  is_verified bool(false)
+  phone varchar
+  website url
+  is_open bool
+  is_verified bool
   banking_certificate file
   e_rut file
   legal_rep_email file
@@ -77,7 +77,7 @@ Table Restaurant {
 
 Table Category {
   id uuid [pk]
-  name varchar(100)
+  name varchar
   restaurant FK
   available base
   updated_at base
@@ -86,17 +86,17 @@ Table Category {
 
 Table Food {
   id uuid [pk]
-  name
-  description
-  price
-  sale_price
-  image
-  restaurant
-  category
-  is_vegetarian
-  is_gluten_free
-  is_spicy
-  is_featured
+  name varchar
+  description text
+  price decimal
+  sale_price decimal
+  image image
+  restaurant FK
+  category FK
+  is_vegetarian bool
+  is_gluten_free bool
+  is_spicy bool
+  is_featured bool
   available base
   updated_at base
   created_at base
@@ -107,12 +107,40 @@ Table Food {
 Table Promotion {
   id uuid [pk]
   creator FK
-  name
-  conditions
-  start_date
-  end_date
-  is_active
-  image
+  name varchar
+  conditions text
+  start_date date
+  end_date date
+  is_active bool
+  image image
+  available base
+  updated_at base
+  created_at base
+}
+
+Table FixedCoupon {
+  id uuid [pk]
+  name varchar
+  discount_price decimal
+  code varchar
+  start_date date
+  end_date date
+  quantity int
+  is_active bool
+  available base
+  updated_at base
+  created_at base
+}
+
+Table PercentageCoupon {
+  id uuid [pk]
+  name varchar
+  discount_percentage int
+  code varchar
+  start_date date
+  end_date date
+  quantity int
+  is_active bool
   available base
   updated_at base
   created_at base
@@ -122,24 +150,24 @@ Table Promotion {
 
 Table Order {
   id uuid [pk]
+  user FK
+  shipping_name varchar
+  shipping_phone varchar
+  shipping_time varchar
+  shipping_price decimal
+  transaction varchar
+  address_1 varchar
+  address_2 varchar
+  city FK
+  state FK
+  country FK
+  note text
+  zip_code varchar
+  restaurant FK
+  amount decimal
+  status bool
+  payment_method choices
   available base
-  user
-  shipping_name
-  shipping_phone
-  shipping_time
-  shipping_price
-  transaction
-  address_1
-  address_2
-  city
-  state
-  country
-  note
-  zip_code
-  restaurant
-  amount
-  status
-  payment_method
   updated_at base
   created_at base
 }
@@ -148,9 +176,9 @@ Table OrderItem {
   id uuid [pk]
   order FK
   food FK
-  price
-  subtotal
-  quantity
+  price decimal
+  subtotal decimal
+  quantity int
   available base
   updated_at base
   created_at base
@@ -160,7 +188,7 @@ Table OrderItem {
 
 Table Country {
   id uuid [pk]
-  name varchar(100) [unique]
+  name varchar
   available base
   updated_at base
   created_at base
@@ -168,7 +196,7 @@ Table Country {
 
 Table State {
   id uuid [pk]
-  name varchar(100) [unique]
+  name varchar
   country FK
   available base
   updated_at base
@@ -177,7 +205,7 @@ Table State {
 
 Table City {
   id uuid [pk]
-  name varchar(100) [unique]
+  name varchar
   state FK
   available base
   updated_at base
@@ -188,18 +216,18 @@ Table City {
 
 Table Driver {
   id uuid [pk]
-  user
-  phone
-  birth_date
-  driver_license
-  identification_document
-  social_security_certificate
-  address
-  city
-  state
-  country
-  is_verified
-  status
+  user FK
+  phone varchar
+  birth_date varchar
+  driver_license file
+  identification_document file
+  social_security_certificate file
+  address varchar
+  city FK
+  state FK
+  country FK
+  is_verified bool
+  status bool
   available base
   updated_at base
   created_at base
@@ -208,9 +236,9 @@ Table Driver {
 Table Resource {
   id uuid [pk]
   driver FK
-  resource_type varchar(15)
+  resource_type choices
   note text
-  status varchar(15)
+  status choices
   available base
   updated_at base
   created_at base
@@ -227,12 +255,11 @@ Table Delivery {
   created_at base
 }
 
-
 // Jobs App
 
 Table Position {
   id uuid [pk]
-  position varchar(100) [unique]
+  position varchar
   description text
   available base
   updated_at base
@@ -242,16 +269,16 @@ Table Position {
 Table Worker {
   id uuid [pk]
   user FK
-  phone_number varchar(15)
-  address varchar(255)
+  phone_number varchar
+  address varchar
   city FK
   state FK
   country FK
   position FK
   hired_date date
   termination_date date
-  hourly_rate decimal(10)
-  contract_type varchar(15)
+  hourly_rate decimal
+  contract_type choices
   contract_file file
   available base
   updated_at base
@@ -261,13 +288,13 @@ Table Worker {
 Table Applicant {
   id uuid [pk]
   user FK
-  phone_number varchar(15)
-  email email(100)
+  phone_number varchar
+  email email
   applied_for FK
   cv file
   message text
   submitted_at datetime
-  status varchar(10)
+  status choices
   available base
   updated_at base
   created_at base
@@ -277,8 +304,8 @@ Table Applicant {
 
 Table Tag {
   id uuid [pk]
-  name varchar(50) [unique]
-  slug slug [unique]
+  name varchar
+  slug slug
   available base
   updated_at base
   created_at base
@@ -286,13 +313,13 @@ Table Tag {
 
 Table Post {
   id uuid [pk]
-  title
-  slug
-  content
-  tags
-  author
-  points
-  is_featured
+  title varchar
+  slug slug
+  content text
+  tags M2M
+  author FK
+  points int
+  is_featured bool
   available base
   updated_at base
   created_at base
@@ -300,12 +327,58 @@ Table Post {
 
 Table PostReport {
   id uuid [pk]
-  user
-  post
-  reason
-  priority
-  status
+  user FK
+  post FK
+  reason text
+  priority choices
+  status bool
   available base
   updated_at base
   created_at base
 }
+
+// Relations
+
+Ref: Review.content_type < Restaurant.id
+Ref: Review.user < User.id
+
+Ref: Restaurant.user < User.id
+Ref: Restaurant.city < City.id
+Ref: Restaurant.state < State.id
+Ref: Restaurant.country < Country.id
+Ref: Category.restaurant < Restaurant.id
+Ref: Food.restaurant < Restaurant.id
+Ref: Food.category < Category.id
+
+Ref: Promotion.creator < User.id
+
+Ref: Order.user < User.id
+Ref: Order.city < City.id
+Ref: Order.state < State.id
+Ref: Order.country < Country.id
+Ref: Order.restaurant < Restaurant.id
+Ref: OrderItem.order < Order.id
+Ref: OrderItem.food < Food.id
+
+Ref: State.country < Country.id
+Ref: City.state < State.id
+
+Ref: Driver.user < User.id
+Ref: Driver.city < City.id
+Ref: Driver.state < State.id
+Ref: Driver.country < Country.id
+
+Ref: Resource.driver < Driver.id
+
+Ref: Worker.user < User.id
+Ref: Worker.city < City.id
+Ref: Worker.state < State.id
+Ref: Worker.country < Country.id
+Ref: Worker.position < Position.id
+Ref: Applicant.user < User.id
+Ref: Applicant.applied_for < Position.id
+
+Ref: Post.tags < Tag.id
+Ref: Post.author < User.id
+Ref: PostReport.user < User.id
+Ref: PostReport.post < Post.id
