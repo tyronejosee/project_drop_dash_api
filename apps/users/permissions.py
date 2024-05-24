@@ -47,6 +47,20 @@ class IsPartner(BasePermission):
         return bool(is_user_authenticated and is_user_valid)
 
 
+class IsMarketing(BasePermission):
+    """
+    Allows access only to users with the role "Marketing".
+    """
+
+    def has_permission(self, request, view):
+        is_user_authenticated = request.user and request.user.is_authenticated
+        is_user_valid = request.user.is_active and request.user.role in [
+            Role.MARKETING,
+            Role.ADMINISTRATOR,
+        ]
+        return bool(is_user_authenticated and is_user_valid)
+
+
 class IsSupport(BasePermission):
     """
     Allows access only to users with the role "support".

@@ -14,16 +14,7 @@ class PromotionReadSerializer(ModelSerializer):
 
     class Meta:
         model = Promotion
-        fields = [
-            "id",
-            "creator",
-            "name",
-            "conditions",
-            "start_date",
-            "end_date",
-            "is_active",
-            "image",
-        ]
+        fields = "__all__"
 
     def to_representation(self, instance):
         data = super().to_representation(instance)
@@ -36,7 +27,14 @@ class PromotionWriteSerializer(ModelSerializer):
 
     class Meta:
         model = Promotion
-        fields = ["name", "conditions", "start_date", "end_date", "is_active", "image"]
+        fields = [
+            "name",
+            "conditions",
+            "start_date",
+            "end_date",
+            "is_active",
+            "image",
+        ]
 
     def validate_start_date(self, value):
         """Validate that start_date is not earlier than the current month."""
@@ -58,35 +56,52 @@ class PromotionWriteSerializer(ModelSerializer):
         return value
 
 
-class FixedCouponSerializer(ModelSerializer):
-    """Serializer for FixedCoupon model."""
+class FixedCouponReadSerializer(ModelSerializer):
+    """Serializer for FixedCoupon model (List)."""
+
+    creator = UserMinimalSerializer()
+
+    class Meta:
+        model = FixedCoupon
+        fields = "__all__"
+
+
+class FixedCouponWriteSerializer(ModelSerializer):
+    """Serializer for FixedCoupon model (Create/update)."""
 
     class Meta:
         model = FixedCoupon
         fields = [
-            "id",
             "name",
-            "code",
             "discount_price",
+            "quantity",
             "start_date",
             "end_date",
-            "quantity",
-            "is_active",
         ]
+        extra_kwargs = {
+            "quantity": {"required": True},
+        }
 
 
-class PercentageCouponSerializer(ModelSerializer):
-    """Serializer for PercentageCoupon model."""
+class PercentageCouponReadSerializer(ModelSerializer):
+    """Serializer for PercentageCoupon model (List)."""
+
+    creator = UserMinimalSerializer()
+
+    class Meta:
+        model = PercentageCoupon
+        fields = "__all__"
+
+
+class PercentageCouponWriteSerializer(ModelSerializer):
+    """Serializer for PercentageCoupon model (Create/update)."""
 
     class Meta:
         model = PercentageCoupon
         fields = [
-            "id",
             "name",
-            "code",
             "discount_percentage",
+            "quantity",
             "start_date",
             "end_date",
-            "quantity",
-            "is_active",
         ]

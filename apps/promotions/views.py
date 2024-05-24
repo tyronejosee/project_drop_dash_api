@@ -6,18 +6,19 @@ from django.core.cache import cache
 from django.shortcuts import get_object_or_404
 from rest_framework.views import APIView
 from rest_framework.response import Response
-from rest_framework.permissions import IsAuthenticated
 from rest_framework import status
 from drf_spectacular.utils import extend_schema_view
 
-from apps.users.permissions import IsAdministrator
-from apps.utilities.pagination import MediumSetPagination
+from apps.users.permissions import IsMarketing
+from apps.utilities.pagination import LargeSetPagination
 from .models import Promotion, FixedCoupon, PercentageCoupon
 from .serializers import (
     PromotionReadSerializer,
     PromotionWriteSerializer,
-    FixedCouponSerializer,
-    PercentageCouponSerializer,
+    FixedCouponReadSerializer,
+    FixedCouponWriteSerializer,
+    PercentageCouponReadSerializer,
+    PercentageCouponWriteSerializer,
 )
 from .schemas import (
     promotion_list_schema,
@@ -39,12 +40,12 @@ class PromotionListView(APIView):
     - POST api/v1/promotions/
     """
 
-    permission_classes = [IsAdministrator]
+    permission_classes = [IsMarketing]
     cache_key = "promotion_list"
 
     def get(self, request):
         # Get a list of promotions
-        paginator = MediumSetPagination()
+        paginator = LargeSetPagination()
         cached_data = cache.get(self.cache_key)
 
         if cached_data is None:
@@ -66,7 +67,7 @@ class PromotionListView(APIView):
 
     @transaction.atomic
     def post(self, request):
-        # Create a new promotion
+        # Create a promotion
         serializer = PromotionWriteSerializer(data=request.data)
         if serializer.is_valid():
             serializer.save(creator=request.user)
@@ -78,30 +79,44 @@ class PromotionListView(APIView):
 @extend_schema_view(**promotion_detail_schema)
 class PromotionDetailView(APIView):
     """
-    View to retrieve and delete a promotion.
+    View to update and delete a promotion.
 
     Endpoints:
-    - GET api/v1/promotions/{id}/
+    - PATCH api/v1/promotions/{id}/
     - DELETE api/v1/promotions/{id}/
     """
 
-    permission_classes = [IsAdministrator]
+    permission_classes = [IsMarketing]
+    cache_key = "promotion_list"
 
     def get_object(self, promotion_id):
         # Get a promotion instance by id
         return get_object_or_404(Promotion, pk=promotion_id)
 
-    def get(self, request, promotion_id):
-        # Get details of a promotion
+    @transaction.atomic
+    def patch(self, request, promotion_id):
+        # Update a promotion
         promotion = self.get_object(promotion_id)
-        serializer = PromotionReadSerializer(promotion)
-        return Response(serializer.data)
+
+        if promotion.creator == request.user:
+            serializer = PromotionWriteSerializer(
+                promotion, data=request.data, partial=True
+            )
+            if serializer.is_valid():
+                serializer.save()
+                return Response(serializer.data)
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        return Response(
+            {"detail": "You are not the owner of this promotion."},
+            status=status.HTTP_403_FORBIDDEN,
+        )
 
     @transaction.atomic
     def delete(self, request, promotion_id):
         # Delete a promotion
         promotion = self.get_object(promotion_id)
-        promotion.available = False  # Logical deletion
+        promotion.available = False
+        cache.delete(self.cache_key)
         promotion.save()
         return Response(status=status.HTTP_204_NO_CONTENT)
 
@@ -138,15 +153,20 @@ class PromotionSearchView(APIView):
 
 @extend_schema_view(**fixed_coupon_list_schema)
 class FixedCouponListView(APIView):
-    """View for listing and creating fixed coupons."""
+    """
+    View for listing and creating fixed coupons.
 
-    permission_classes = [IsAuthenticated]
-    serializer_class = FixedCouponSerializer
+    Endpoints:
+    - GET api/v1/coupons/fixed/
+    - POST api/v1/coupons/fixed/
+    """
+
+    permission_classes = [IsMarketing]
     cache_key = "fixed_coupon_list"
 
     def get(self, request, format=None):
         # Get a list of available fixed coupons
-        paginator = MediumSetPagination()
+        paginator = LargeSetPagination()
         cached_data = cache.get(self.cache_key)
 
         if cached_data is None:
@@ -156,79 +176,91 @@ class FixedCouponListView(APIView):
                     {"detail": "No fixed coupons available."},
                     status=status.HTTP_404_NOT_FOUND,
                 )
-            # Fetches the data from the database and serializes it
-            paginated_data = paginator.paginate_queryset(coupons, request)
-            serializer = self.serializer_class(paginated_data, many=True)
-            # Set cache
-            cache.set(self.cache_key, serializer.data, 7200)
-        else:
-            # Retrieve the cached data and serialize it
-            paginated_cached_data = paginator.paginate_queryset(cached_data, request)
-            serializer = self.serializer_class(paginated_cached_data, many=True)
 
+            paginated_data = paginator.paginate_queryset(coupons, request)
+            serializer = FixedCouponReadSerializer(paginated_data, many=True)
+            cache.set(self.cache_key, serializer.data, 7200)
+            return paginator.get_paginated_response(serializer.data)
+
+        paginated_cached_data = paginator.paginate_queryset(cached_data, request)
+        serializer = FixedCouponReadSerializer(paginated_cached_data, many=True)
         return paginator.get_paginated_response(serializer.data)
 
     @transaction.atomic
     def post(self, request, format=None):
         # Create a new fixed coupon
-        serializer = self.serializer_class(data=request.data)
+        serializer = FixedCouponWriteSerializer(data=request.data)
 
         if serializer.is_valid():
-            serializer.save()
-            # Invalidate cache
-            cache.delete(self.cache_key)
+            serializer.save(creator=request.user)
+            cache.delete(self.cache_key)  # Invalidate cache
             return Response(serializer.data, status=status.HTTP_201_CREATED)
+
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 @extend_schema_view(**fixed_coupon_detail_schema)
 class FixedCouponDetailView(APIView):
-    """View to retrieve, update, and delete a fixed coupon."""
+    """
+    View to update, and delete a fixed coupon.
 
-    permission_classes = [IsAuthenticated]
-    serializer_class = FixedCouponSerializer
+    Endpoints:
+    - PATCH api/v1/coupons/fixed/{id}/
+    - DELETE api/v1/coupons/fixed/{id}/
+    """
+
+    permission_classes = [IsMarketing]
+    cache_key = "fixed_coupon_list"
 
     def get_object(self, fixed_coupon_id):
         # Get a fixed coupon instance by id
         return get_object_or_404(FixedCoupon, pk=fixed_coupon_id)
 
-    def get(self, request, fixed_coupon_id):
-        # Get details of a fixed coupon
-        fixed_coupon = self.get_object(fixed_coupon_id)
-        serializer = self.serializer_class(fixed_coupon)
-        return Response(serializer.data)
-
     @transaction.atomic
-    def put(self, request, fixed_coupon_id):
-        # Update a fixed coupon
+    def patch(self, request, fixed_coupon_id):
+        # Update a promotion
         fixed_coupon = self.get_object(fixed_coupon_id)
-        serializer = self.serializer_class(fixed_coupon, data=request.data)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+        if fixed_coupon.creator == request.user:
+            serializer = FixedCouponWriteSerializer(
+                fixed_coupon, data=request.data, partial=True
+            )
+            if serializer.is_valid():
+                serializer.save()
+                return Response(serializer.data)
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+        return Response(
+            {"detail": "You are not the owner of this coupon."},
+            status=status.HTTP_403_FORBIDDEN,
+        )
 
     @transaction.atomic
     def delete(self, request, fixed_coupon_id):
         # Delete a fixed coupon
         fixed_coupon = self.get_object(fixed_coupon_id)
-        fixed_coupon.available = False  # Logical deletion
+        fixed_coupon.available = False
+        cache.delete(self.cache_key)
         fixed_coupon.save()
         return Response(status=status.HTTP_204_NO_CONTENT)
 
 
 @extend_schema_view(**percentage_coupon_list_schema)
 class PercentageCouponListView(APIView):
-    """View for listing and creating percentage coupons."""
+    """
+    View for listing and creating percentage coupons.
 
-    permission_classes = [IsAuthenticated]
-    serializer_class = PercentageCouponSerializer
-    cache_key = "percentage_coupon"
-    cache_timeout = 7200
+    Endpoints:
+    - GET api/v1/coupons/percentage/
+    - POST api/v1/coupons/percentage/
+    """
+
+    permission_classes = [IsMarketing]
+    cache_key = "percentage_coupon_list"
 
     def get(self, request, format=None):
         # Get a list of available percentage coupons
-        paginator = MediumSetPagination()
+        paginator = LargeSetPagination()
         cached_data = cache.get(self.cache_key)
 
         if cached_data is None:
@@ -241,13 +273,11 @@ class PercentageCouponListView(APIView):
 
             paginated_data = paginator.paginate_queryset(coupons, request)
             serializer = self.serializer_class(paginated_data, many=True)
-            # Set cache
-            cache.set(self.cache_key, serializer.data, self.cache_timeout)
-        else:
-            # Retrieve the cached data and serialize it
-            paginated_cached_data = paginator.paginate_queryset(cached_data, request)
-            serializer = self.serializer_class(paginated_cached_data, many=True)
+            cache.set(self.cache_key, serializer.data, 7200)  # 2 hrs.
+            return paginator.get_paginated_response(serializer.data)
 
+        paginated_cached_data = paginator.paginate_queryset(cached_data, request)
+        serializer = self.serializer_class(paginated_cached_data, many=True)
         return paginator.get_paginated_response(serializer.data)
 
     @transaction.atomic
@@ -255,54 +285,69 @@ class PercentageCouponListView(APIView):
         # Create a new percentage coupon
         serializer = self.serializer_class(data=request.data)
         if serializer.is_valid():
-            serializer.save()
-            # Invalidate cache
-            cache.delete(self.cache_key)
+            serializer.save(creator=request.user)
+            cache.delete(self.cache_key)  # Invalidate cache
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 @extend_schema_view(**percentage_coupon_detail_schema)
 class PercentageCouponDetailView(APIView):
-    """View to retrieve, update, and delete a percentage coupon."""
+    """
+    View to update, and delete a percentage coupon.
 
-    permission_classes = [IsAuthenticated]
-    serializer_class = PercentageCouponSerializer
+    Endpoints:
+    - PATCH api/v1/coupons/percentage/{id}/
+    - DELETE api/v1/coupons/percentage/{id}/
+    """
+
+    permission_classes = [IsMarketing]
+    cache_key = "percentage_coupon_list"
 
     def get_object(self, percentage_coupon_id):
         # Get a percentage coupon instance by id
         return get_object_or_404(PercentageCoupon, pk=percentage_coupon_id)
 
-    def get(self, request, percentage_coupon_id):
-        # Get details of a percentage coupon
-        percentage_coupon = self.get_object(percentage_coupon_id)
-        serializer = self.serializer_class(percentage_coupon)
-        return Response(serializer.data)
-
     @transaction.atomic
-    def put(self, request, percentage_coupon_id):
+    def patch(self, request, percentage_coupon_id):
         # Update a percentage coupon
         percentage_coupon = self.get_object(percentage_coupon_id)
-        serializer = self.serializer_class(percentage_coupon, data=request.data)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+        if percentage_coupon.creator == request.user:
+            serializer = PercentageCouponWriteSerializer(
+                percentage_coupon, data=request.data, partial=True
+            )
+            if serializer.is_valid():
+                serializer.save()
+                return Response(serializer.data)
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        return Response(
+            {"detail": "You are not the owner of this coupon."},
+            status=status.HTTP_403_FORBIDDEN,
+        )
 
     @transaction.atomic
     def delete(self, request, percentage_coupon_id):
         # Delete a percentage coupon
         percentage_coupon = self.get_object(percentage_coupon_id)
-        percentage_coupon.available = False  # Logical deletion
+        percentage_coupon.available = False
+        cache.delete(self.cache_key)
         percentage_coupon.save()
         return Response(status=status.HTTP_204_NO_CONTENT)
 
 
 class CheckCouponView(APIView):
-    """View to check the validity of a coupon code."""
+    """
+    View to check the validity of a coupon code.
+
+    Endpoints:
+    - GET api/v1/coupons/check-coupons/
+    """
+
+    permission_classes = [IsMarketing]
 
     def get(self, request, format=None):
-        """Handle GET requests to check the validity of a coupon code."""
+        # Handle GET requests to check the validity of a coupon code
         try:
             coupon_code = request.query_params.get("coupon_code")
             # coupon_code = request.data.get("coupon_code")
@@ -313,10 +358,10 @@ class CheckCouponView(APIView):
             ).first()
 
             if fixed_coupon:
-                serializer = FixedCouponSerializer(fixed_coupon)
+                serializer = FixedCouponReadSerializer(fixed_coupon)
                 return Response(serializer.data)
             elif percentage_coupon:
-                serializer = PercentageCouponSerializer(percentage_coupon)
+                serializer = PercentageCouponReadSerializer(percentage_coupon)
                 return Response(serializer.data)
             else:
                 return Response(

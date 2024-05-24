@@ -28,19 +28,19 @@ urlpatterns = [
         PromotionSearchView.as_view(),
     ),
     path(
-        "api/v1/coupons/fixed-coupons/",
+        "api/v1/coupons/fixed/",
         FixedCouponListView.as_view(),
     ),
     path(
-        "api/v1/coupons/fixed-coupons/<uuid:fixed_coupon_id>",
+        "api/v1/coupons/fixed/<uuid:fixed_coupon_id>/",
         FixedCouponDetailView.as_view(),
     ),
     path(
-        "api/v1/coupons/percentage-coupons/",
+        "api/v1/coupons/percentage/",
         PercentageCouponListView.as_view(),
     ),
     path(
-        "api/v1/coupons/percentage-coupons/<uuid:percentage_coupon_id>",
+        "api/v1/coupons/percentage/<uuid:percentage_coupon_id>/",
         PercentageCouponDetailView.as_view(),
     ),
     path(
