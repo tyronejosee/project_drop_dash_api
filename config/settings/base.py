@@ -29,6 +29,7 @@ PROJECT_APPS = [
     "apps.orders",
     "apps.payments",
     "apps.promotions",
+    "apps.jobs",
     "apps.deliveries",
     "apps.blogs",
     "apps.locations",

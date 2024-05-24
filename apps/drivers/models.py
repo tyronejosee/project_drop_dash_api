@@ -8,7 +8,7 @@ from apps.utilities.models import BaseModel
 from apps.utilities.paths import docs_path
 from apps.locations.models import Country, State, City
 from .managers import DriverManager, ResourceManager
-from .choices import Status, ResourceType, RequestStatus
+from .choices import Vehicle, Status, ResourceType, RequestStatus
 
 User = settings.AUTH_USER_MODEL
 
@@ -21,26 +21,30 @@ class Driver(BaseModel):
     birth_date = models.CharField(max_length=100)
     driver_license = models.FileField(
         upload_to=docs_path,
+        blank=True,
+        null=True,
         validators=[FileExtensionValidator(["pdf", "jpg"])],
     )
     identification_document = models.FileField(
-        upload_to=docs_path,
-        validators=[FileExtensionValidator(["pdf", "jpg"])],
+        upload_to=docs_path, validators=[FileExtensionValidator(["pdf", "jpg"])]
     )
     social_security_certificate = models.FileField(
-        upload_to=docs_path,
-        validators=[FileExtensionValidator(["pdf", "jpg"])],
+        upload_to=docs_path, validators=[FileExtensionValidator(["pdf", "jpg"])]
+    )
+    criminal_record_certificate = models.FileField(
+        upload_to=docs_path, validators=[FileExtensionValidator(["pdf", "jpg"])]
     )
     address = models.CharField(max_length=100)
     city = models.ForeignKey(City, on_delete=models.PROTECT)
     state = models.ForeignKey(State, on_delete=models.PROTECT)
     country = models.ForeignKey(Country, on_delete=models.PROTECT)
+    vehicle_type = models.CharField(max_length=15, choices=Vehicle.choices)
     is_verified = models.BooleanField(default=False)
     status = models.CharField(
         max_length=10, choices=Status.choices, default=Status.BRONCE
     )
 
-    # TODO: Add crontab or signals for logic, Add more validators
+    # TODO: Add crontab or signals for logic
 
     objects = DriverManager()
 

@@ -52,11 +52,13 @@ class DriverWriteSerializer(serializers.ModelSerializer):
             "birth_date",
             "driver_license",
             "identification_document",
+            "criminal_record_certificate",
             "social_security_certificate",
             "address",
             "city",
             "state",
             "country",
+            "vehicle_type",
         ]
 
 

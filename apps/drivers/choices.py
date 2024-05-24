@@ -3,6 +3,13 @@
 from django.db.models import TextChoices
 
 
+class Vehicle(TextChoices):
+
+    AUTOMOBILE = "automobile", "Automobile"
+    MOTORCYCLE = "motorcycle", "Motorcycle"
+    BICYCLE = "bicycle", "Bicycle"
+
+
 class Status(TextChoices):
 
     BRONCE = "bronce", "Bronce"
