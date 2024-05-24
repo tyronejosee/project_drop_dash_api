@@ -18,6 +18,7 @@ class PromotionAdmin(admin.ModelAdmin):
         "name",
         "created_at",
         "available",
+        "available",
     ]
     list_filter = [
         "available",
@@ -48,6 +49,10 @@ class FixedCouponAdmin(admin.ModelAdmin):
         "name",
         "discount_price",
         "is_active",
+        "available",
+    ]
+    list_editable = [
+        "available",
     ]
     readonly_fields = [
         "pk",
@@ -72,6 +77,10 @@ class PercentageCouponAdmin(admin.ModelAdmin):
         "name",
         "discount_percentage",
         "is_active",
+        "available",
+    ]
+    list_editable = [
+        "available",
     ]
     readonly_fields = [
         "pk",

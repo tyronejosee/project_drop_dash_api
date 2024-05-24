@@ -170,7 +170,7 @@ class FixedCouponListView(APIView):
         cached_data = cache.get(self.cache_key)
 
         if cached_data is None:
-            coupons = FixedCoupon.objects.get_all()
+            coupons = FixedCoupon.objects.get_available()
             if not coupons.exists():
                 return Response(
                     {"detail": "No fixed coupons available."},
@@ -264,7 +264,7 @@ class PercentageCouponListView(APIView):
         cached_data = cache.get(self.cache_key)
 
         if cached_data is None:
-            coupons = PercentageCoupon.objects.get_all()
+            coupons = PercentageCoupon.objects.get_available()
             if not coupons.exists():
                 return Response(
                     {"detail": "No percentage coupons available."},
@@ -272,18 +272,18 @@ class PercentageCouponListView(APIView):
                 )
 
             paginated_data = paginator.paginate_queryset(coupons, request)
-            serializer = self.serializer_class(paginated_data, many=True)
+            serializer = PercentageCouponReadSerializer(paginated_data, many=True)
             cache.set(self.cache_key, serializer.data, 7200)  # 2 hrs.
             return paginator.get_paginated_response(serializer.data)
 
         paginated_cached_data = paginator.paginate_queryset(cached_data, request)
-        serializer = self.serializer_class(paginated_cached_data, many=True)
+        serializer = PercentageCouponReadSerializer(paginated_cached_data, many=True)
         return paginator.get_paginated_response(serializer.data)
 
     @transaction.atomic
     def post(self, request, format=None):
         # Create a new percentage coupon
-        serializer = self.serializer_class(data=request.data)
+        serializer = PercentageCouponWriteSerializer(data=request.data)
         if serializer.is_valid():
             serializer.save(creator=request.user)
             cache.delete(self.cache_key)  # Invalidate cache
@@ -341,21 +341,23 @@ class CheckCouponView(APIView):
     View to check the validity of a coupon code.
 
     Endpoints:
-    - GET api/v1/coupons/check-coupons/
+    - GET api/v1/coupons/check/?coupon_code={id}
     """
 
     permission_classes = [IsMarketing]
 
     def get(self, request, format=None):
-        # Handle GET requests to check the validity of a coupon code
+        # Check the validity of a coupon code
         try:
-            coupon_code = request.query_params.get("coupon_code")
-            # coupon_code = request.data.get("coupon_code")
+            code = request.query_params.get("coupon_code", None)
+            if not code:
+                return Response(
+                    {"detail": "Coupon code is required."},
+                    status=status.HTTP_400_BAD_REQUEST,
+                )
 
-            fixed_coupon = FixedCoupon.objects.filter(code=coupon_code).first()
-            percentage_coupon = PercentageCoupon.objects.filter(
-                code=coupon_code
-            ).first()
+            fixed_coupon = FixedCoupon.objects.get_by_code(code)
+            percentage_coupon = PercentageCoupon.objects.get_by_code(code)
 
             if fixed_coupon:
                 serializer = FixedCouponReadSerializer(fixed_coupon)

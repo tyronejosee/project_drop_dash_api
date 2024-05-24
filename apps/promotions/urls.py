@@ -44,7 +44,7 @@ urlpatterns = [
         PercentageCouponDetailView.as_view(),
     ),
     path(
-        "api/v1/coupons/check-coupons/",
+        "api/v1/coupons/check/",
         CheckCouponView.as_view(),
     ),
 ]

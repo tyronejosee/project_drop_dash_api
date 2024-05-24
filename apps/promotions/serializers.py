@@ -105,3 +105,6 @@ class PercentageCouponWriteSerializer(ModelSerializer):
             "start_date",
             "end_date",
         ]
+        extra_kwargs = {
+            "quantity": {"required": True},
+        }
