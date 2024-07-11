@@ -91,7 +91,7 @@ class DriverCreateView(APIView):
     - POST api/v1/drivers/
     """
 
-    permission_classes = [IsClient()]
+    permission_classes = [IsClient]
 
     @transaction.atomic
     def post(self, request):

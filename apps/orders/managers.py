@@ -1,22 +1,10 @@
 """Managers for Orders App."""
 
-from django.db import models
+from apps.utilities.managers import BaseManager
 
 
-class OrderManager(models.Manager):
+class OrderManager(BaseManager):
     """Manager for Order Model."""
-
-    def get_queryset(self):
-        # Default queryset
-        return super().get_queryset()
-
-    def get_available(self):
-        """Get all available orders"""
-        return self.get_queryset().filter(available=True)
-
-    def get_unavailable(self):
-        """Get all unavailable orders"""
-        return self.get_queryset().filter(available=False)
 
     def get_by_status(self, status):
         """Get orders by status"""
@@ -27,17 +15,5 @@ class OrderManager(models.Manager):
         return self.get_available().filter(user=user)
 
 
-class OrderItemManager(models.Manager):
+class OrderItemManager(BaseManager):
     """Manager for OrderItem Model."""
-
-    def get_queryset(self):
-        # Default queryset
-        return super().get_queryset()
-
-    def get_available(self):
-        """Get all available orders items"""
-        return self.get_queryset().filter(available=True)
-
-    def get_unavailable(self):
-        """Get all unavailable orders items"""
-        return self.get_queryset().filter(available=False)

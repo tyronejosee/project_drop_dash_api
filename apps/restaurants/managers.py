@@ -1,22 +1,18 @@
 """Managers for Restaurants App."""
 
-from django.db.models import Manager, Q
+from django.db.models import Q
+
+from apps.utilities.managers import BaseManager
 
 
-class RestaurantManager(Manager):
+class RestaurantManager(BaseManager):
     """Manager for Restaurant model."""
 
-    def get_queryset(self):
-        # Default queryset
-        return super().get_queryset()
+    # TODO: fix manager
 
     def get_available(self):
         """Get all available restaurants"""
-        return self.get_queryset().filter(available=True, is_verified=True)
-
-    def get_unavailable(self):
-        """Get all unavailable restaurants"""
-        return self.get_queryset().filter(available=False)
+        return self.filter(available=True, is_verified=True)
 
     def get_search(self, search_term):
         """Filter restaurants based on a search term."""
@@ -27,32 +23,16 @@ class RestaurantManager(Manager):
         )
 
 
-class CategoryManager(Manager):
+class CategoryManager(BaseManager):
     """Manager for Category model."""
-
-    def get_queryset(self):
-        # Default queryset
-        return super().get_queryset()
-
-    def get_available(self):
-        """Get all available categories."""
-        return self.get_queryset().filter(available=True)
 
     def get_by_restaurant(self, restaurant):
         """Get all categories for a specific restaurant."""
         return self.get_available().filter(restaurant=restaurant)
 
 
-class FoodManager(Manager):
+class FoodManager(BaseManager):
     """Manager for Food Model."""
-
-    def get_queryset(self):
-        # Default queryset
-        return super().get_queryset()
-
-    def get_available(self):
-        """Get all available foods."""
-        return self.get_queryset().filter(available=True)
 
     def get_foods_by_restaurant(self, restaurant):
         """Get all foods for a specific restaurant."""

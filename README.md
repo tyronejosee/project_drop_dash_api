@@ -1,21 +1,21 @@
-# Project: Drop Dash (API)
-
-<p align="center">
+<div align="center">
   <a href="https://github.com/tyronejosee/project_new_store#gh-light-mode-only" target="_blank">
     <img src="./.github/logo_light.svg" alt="logo-light" width="80">
   </a>
   <a href="https://github.com/tyronejosee/project_new_store#gh-dark-mode-only" target="_blank">
     <img src="./.github/logo_dark.svg" alt="logo-dark" width="80">
   </a>
-</p>
+</div>
+<div align="center">
+  <h1><strong>Drop Dash - API</strong></h1>
+  <a href="#"><strong>Swagger UI</strong></a>
+  🔸
+  <a href="#"><strong>Redoc</strong></a>
+</div>
 <p align="center">
 This API simulates a home delivery platform that allows users to search for and purchase products from local restaurants near their homes, place orders, and schedule deliveries. Similarly, restaurants can manage their menus, receive orders, and handle their meals through the platform. The API is inspired by platforms like Rappi, Uber Eats, PedidosYa, and Glovo.
 <p>
-<p align="center">
-  <a href="#"><strong>Swagger UI</strong></a>
-  /
-  <a href="#"><strong>Redoc</strong></a>
-</p>
+
 <p align="center">
   <a href="https://www.python.org/">
   <img src="https://img.shields.io/badge/python-3.11.9-3572A5" alt="python-version">
@@ -51,7 +51,7 @@ Activate the virtual environment (Optional).
 env\Scripts\activate
 ```
 
-Install all dependencies.
+Install all dependencies (Optional).
 
 ```bash
 pip install -r requirements/local.txt

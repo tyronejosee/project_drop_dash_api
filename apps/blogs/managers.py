@@ -1,32 +1,18 @@
 """Managers for Blogs App."""
 
 from datetime import timedelta
-from django.db.models import Manager, Q
+from django.db.models import Q
 from django.utils import timezone
 
+from apps.utilities.managers import BaseManager
 
-class TagManager(Manager):
+
+class TagManager(BaseManager):
     """Manager for Post Model."""
 
-    def get_queryset(self):
-        # Default queryset
-        return super().get_queryset()
 
-    def get_available(self):
-        """Return a queryset of available tags."""
-        return self.get_queryset().filter(available=True)
-
-
-class PostManager(Manager):
+class PostManager(BaseManager):
     """Manager for Post Model."""
-
-    def get_queryset(self):
-        # Default queryset
-        return super().get_queryset()
-
-    def get_available(self):
-        """Return a queryset of available posts."""
-        return self.get_queryset().filter(available=True)
 
     def get_featured(self):
         """Return a queryset of featured posts."""

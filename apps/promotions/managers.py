@@ -1,20 +1,17 @@
 """Managers for Promotions App."""
 
-from django.db.models import Manager, Q
+from django.db.models import Q
+
+from apps.utilities.managers import BaseManager
 
 
-class PromotionManager(Manager):
+class PromotionManager(BaseManager):
     """Manager for Promotion model."""
 
-    def get_queryset(self):
-        # Default queryset
-        return super().get_queryset()
+    # TODO: fix manager, add new manager
 
     def get_available(self):
         return self.get_queryset().select_related("creator").filter(available=True)
-
-    def get_unavailable(self):
-        return self.get_queryset().filter(available=False)
 
     def get_search(self, search_term):
         return self.get_available().filter(
@@ -22,8 +19,10 @@ class PromotionManager(Manager):
         )
 
 
-class FixedCouponManager(Manager):
+class FixedCouponManager(BaseManager):
     """Manager for FixedCoupon model."""
+
+    # TODO: fix manager, add new manager
 
     def get_available(self):
         return self.filter(available=True, is_active=True)
@@ -32,8 +31,10 @@ class FixedCouponManager(Manager):
         return self.get_available().filter(code=code).first()
 
 
-class PercentageCouponManager(Manager):
+class PercentageCouponManager(BaseManager):
     """Manager for PercentageCoupon model."""
+
+    # TODO: fix manager, add new manager
 
     def get_available(self):
         return self.filter(available=True, is_active=True)

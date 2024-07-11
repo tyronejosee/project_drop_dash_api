@@ -21,13 +21,13 @@ class TagAdmin(admin.ModelAdmin):
     ]
     list_display = [
         "name",
-        "available",
+        "is_available",
     ]
     list_editable = [
-        "available",
+        "is_available",
     ]
     list_filter = [
-        "available",
+        "is_available",
     ]
     readonly_fields = [
         "pk",
@@ -52,14 +52,14 @@ class PostAdmin(admin.ModelAdmin):
     list_display = [
         "title",
         "author",
-        "available",
+        "is_available",
     ]
     list_editable = [
-        "available",
+        "is_available",
     ]
     list_filter = [
         "tags",
-        "available",
+        "is_available",
     ]
     readonly_fields = [
         "pk",
