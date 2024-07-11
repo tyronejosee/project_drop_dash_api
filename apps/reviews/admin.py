@@ -2,34 +2,16 @@
 
 from django.contrib import admin
 
+from apps.utilities.models import BaseModel
 from .models import Review
 
 
 @admin.register(Review)
-class ReviewAdmin(admin.ModelAdmin):
+class ReviewAdmin(BaseModel):
     """Admin for Review model."""
 
-    list_per_page = 25
-    search_fields = [
-        "user",
-        "object_id",
-    ]
-    list_display = [
-        "user",
-        "content_type",
-        "content_object",
-        "rating",
-        "available",
-    ]
-    list_editable = [
-        "available",
-    ]
-    list_filter = [
-        "rating",
-        "content_type",
-    ]
-    readonly_fields = [
-        "pk",
-        "created_at",
-        "updated_at",
-    ]
+    search_fields = ["user", "object_id"]
+    list_display = ["user", "content_type", "content_object", "rating", "is_available"]
+    list_editable = ["is_available"]
+    list_filter = ["rating", "content_type"]
+    readonly_fields = ["pk", "created_at", "updated_at"]

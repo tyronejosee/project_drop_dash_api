@@ -140,7 +140,7 @@ class PostDetailView(APIView):
         post = self.get_object(post_id)
         if post.author != request.user:
             return Response(status=status.HTTP_401_UNAUTHORIZED)
-        post.available = False  # Logical deletion
+        post.is_available = False  # Logical deletion
         post.save()
         return Response(status=status.HTTP_204_NO_CONTENT)
 
@@ -260,7 +260,7 @@ class PostReportView(APIView):
                 # Update points of the post
                 post.points = post.points - 1
                 if post.points <= 5:
-                    post.available = False
+                    post.is_available = False
                 post.save()
 
                 # Determine priority for the new report
@@ -294,7 +294,8 @@ class ReportsView(APIView):
 
     def get(self, request):
         # Get all reports from users to the posts
-        reports = PostReport.objects.filter(available=True)
+        reports = PostReport.objects.filter(is_available=True)
+        # TODO: add manager
 
         paginator = LargeSetPagination()
         page = paginator.paginate_queryset(reports, request)

@@ -56,8 +56,6 @@ class FileSizeValidator:
     message = "File size must be under %(limit)s. Current size is %(size)s."
     code = "invalid_size"
 
-    # TODO: Add translation if the project grows
-
     def __init__(self, limit_mb, message=None, code=None):
         self.limit = limit_mb * 1024 * 1024
 
@@ -118,8 +116,6 @@ class DateRangeValidator(BaseValidator):
 
     message = "Date must be within {days} days from the current date."
     code = "invalid_date_range"
-
-    # TODO: Fix format date
 
     def __init__(self, days=0, *args, **kwargs):
         self.days = days

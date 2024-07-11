@@ -21,7 +21,9 @@ class Order(BaseModel):
     user = models.ForeignKey(User, on_delete=models.DO_NOTHING)
     shipping_name = models.CharField(max_length=255)
     shipping_phone = models.CharField(
-        max_length=12, unique=True, validators=[validate_phone]
+        max_length=12,
+        unique=True,
+        validators=[validate_phone],
     )
     shipping_time = models.CharField(max_length=255)
     shipping_price = models.DecimalField(max_digits=5, decimal_places=2)
@@ -36,7 +38,9 @@ class Order(BaseModel):
     restaurant = models.ForeignKey(Restaurant, on_delete=models.DO_NOTHING)
     amount = models.DecimalField(max_digits=10, decimal_places=2)
     status = models.CharField(
-        max_length=50, choices=OrderStatus.choices, default=OrderStatus.NOT_PROCESSED
+        max_length=50,
+        choices=OrderStatus.choices,
+        default=OrderStatus.NOT_PROCESSED,
     )
     payment_method = models.CharField(
         max_length=15,
@@ -71,10 +75,17 @@ class OrderItem(BaseModel):
     order = models.ForeignKey(Order, on_delete=models.CASCADE)
     food = models.ForeignKey(Food, on_delete=models.DO_NOTHING)
     price = models.DecimalField(
-        max_digits=10, decimal_places=2, blank=True, editable=False
+        max_digits=10,
+        decimal_places=2,
+        blank=True,
+        editable=False,
     )
     subtotal = models.DecimalField(
-        max_digits=10, decimal_places=2, blank=True, editable=False, default=0
+        max_digits=10,
+        decimal_places=2,
+        blank=True,
+        editable=False,
+        default=0,
     )
     quantity = models.IntegerField()
     # tax = models.DecimalField(max_digits=10, decimal_places=2, default=0)

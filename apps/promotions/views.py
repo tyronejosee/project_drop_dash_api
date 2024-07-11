@@ -115,7 +115,7 @@ class PromotionDetailView(APIView):
     def delete(self, request, promotion_id):
         # Delete a promotion
         promotion = self.get_object(promotion_id)
-        promotion.available = False
+        promotion.is_available = False
         cache.delete(self.cache_key)
         promotion.save()
         return Response(status=status.HTTP_204_NO_CONTENT)
@@ -239,7 +239,7 @@ class FixedCouponDetailView(APIView):
     def delete(self, request, fixed_coupon_id):
         # Delete a fixed coupon
         fixed_coupon = self.get_object(fixed_coupon_id)
-        fixed_coupon.available = False
+        fixed_coupon.is_available = False
         cache.delete(self.cache_key)
         fixed_coupon.save()
         return Response(status=status.HTTP_204_NO_CONTENT)
@@ -330,7 +330,7 @@ class PercentageCouponDetailView(APIView):
     def delete(self, request, percentage_coupon_id):
         # Delete a percentage coupon
         percentage_coupon = self.get_object(percentage_coupon_id)
-        percentage_coupon.available = False
+        percentage_coupon.is_available = False
         cache.delete(self.cache_key)
         percentage_coupon.save()
         return Response(status=status.HTTP_204_NO_CONTENT)

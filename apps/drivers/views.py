@@ -41,7 +41,7 @@ class DriverProfileView(APIView):
     def get(self, request):
         # Get driver profile
         driver_profile = self.get_object(request)
-        if driver_profile.available:
+        if driver_profile.is_available:
             serializer = DriverReadSerializer(driver_profile)
             return Response(serializer.data)
         return Response(
@@ -72,7 +72,7 @@ class DriverProfileView(APIView):
         # Delete driver profile
         driver_profile = self.get_object(request)
         if driver_profile.user == request.user:
-            driver_profile.available = False  # Logical deletion
+            driver_profile.is_available = False  # Logical deletion
             # TODO: Add signal
             driver_profile.save()
             return Response(status=status.HTTP_204_NO_CONTENT)

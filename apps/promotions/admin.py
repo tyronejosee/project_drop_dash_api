@@ -2,91 +2,39 @@
 
 from django.contrib import admin
 
+from apps.utilities.models import BaseModel
 from .models import Promotion, FixedCoupon, PercentageCoupon
 
 
 @admin.register(Promotion)
-class PromotionAdmin(admin.ModelAdmin):
+class PromotionAdmin(BaseModel):
     """Admin for Order model."""
 
-    list_per_page = 25
-    search_fields = [
-        "name",
-        "user",
-    ]
-    list_display = [
-        "name",
-        "created_at",
-        "available",
-        "available",
-    ]
-    list_filter = [
-        "available",
-    ]
-    list_editable = [
-        "available",
-    ]
-    readonly_fields = [
-        "pk",
-        "created_at",
-        "updated_at",
-    ]
-    ordering = [
-        "created_at",
-    ]
+    search_fields = ["name", "user"]
+    list_display = ["name", "created_at", "is_available"]
+    list_filter = ["is_available"]
+    list_editable = ["is_available"]
+    readonly_fields = ["pk", "created_at", "updated_at"]
+    ordering = ["created_at"]
 
 
 @admin.register(FixedCoupon)
-class FixedCouponAdmin(admin.ModelAdmin):
+class FixedCouponAdmin(BaseModel):
     """Admin for FixedCoupon model."""
 
-    list_per_page = 25
-    search_fields = [
-        "name",
-        "code",
-    ]
-    list_display = [
-        "name",
-        "discount_price",
-        "is_active",
-        "available",
-    ]
-    list_editable = [
-        "available",
-    ]
-    readonly_fields = [
-        "pk",
-        "created_at",
-        "updated_at",
-    ]
-    ordering = [
-        "pk",
-    ]
+    search_fields = ["name", "code"]
+    list_display = ["name", "discount_price", "is_active", "is_available"]
+    list_editable = ["is_available"]
+    readonly_fields = ["pk", "created_at", "updated_at"]
+    ordering = ["pk"]
 
 
 @admin.register(PercentageCoupon)
-class PercentageCouponAdmin(admin.ModelAdmin):
+class PercentageCouponAdmin(BaseModel):
     """Admin for PercentageCoupon model."""
 
-    list_per_page = 25
-    search_fields = [
-        "name",
-        "code",
-    ]
-    list_display = [
-        "name",
-        "discount_percentage",
-        "is_active",
-        "available",
-    ]
-    list_editable = [
-        "available",
-    ]
-    readonly_fields = [
-        "pk",
-        "created_at",
-        "updated_at",
-    ]
-    ordering = [
-        "pk",
-    ]
+    search_fields = ["name", "code"]
+    list_display = ["name", "discount_percentage", "is_active", "is_available"]
+    list_editable = ["is_available"]
+    readonly_fields = ["pk", "created_at", "updated_at"]
+    ordering = ["pk"]

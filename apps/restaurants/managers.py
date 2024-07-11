@@ -12,7 +12,7 @@ class RestaurantManager(BaseManager):
 
     def get_available(self):
         """Get all available restaurants"""
-        return self.filter(available=True, is_verified=True)
+        return self.filter(is_available=True, is_verified=True)
 
     def get_search(self, search_term):
         """Filter restaurants based on a search term."""

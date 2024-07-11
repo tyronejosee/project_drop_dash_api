@@ -2,41 +2,21 @@
 
 from django.contrib import admin
 
+from apps.utilities.models import BaseModel
 from .models import User
 from .choices import Role
 
 
 @admin.register(User)
-class UserAdmin(admin.ModelAdmin):
+class UserAdmin(BaseModel):
     """Admin for User model."""
 
-    list_per_page = 25
-    list_display = [
-        "username",
-        "email",
-        "role",
-        "is_staff",
-    ]
-    list_display_links = [
-        "username",
-    ]
-    search_fields = [
-        "username",
-        "email",
-        "first_name",
-        "last_name",
-    ]
-    list_filter = [
-        "is_staff",
-        "is_superuser",
-        "is_active",
-    ]
-    readonly_fields = [
-        "pk",
-    ]
-    ordering = [
-        "username",
-    ]
+    list_display = ["username", "email", "role", "is_staff"]
+    list_display_links = ["username"]
+    search_fields = ["username", "email", "first_name", "last_name"]
+    list_filter = ["is_staff", "is_superuser", "is_active"]
+    readonly_fields = ["pk"]
+    ordering = ["username"]
 
     actions = [
         "assign_client",

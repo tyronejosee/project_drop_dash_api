@@ -9,7 +9,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent.parent
 
 
 env = environ.Env()
-environ.Env.read_env("config/.env")
+environ.Env.read_env(".env.dev")
 
 
 BASE_APPS = [
@@ -140,9 +140,6 @@ REST_FRAMEWORK = {
     "PAGE_SIZE": 25,
     "SEARCH_PARAM": "q",
     "ORDERING_PARAM": "ordering",
-    # "DEFAULT_VERSION": "v1",
-    # "ALLOWED_VERSIONS": ["v1", "v2"],
-    # "VERSION_PARAM": "version",
 }
 
 
@@ -187,7 +184,7 @@ DJOSER = {
 }
 
 SIMPLE_JWT = {
-    "AUTH_HEADER_TYPES": ("JWT",),
+    "AUTH_HEADER_TYPES": ("Bearer",),
     "ACCESS_TOKEN_LIFETIME": timedelta(minutes=10080),
     "REFRESH_TOKEN_LIFETIME": timedelta(days=30),
     "ROTATE_REFRESFH_TOKENS": True,

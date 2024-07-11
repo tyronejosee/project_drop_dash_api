@@ -129,7 +129,7 @@ class RestaurantDetailView(APIView):
     def delete(self, request, restaurant_id):
         # Delete a restaurant
         restaurant = self.get_object(restaurant_id)
-        restaurant.available = False  # Logical deletion
+        restaurant.is_available = False  # Logical deletion
         restaurant.save()
         return Response(status=status.HTTP_204_NO_CONTENT)
 
@@ -378,7 +378,7 @@ class CategoryDetailView(APIView):
     def delete(self, request, restaurant_id, category_id):
         # Delete a category
         category = self.get_object(category_id)
-        category.available = False  # Logical deletion
+        category.is_available = False  # Logical deletion
         category.save()
         return Response(status=status.HTTP_204_NO_CONTENT)
 
@@ -471,7 +471,7 @@ class FoodDetailView(APIView):
     def delete(self, request, food_id, format=None):
         # Delete a food
         food = self.get_object(food_id)
-        food.available = False  # Logical deletion
+        food.is_available = False  # Logical deletion
         food.save()
         # Invalidate cache
         cache.delete("food")

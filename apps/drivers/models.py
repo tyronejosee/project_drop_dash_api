@@ -26,13 +26,16 @@ class Driver(BaseModel):
         validators=[FileExtensionValidator(["pdf", "jpg"])],
     )
     identification_document = models.FileField(
-        upload_to=docs_path, validators=[FileExtensionValidator(["pdf", "jpg"])]
+        upload_to=docs_path,
+        validators=[FileExtensionValidator(["pdf", "jpg"])],
     )
     social_security_certificate = models.FileField(
-        upload_to=docs_path, validators=[FileExtensionValidator(["pdf", "jpg"])]
+        upload_to=docs_path,
+        validators=[FileExtensionValidator(["pdf", "jpg"])],
     )
     criminal_record_certificate = models.FileField(
-        upload_to=docs_path, validators=[FileExtensionValidator(["pdf", "jpg"])]
+        upload_to=docs_path,
+        validators=[FileExtensionValidator(["pdf", "jpg"])],
     )
     address = models.CharField(max_length=100)
     city = models.ForeignKey(City, on_delete=models.PROTECT)
@@ -68,7 +71,6 @@ class Resource(BaseModel):
     status = models.CharField(
         max_length=15, choices=RequestStatus.choices, default=RequestStatus.PENDING
     )
-    # request_date = created_at (BaseModel)
 
     objects = ResourceManager()
 
