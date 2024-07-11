@@ -1,1 +1,0 @@
-"""Views for Deliveries App."""

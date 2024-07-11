@@ -65,11 +65,14 @@ class Resource(BaseModel):
 
     driver = models.ForeignKey(Driver, on_delete=models.CASCADE)
     resource_type = models.CharField(
-        max_length=15, choices=ResourceType.choices, default=ResourceType.BACKPACKS
+        max_length=15,
+        choices=ResourceType.choices,
     )
     note = models.TextField(blank=True)
     status = models.CharField(
-        max_length=15, choices=RequestStatus.choices, default=RequestStatus.PENDING
+        max_length=15,
+        choices=RequestStatus.choices,
+        default=RequestStatus.PENDING,
     )
 
     objects = ResourceManager()

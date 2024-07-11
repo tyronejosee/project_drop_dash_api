@@ -42,9 +42,15 @@ class Worker(BaseModel):
     termination_date = models.DateField(null=True, blank=True)
     hourly_rate = models.DecimalField(max_digits=10, decimal_places=2)
     contract_type = models.CharField(
-        max_length=25, choices=ContractType.choices, default=ContractType.FIXED_TERM
+        max_length=25,
+        choices=ContractType.choices,
+        default=ContractType.FIXED_TERM,
     )
-    contract_file = models.FileField(upload_to="jobs/contracts/", null=True, blank=True)
+    contract_file = models.FileField(
+        upload_to="jobs/contracts/",
+        null=True,
+        blank=True,
+    )
 
     class Meta:
         ordering = ["pk"]
@@ -66,7 +72,9 @@ class Applicant(BaseModel):
     message = models.TextField()
     submitted_at = models.DateTimeField(auto_now_add=True)
     status = models.CharField(
-        max_length=10, choices=Status.choices, default=Status.PENDING
+        max_length=10,
+        choices=Status.choices,
+        default=Status.PENDING,
     )
 
     class Meta:

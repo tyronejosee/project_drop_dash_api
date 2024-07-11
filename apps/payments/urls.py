@@ -1,1 +1,0 @@
-"""URLs for Payments App."""

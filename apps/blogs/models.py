@@ -29,6 +29,7 @@ class Tag(BaseModel):
 
     def save(self, *args, **kwargs):
         # Override the save method to generate the slug
+        # TODO: Refactor
         if not self.slug or self.slug != self.name:
             self.slug = slugify(self.name)
         super().save(*args, **kwargs)
@@ -69,10 +70,14 @@ class PostReport(BaseModel):
     post = models.ForeignKey(Post, on_delete=models.CASCADE)
     reason = models.TextField()
     priority = models.CharField(
-        max_length=10, choices=Priority.choices, default=Priority.LOW
+        max_length=10,
+        choices=Priority.choices,
+        default=Priority.LOW,
     )
     status = models.CharField(
-        max_length=10, choices=Status.choices, default=Status.PENDING
+        max_length=10,
+        choices=Status.choices,
+        default=Status.PENDING,
     )
 
     class Meta:

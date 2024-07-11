@@ -1,1 +1,0 @@
-"""Serializers for Payments App."""

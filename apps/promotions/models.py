@@ -8,7 +8,11 @@ from django.core.validators import (
     MaxValueValidator,
 )
 
-from apps.utilities.validators import FileSizeValidator, ImageSizeValidator, DateRangeValidator
+from apps.utilities.validators import (
+    FileSizeValidator,
+    ImageSizeValidator,
+    DateRangeValidator,
+)
 from apps.utilities.models import BaseModel
 from apps.utilities.paths import image_path
 from .validators import validate_discount_price
@@ -32,7 +36,6 @@ class Promotion(BaseModel):
             FileExtensionValidator(allowed_extensions=["webp"]),
             ImageSizeValidator(max_width=1080, max_height=1080),
             FileSizeValidator(limit_mb=1),
-
         ],
     )
 

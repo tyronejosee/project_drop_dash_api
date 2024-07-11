@@ -10,4 +10,4 @@
 
 ## Drivers
 
-- Qdd functionality so that after a driver profile is created and marked as verified, the associated sensitive documents will be deleted to respect privacy policies
+- Add functionality so that after a driver profile is created and marked as verified, the associated sensitive documents will be deleted to respect privacy policies
