@@ -3,7 +3,7 @@
 from django.db import models
 
 
-class OrderStatus(models.TextChoices):
+class OrderStatusChoices(models.TextChoices):
 
     NOT_PROCESSED = "not_processed", "Not Processed"
     PROCESSED = "processed", "Processed"

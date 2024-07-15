@@ -3,7 +3,7 @@
 from django.db.models import TextChoices
 
 
-class Role(TextChoices):
+class RoleChoices(TextChoices):
 
     CLIENT = "client", "Client"
     ADVERTISER = "advertiser", "Advertiser"

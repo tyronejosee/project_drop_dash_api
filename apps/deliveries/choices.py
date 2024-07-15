@@ -3,7 +3,7 @@
 from django.db.models import TextChoices
 
 
-class Status(TextChoices):
+class StatusChoices(TextChoices):
 
     IN_PROGRESS = "progress", "In Progress"
     COMPLETED = "completed", "Completed"

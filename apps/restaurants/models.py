@@ -14,7 +14,7 @@ from apps.utilities.validators import (
 )
 from apps.locations.models import Country, State, City
 from .managers import RestaurantManager, CategoryManager, FoodManager
-from .choices import Specialty
+from .choices import SpecialtyChoices
 
 User = settings.AUTH_USER_MODEL
 
@@ -28,7 +28,9 @@ class Restaurant(BaseModel, SlugMixin):
     banner = models.ImageField(upload_to=image_banner_path, blank=True)
     description = models.TextField(blank=True)
     specialty = models.CharField(
-        max_length=20, choices=Specialty.choices, default=Specialty.VARIED
+        max_length=20,
+        choices=SpecialtyChoices.choices,
+        default=SpecialtyChoices.VARIED,
     )
     address = models.CharField(max_length=255)
     city = models.ForeignKey(City, on_delete=models.PROTECT)
@@ -98,7 +100,9 @@ class Food(BaseModel):
         ],
     )
     restaurant = models.ForeignKey(
-        Restaurant, on_delete=models.CASCADE, related_name="foods"
+        Restaurant,
+        on_delete=models.CASCADE,
+        related_name="foods",
     )
     category = models.ForeignKey(Category, on_delete=models.PROTECT, null=True)
     is_vegetarian = models.BooleanField(default=False)

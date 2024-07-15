@@ -2,7 +2,7 @@
 
 from rest_framework.permissions import BasePermission
 
-from .choices import Role
+from .choices import RoleChoices
 
 
 class BaseRolePermission(BasePermission):
@@ -26,8 +26,8 @@ class IsClient(BaseRolePermission):
     """
 
     required_roles = [
-        Role.CLIENT,
-        Role.ADMINISTRATOR,
+        RoleChoices.CLIENT,
+        RoleChoices.ADMINISTRATOR,
     ]
 
 
@@ -37,8 +37,8 @@ class IsDriver(BaseRolePermission):
     """
 
     required_roles = [
-        Role.DRIVER,
-        Role.ADMINISTRATOR,
+        RoleChoices.DRIVER,
+        RoleChoices.ADMINISTRATOR,
     ]
 
 
@@ -48,8 +48,8 @@ class IsPartner(BaseRolePermission):
     """
 
     required_roles = [
-        Role.PARTNER,
-        Role.ADMINISTRATOR,
+        RoleChoices.PARTNER,
+        RoleChoices.ADMINISTRATOR,
     ]
 
 
@@ -59,8 +59,8 @@ class IsMarketing(BaseRolePermission):
     """
 
     required_roles = [
-        Role.MARKETING,
-        Role.ADMINISTRATOR,
+        RoleChoices.MARKETING,
+        RoleChoices.ADMINISTRATOR,
     ]
 
 
@@ -70,8 +70,8 @@ class IsSupport(BaseRolePermission):
     """
 
     required_roles = [
-        Role.SUPPORT,
-        Role.ADMINISTRATOR,
+        RoleChoices.SUPPORT,
+        RoleChoices.ADMINISTRATOR,
     ]
 
 
@@ -80,6 +80,4 @@ class IsAdministrator(BaseRolePermission):
     Allows access only to Administrator users.
     """
 
-    required_roles = [
-        Role.ADMINISTRATOR
-    ]
+    required_roles = [RoleChoices.ADMINISTRATOR]

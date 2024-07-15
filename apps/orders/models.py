@@ -8,9 +8,9 @@ from apps.utilities.models import BaseModel
 from apps.restaurants.models import Restaurant
 from apps.restaurants.models import Food
 from apps.locations.models import Country, State, City
-from apps.payments.choices import PaymentMethod
+from apps.payments.choices import PaymentMethodChoices
 from .managers import OrderManager, OrderItemManager
-from .choices import OrderStatus
+from .choices import OrderStatusChoices
 
 User = get_user_model()
 
@@ -39,13 +39,13 @@ class Order(BaseModel):
     amount = models.DecimalField(max_digits=10, decimal_places=2)
     status = models.CharField(
         max_length=50,
-        choices=OrderStatus.choices,
-        default=OrderStatus.NOT_PROCESSED,
+        choices=OrderStatusChoices.choices,
+        default=OrderStatusChoices.NOT_PROCESSED,
     )
     payment_method = models.CharField(
         max_length=15,
-        choices=PaymentMethod.choices,
-        default=PaymentMethod.BANK_TRANSFER,
+        choices=PaymentMethodChoices.choices,
+        default=PaymentMethodChoices.BANK_TRANSFER,
     )
 
     objects = OrderManager()

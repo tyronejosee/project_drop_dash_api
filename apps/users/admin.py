@@ -4,7 +4,7 @@ from django.contrib import admin
 
 from apps.utilities.models import BaseModel
 from .models import User
-from .choices import Role
+from .choices import RoleChoices
 
 
 @admin.register(User)
@@ -33,40 +33,40 @@ class UserAdmin(BaseModel):
 
     @admin.action(description="Assign selected users as Client")
     def assign_client(modeladmin, request, queryset):
-        queryset.update(role=Role.CLIENT, is_staff=False)
+        queryset.update(role=RoleChoices.CLIENT, is_staff=False)
 
     @admin.action(description="Assign selected users as Advertiser")
     def assign_advertiser(modeladmin, request, queryset):
-        queryset.update(role=Role.ADVERTISER, is_staff=False)
+        queryset.update(role=RoleChoices.ADVERTISER, is_staff=False)
 
     @admin.action(description="Assign selected users as Driver")
     def assign_driver(modeladmin, request, queryset):
-        queryset.update(role=Role.DRIVER, is_staff=False)
+        queryset.update(role=RoleChoices.DRIVER, is_staff=False)
 
     @admin.action(description="Assign selected users as Dispatcher")
     def assign_dispatcher(modeladmin, request, queryset):
-        queryset.update(role=Role.DISPATCHER, is_staff=False)
+        queryset.update(role=RoleChoices.DISPATCHER, is_staff=False)
 
     @admin.action(description="Assign selected users as Partner")
     def assign_partner(modeladmin, request, queryset):
-        queryset.update(role=Role.PARTNER, is_staff=False)
+        queryset.update(role=RoleChoices.PARTNER, is_staff=False)
 
     @admin.action(description="Assign selected users as Support")
     def assign_support(modeladmin, request, queryset):
-        queryset.update(role=Role.SUPPORT, is_staff=False)
+        queryset.update(role=RoleChoices.SUPPORT, is_staff=False)
 
     @admin.action(description="Assign selected users as Marketing")
     def assign_marketing(modeladmin, request, queryset):
-        queryset.update(role=Role.MARKETING, is_staff=False)
+        queryset.update(role=RoleChoices.MARKETING, is_staff=False)
 
     @admin.action(description="Assign selected users as Operations")
     def assign_operations(modeladmin, request, queryset):
-        queryset.update(role=Role.OPERATIONS, is_staff=False)
+        queryset.update(role=RoleChoices.OPERATIONS, is_staff=False)
 
     @admin.action(description="Assign selected users as Finance")
     def assign_finance(modeladmin, request, queryset):
-        queryset.update(role=Role.FINANCE, is_staff=False)
+        queryset.update(role=RoleChoices.FINANCE, is_staff=False)
 
     @admin.action(description="Assign selected users as Administrator")
     def assign_administrator(modeladmin, request, queryset):
-        queryset.update(role=Role.ADMINISTRATOR, is_staff=True)
+        queryset.update(role=RoleChoices.ADMINISTRATOR, is_staff=True)

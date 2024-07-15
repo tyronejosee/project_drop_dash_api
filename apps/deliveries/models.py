@@ -4,7 +4,7 @@
 # from django.contrib.auth import get_user_model
 
 # from apps.orders.models import Order
-# from .choices import Status
+# from .choices import StatusChoices
 
 # User = get_user_model()
 
@@ -33,5 +33,5 @@
 #     signature = models.ImageField(upload_to="deliveries/signatures/", blank=True)
 #     internal_notes = models.TextField(blank=True)
 #     status = models.CharField(
-#         max_length=20, choices=Status.choices, default=Status.IN_PROGRESS
+#         max_length=20, choices=StatusChoices.choices, default=StatusChoices.IN_PROGRESS
 #     )

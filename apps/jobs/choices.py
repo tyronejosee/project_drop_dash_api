@@ -3,7 +3,7 @@
 from django.db.models import TextChoices
 
 
-class Status(TextChoices):
+class StatusChoices(TextChoices):
 
     PENDING = "pending", "Pending"
     REVIEWED = "reviewed", "Reviewed"
@@ -11,7 +11,7 @@ class Status(TextChoices):
     REJECTED = "rejected", "Rejected"
 
 
-class ContractType(TextChoices):
+class ContractTypeChoices(TextChoices):
 
     FIXED_TERM = "fixed_term", "Fixed-term Contract"
     PROJECT_BASED = "project_based", "Project-based Contract"

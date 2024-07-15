@@ -6,7 +6,7 @@ from django.db import models
 from apps.utilities.models import BaseModel
 from apps.utilities.mixins import SlugMixin
 from .managers import TagManager, PostManager
-from .choices import Priority, Status
+from .choices import PriorityChoices, StatusChoices
 
 User = settings.AUTH_USER_MODEL
 
@@ -64,13 +64,13 @@ class PostReport(BaseModel):
     reason = models.TextField()
     priority = models.CharField(
         max_length=10,
-        choices=Priority.choices,
-        default=Priority.LOW,
+        choices=PriorityChoices.choices,
+        default=PriorityChoices.LOW,
     )
     status = models.CharField(
         max_length=10,
-        choices=Status.choices,
-        default=Status.PENDING,
+        choices=StatusChoices.choices,
+        default=StatusChoices.PENDING,
     )
 
     class Meta:

@@ -5,7 +5,7 @@ from rest_framework import serializers
 from apps.utilities.functions import decrypt_field
 from apps.utilities.validators import validate_phone, validate_birth_date
 from .models import Driver, Resource
-from .choices import Status
+from .choices import StatusChoices
 
 
 class DriverReadSerializer(serializers.ModelSerializer):
@@ -15,7 +15,7 @@ class DriverReadSerializer(serializers.ModelSerializer):
     city = serializers.StringRelatedField()
     state = serializers.StringRelatedField()
     country = serializers.StringRelatedField()
-    status = serializers.ChoiceField(choices=Status.choices)
+    status = serializers.ChoiceField(choices=StatusChoices.choices)
 
     class Meta:
         model = Driver

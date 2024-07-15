@@ -3,7 +3,7 @@
 from django.db import models
 
 
-class PaymentMethod(models.TextChoices):
+class PaymentMethodChoices(models.TextChoices):
 
     CASH = "cash", "Cash"
     BANK_TRANSFER = "bank transfer", "Bank Transfer"

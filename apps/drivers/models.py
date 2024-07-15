@@ -8,7 +8,12 @@ from apps.utilities.models import BaseModel
 from apps.utilities.paths import docs_path
 from apps.locations.models import Country, State, City
 from .managers import DriverManager, ResourceManager
-from .choices import Vehicle, Status, ResourceType, RequestStatus
+from .choices import (
+    VehicleChoices,
+    StatusChoices,
+    ResourceTypeChoices,
+    RequestStatusChoices,
+)
 
 User = settings.AUTH_USER_MODEL
 
@@ -41,10 +46,12 @@ class Driver(BaseModel):
     city = models.ForeignKey(City, on_delete=models.PROTECT)
     state = models.ForeignKey(State, on_delete=models.PROTECT)
     country = models.ForeignKey(Country, on_delete=models.PROTECT)
-    vehicle_type = models.CharField(max_length=15, choices=Vehicle.choices)
+    vehicle_type = models.CharField(max_length=15, choices=VehicleChoices.choices)
     is_verified = models.BooleanField(default=False)
     status = models.CharField(
-        max_length=10, choices=Status.choices, default=Status.BRONCE
+        max_length=10,
+        choices=StatusChoices.choices,
+        default=StatusChoices.BRONCE,
     )
 
     # TODO: Add crontab or signals for logic
@@ -66,13 +73,13 @@ class Resource(BaseModel):
     driver = models.ForeignKey(Driver, on_delete=models.CASCADE)
     resource_type = models.CharField(
         max_length=15,
-        choices=ResourceType.choices,
+        choices=ResourceTypeChoices.choices,
     )
     note = models.TextField(blank=True)
     status = models.CharField(
         max_length=15,
-        choices=RequestStatus.choices,
-        default=RequestStatus.PENDING,
+        choices=RequestStatusChoices.choices,
+        default=RequestStatusChoices.PENDING,
     )
 
     objects = ResourceManager()

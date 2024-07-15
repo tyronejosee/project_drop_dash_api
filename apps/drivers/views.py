@@ -10,7 +10,7 @@ from drf_spectacular.utils import extend_schema_view
 
 from apps.utilities.functions import encrypt_field
 from apps.users.permissions import IsClient, IsDriver
-from apps.users.choices import Role
+from apps.users.choices import RoleChoices
 from .models import Driver, Resource
 from .serializers import (
     DriverReadSerializer,
@@ -112,7 +112,7 @@ class DriverCreateView(APIView):
             validated_data["address"] = encrypt_field(validated_data["address"])
 
             serializer.save(user=request.user)
-            request.user.role = Role.DRIVER  # Update role
+            request.user.role = RoleChoices.DRIVER  # Update role
             request.user.save()
             cache.delete(self.cache_key)  # Invalidate cache
             return Response(serializer.data, status=status.HTTP_201_CREATED)

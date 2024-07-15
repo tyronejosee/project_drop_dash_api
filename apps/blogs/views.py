@@ -20,7 +20,7 @@ from .serializers import (
     PostReportReadSerializer,
     PostReportWriteSerializer,
 )
-from .choices import Priority
+from .choices import PriorityChoices
 
 
 class TagListView(APIView):
@@ -265,13 +265,13 @@ class PostReportView(APIView):
 
                 # Determine priority for the new report
                 if post.points <= 25:
-                    priority = Priority.URGENT
+                    priority = PriorityChoices.URGENT
                 elif post.points <= 50:
-                    priority = Priority.HIGH
+                    priority = PriorityChoices.HIGH
                 elif post.points <= 75:
-                    priority = Priority.MEDIUM
+                    priority = PriorityChoices.MEDIUM
                 else:
-                    priority = Priority.LOW
+                    priority = PriorityChoices.LOW
 
                 serializer.save(user=request.user, post=post, priority=priority)
             return Response(

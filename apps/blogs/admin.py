@@ -4,7 +4,7 @@ from django.contrib import admin
 
 from apps.utilities.admin import BaseAdmin
 from .models import Tag, Post, PostReport
-from .choices import Status
+from .choices import StatusChoices
 
 
 class TagInline(admin.TabularInline):
@@ -52,12 +52,12 @@ class PostReportAdmin(BaseAdmin):
 
     @admin.action(description="Mark selected reports as Approved")
     def make_approved(modeladmin, request, queryset):
-        queryset.update(status=Status.APPROVED)
+        queryset.update(status=StatusChoices.APPROVED)
 
     @admin.action(description="Mark selected reports as Rejected")
     def make_rejected(modeladmin, request, queryset):
-        queryset.update(status=Status.REJECTED)
+        queryset.update(status=StatusChoices.REJECTED)
 
     @admin.action(description="Mark selected reports as Rejected")
     def make_archived(modeladmin, request, queryset):
-        queryset.update(status=Status.ARCHIVED)
+        queryset.update(status=StatusChoices.ARCHIVED)

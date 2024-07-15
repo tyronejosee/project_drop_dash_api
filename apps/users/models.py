@@ -5,7 +5,7 @@ from django.db import models
 from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin
 
 from .managers import UserManager
-from .choices import Role
+from .choices import RoleChoices
 
 
 class User(AbstractBaseUser, PermissionsMixin):
@@ -19,7 +19,11 @@ class User(AbstractBaseUser, PermissionsMixin):
     last_name = models.CharField(max_length=255, blank=True, null=True)
     date_birth = models.DateField(null=True, blank=True)
     points = models.IntegerField(default=0)
-    role = models.CharField(max_length=15, choices=Role.choices, default=Role.CLIENT)
+    role = models.CharField(
+        max_length=15,
+        choices=RoleChoices.choices,
+        default=RoleChoices.CLIENT,
+    )
     is_active = models.BooleanField(default=True)
     is_staff = models.BooleanField(default=False)
     created_at = models.DateTimeField(auto_now_add=True)

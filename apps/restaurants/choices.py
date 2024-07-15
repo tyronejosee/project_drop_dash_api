@@ -3,7 +3,7 @@
 from django.db.models import TextChoices
 
 
-class Specialty(TextChoices):
+class SpecialtyChoices(TextChoices):
 
     VARIED = "varied", "Varied"
     CHILEAN = "chilean", "Chilean"

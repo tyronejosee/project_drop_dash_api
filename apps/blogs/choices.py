@@ -3,7 +3,7 @@
 from django.db.models import TextChoices
 
 
-class Priority(TextChoices):
+class PriorityChoices(TextChoices):
 
     LOW = "low", "Low"
     MEDIUM = "medium", "Medium"
@@ -11,7 +11,7 @@ class Priority(TextChoices):
     URGENT = "urgent", "Urgent"
 
 
-class Status(TextChoices):
+class StatusChoices(TextChoices):
 
     PENDING = "pending", "Pending"
     APPROVED = "approved", "Approved"

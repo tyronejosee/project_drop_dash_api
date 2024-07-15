@@ -4,7 +4,7 @@ import re
 from django.contrib.auth.models import BaseUserManager
 from django.utils.text import slugify
 
-from .choices import Role
+from .choices import RoleChoices
 
 
 class UserManager(BaseUserManager):
@@ -28,7 +28,7 @@ class UserManager(BaseUserManager):
 
         kwargs["slug"] = create_slug(kwargs["username"])
         user = self.model(email=email, **kwargs)
-        kwargs.setdefault("role", Role.CLIENT)
+        kwargs.setdefault("role", RoleChoices.CLIENT)
         user.set_password(password)
         user.save()
 
@@ -38,7 +38,7 @@ class UserManager(BaseUserManager):
         """Creates a superuser with the given email and password."""
         kwargs.setdefault("is_staff", True)
         kwargs.setdefault("is_superuser", True)
-        kwargs.setdefault("role", Role.ADMINISTRATOR)
+        kwargs.setdefault("role", RoleChoices.ADMINISTRATOR)
 
         if kwargs.get("is_staff") is not True:
             raise ValueError("Superuser must have is_staff=True.")

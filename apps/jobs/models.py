@@ -5,12 +5,9 @@ from django.db import models
 
 from apps.utilities.models import BaseModel
 from apps.locations.models import Country, State, City
-from .choices import Status, ContractType
+from .choices import StatusChoices, ContractTypeChoices
 
 User = settings.AUTH_USER_MODEL
-
-
-# TODO: Refactor and migrate
 
 
 class Position(BaseModel):
@@ -43,8 +40,8 @@ class Worker(BaseModel):
     hourly_rate = models.DecimalField(max_digits=10, decimal_places=2)
     contract_type = models.CharField(
         max_length=25,
-        choices=ContractType.choices,
-        default=ContractType.FIXED_TERM,
+        choices=ContractTypeChoices.choices,
+        default=ContractTypeChoices.FIXED_TERM,
     )
     contract_file = models.FileField(
         upload_to="jobs/contracts/",
@@ -73,8 +70,8 @@ class Applicant(BaseModel):
     submitted_at = models.DateTimeField(auto_now_add=True)
     status = models.CharField(
         max_length=10,
-        choices=Status.choices,
-        default=Status.PENDING,
+        choices=StatusChoices.choices,
+        default=StatusChoices.PENDING,
     )
 
     class Meta:
