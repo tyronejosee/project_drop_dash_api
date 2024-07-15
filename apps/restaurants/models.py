@@ -3,9 +3,9 @@
 from django.conf import settings
 from django.db import models
 from django.core.validators import FileExtensionValidator
-from django.utils.text import slugify
 
 from apps.utilities.models import BaseModel
+from apps.utilities.mixins import SlugMixin
 from apps.utilities.paths import image_path, image_banner_path
 from apps.utilities.validators import (
     FileSizeValidator,
@@ -19,12 +19,11 @@ from .choices import Specialty
 User = settings.AUTH_USER_MODEL
 
 
-class Restaurant(BaseModel):
+class Restaurant(BaseModel, SlugMixin):
     """Model definition for Restaurant."""
 
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     name = models.CharField(max_length=50, unique=True, db_index=True)
-    slug = models.SlugField(max_length=50, unique=True, db_index=True)
     image = models.ImageField(upload_to=image_path)
     banner = models.ImageField(upload_to=image_banner_path, blank=True)
     description = models.TextField(blank=True)
@@ -58,9 +57,7 @@ class Restaurant(BaseModel):
         return str(self.name)
 
     def save(self, *args, **kwargs):
-        # Override the save method to generate the slug
-        if not self.slug:
-            self.slug = slugify(self.name)
+        self.set_slug()
         super().save(*args, **kwargs)
 
 

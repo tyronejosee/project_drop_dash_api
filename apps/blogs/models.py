@@ -2,20 +2,19 @@
 
 from django.conf import settings
 from django.db import models
-from django.utils.text import slugify
 
 from apps.utilities.models import BaseModel
+from apps.utilities.mixins import SlugMixin
 from .managers import TagManager, PostManager
 from .choices import Priority, Status
 
 User = settings.AUTH_USER_MODEL
 
 
-class Tag(BaseModel):
+class Tag(BaseModel, SlugMixin):
     """Model definition for Tag."""
 
     name = models.CharField(max_length=50, unique=True)
-    slug = models.SlugField(unique=True, blank=True, null=True)
 
     objects = TagManager()
 
@@ -28,18 +27,14 @@ class Tag(BaseModel):
         return str(self.name)
 
     def save(self, *args, **kwargs):
-        # Override the save method to generate the slug
-        # TODO: Refactor
-        if not self.slug or self.slug != self.name:
-            self.slug = slugify(self.name)
+        self.set_slug()
         super().save(*args, **kwargs)
 
 
-class Post(BaseModel):
+class Post(BaseModel, SlugMixin):
     """Model definition for Post."""
 
     title = models.CharField(max_length=100)
-    slug = models.SlugField(unique=True, blank=True, null=True)
     content = models.TextField()
     tags = models.ManyToManyField(Tag)
     author = models.ForeignKey(User, on_delete=models.CASCADE)
@@ -57,9 +52,7 @@ class Post(BaseModel):
         return str(self.title)
 
     def save(self, *args, **kwargs):
-        # Override the save method to generate the slug
-        if not self.slug or self.slug != self.title:
-            self.slug = slugify(self.title)
+        self.set_slug()
         super().save(*args, **kwargs)
 
 
