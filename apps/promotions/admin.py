@@ -2,12 +2,12 @@
 
 from django.contrib import admin
 
-from apps.utilities.models import BaseModel
+from apps.utilities.admin import BaseAdmin
 from .models import Promotion, FixedCoupon, PercentageCoupon
 
 
 @admin.register(Promotion)
-class PromotionAdmin(BaseModel):
+class PromotionAdmin(BaseAdmin):
     """Admin for Order model."""
 
     search_fields = ["name", "user"]
@@ -19,7 +19,7 @@ class PromotionAdmin(BaseModel):
 
 
 @admin.register(FixedCoupon)
-class FixedCouponAdmin(BaseModel):
+class FixedCouponAdmin(BaseAdmin):
     """Admin for FixedCoupon model."""
 
     search_fields = ["name", "code"]
@@ -30,7 +30,7 @@ class FixedCouponAdmin(BaseModel):
 
 
 @admin.register(PercentageCoupon)
-class PercentageCouponAdmin(BaseModel):
+class PercentageCouponAdmin(BaseAdmin):
     """Admin for PercentageCoupon model."""
 
     search_fields = ["name", "code"]

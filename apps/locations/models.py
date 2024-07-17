@@ -56,12 +56,3 @@ class City(BaseModel):
 
     def __str__(self):
         return str(self.name)
-
-
-# class Address(models.Model):
-#     """Model definition for Address."""
-
-#     street = models.CharField(max_length=100)
-#     city = models.ForeignKey(City, on_delete=models.PROTECT)
-#     state = models.ForeignKey(State, on_delete=models.PROTECT)
-#     country = models.ForeignKey(Country, on_delete=models.PROTECT)

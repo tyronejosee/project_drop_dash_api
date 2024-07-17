@@ -23,9 +23,6 @@ class Review(BaseModel):
     )
     comment = models.TextField()
 
-    # helpful_count = models.PositiveIntegerField(default=0)
-    # reported_count = models.PositiveIntegerField(default=0)
-
     class Meta:
         ordering = ["-created_at"]
         verbose_name = "review"

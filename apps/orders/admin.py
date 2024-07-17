@@ -2,12 +2,12 @@
 
 from django.contrib import admin
 
-from apps.utilities.models import BaseModel
+from apps.utilities.admin import BaseAdmin
 from .models import Order, OrderItem
 
 
 @admin.register(Order)
-class OrderAdmin(BaseModel):
+class OrderAdmin(BaseAdmin):
     """Admin for Order model."""
 
     search_fields = ["transaction", "user"]
@@ -19,7 +19,7 @@ class OrderAdmin(BaseModel):
 
 
 @admin.register(OrderItem)
-class OrderItemAdmin(BaseModel):
+class OrderItemAdmin(BaseAdmin):
     """Admin for OrderItem model."""
 
     search_fields = ["order", "food"]

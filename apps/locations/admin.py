@@ -2,12 +2,12 @@
 
 from django.contrib import admin
 
-from apps.utilities.models import BaseModel
+from apps.utilities.admin import BaseAdmin
 from .models import Country, State, City
 
 
 @admin.register(Country)
-class CountryAdmin(BaseModel):
+class CountryAdmin(BaseAdmin):
     """Admin for Country model."""
 
     search_fields = ["name"]
@@ -17,7 +17,7 @@ class CountryAdmin(BaseModel):
 
 
 @admin.register(State)
-class StateAdmin(BaseModel):
+class StateAdmin(BaseAdmin):
     """Admin for State model."""
 
     search_fields = ["name", "country"]
@@ -27,7 +27,7 @@ class StateAdmin(BaseModel):
 
 
 @admin.register(City)
-class CityAdmin(BaseModel):
+class CityAdmin(BaseAdmin):
     """Admin for City model."""
 
     search_fields = ["name", "state"]

@@ -3,7 +3,7 @@
 from django.contrib import admin
 from django.contrib.contenttypes.admin import GenericTabularInline
 
-from apps.utilities.models import BaseModel
+from apps.utilities.admin import BaseAdmin
 from apps.reviews.models import Review
 from .models import Restaurant, Category, Food
 
@@ -13,7 +13,7 @@ class ReviewInline(GenericTabularInline):
 
 
 @admin.register(Restaurant)
-class RestaurantAdmin(BaseModel):
+class RestaurantAdmin(BaseAdmin):
     """Admin for Restaurant model."""
 
     search_fields = ["name", "user"]
@@ -26,7 +26,7 @@ class RestaurantAdmin(BaseModel):
 
 
 @admin.register(Category)
-class CategoryAdmin(BaseModel):
+class CategoryAdmin(BaseAdmin):
     """Admin for Category model."""
 
     list_per_page = 25
@@ -37,7 +37,7 @@ class CategoryAdmin(BaseModel):
 
 
 @admin.register(Food)
-class FoodAdmin(BaseModel):
+class FoodAdmin(BaseAdmin):
     """Admin for Food model."""
 
     search_fields = ["name", "restaurant"]

@@ -2,13 +2,13 @@
 
 from django.contrib import admin
 
-from apps.utilities.models import BaseModel
+from apps.utilities.admin import BaseAdmin
 from .models import User
 from .choices import RoleChoices
 
 
 @admin.register(User)
-class UserAdmin(BaseModel):
+class UserAdmin(BaseAdmin):
     """Admin for User model."""
 
     list_display = ["username", "email", "role", "is_staff"]

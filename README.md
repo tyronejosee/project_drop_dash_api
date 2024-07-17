@@ -57,7 +57,7 @@ Install all dependencies (Optional).
 pip install -r requirements/local.txt
 ```
 
-Create an environment variable file .env.
+Create an environment variable file .env or use `.env.template` file.
 
 ```bash
 SECRET_KEY=""

@@ -2,12 +2,12 @@
 
 from django.contrib import admin
 
-from apps.utilities.models import BaseModel
+from apps.utilities.admin import BaseAdmin
 from .models import Review
 
 
 @admin.register(Review)
-class ReviewAdmin(BaseModel):
+class ReviewAdmin(BaseAdmin):
     """Admin for Review model."""
 
     search_fields = ["user", "object_id"]
