@@ -2,6 +2,7 @@
 
 from django.db import models
 from django.contrib.auth import get_user_model
+from simple_history.models import HistoricalRecords
 
 from apps.utilities.validators import validate_phone
 from apps.utilities.models import BaseModel
@@ -49,6 +50,7 @@ class Order(BaseModel):
     )
 
     objects = OrderManager()
+    history = HistoricalRecords()
 
     class Meta:
         ordering = ["pk"]
@@ -88,7 +90,6 @@ class OrderItem(BaseModel):
         default=0,
     )
     quantity = models.IntegerField()
-    # tax = models.DecimalField(max_digits=10, decimal_places=2, default=0)
 
     objects = OrderItemManager()
 

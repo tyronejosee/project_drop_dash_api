@@ -19,3 +19,4 @@ redis==5.0.2
 
 # Utilities
 pillow==10.3.0
+django-simple-history==3.7.0

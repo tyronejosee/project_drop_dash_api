@@ -3,6 +3,7 @@
 from django.conf import settings
 from django.db import models
 from django.core.validators import FileExtensionValidator
+from simple_history.models import HistoricalRecords
 
 from apps.utilities.models import BaseModel
 from apps.utilities.mixins import SlugMixin
@@ -49,6 +50,7 @@ class Restaurant(BaseModel, SlugMixin):
     legal_rep_power_of_attorney = models.FileField(upload_to="documents/", blank=True)
 
     objects = RestaurantManager()
+    history = HistoricalRecords()
 
     class Meta:
         ordering = ["pk"]
@@ -111,6 +113,7 @@ class Food(BaseModel):
     is_featured = models.BooleanField(default=False)
 
     objects = FoodManager()
+    history = HistoricalRecords()
 
     class Meta:
         ordering = ["pk"]
