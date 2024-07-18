@@ -8,11 +8,6 @@ from apps.utilities.managers import BaseManager
 class PromotionManager(BaseManager):
     """Manager for Promotion model."""
 
-    # TODO: fix manager, add new manager
-
-    def get_available(self):
-        return self.get_queryset().select_related("creator").filter(available=True)
-
     def get_search(self, search_term):
         return self.get_available().filter(
             Q(name__icontains=search_term) | Q(conditions__icontains=search_term)

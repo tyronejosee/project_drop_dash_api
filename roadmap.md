@@ -36,14 +36,14 @@
 
 Pending implementation
 
-## Promotions
+## Promotions [OK]
 
-- [ ] `GET /promotions/`
-- [ ] `POST /promotions/`
-- [ ] `GET /promotions/{id}/`
-- [ ] `PUT /promotions/{id}/`
-- [ ] `PATCH /promotions/{id}/`
-- [ ] `DELETE /promotions/{id}/`
+- [ ] `GET /promotions/` Obtener una lista de todas las promociones disponibles (IsMarketing).
+- [ ] `POST /promotions/` Crear una nueva promoción (IsMarketing).
+- [ ] `GET /promotions/{id}/` Obtener los detalles de una promoción específica (IsMarketing).
+- [ ] `PUT /promotions/{id}/` Actualizar todos los detalles de una promoción específica (IsMarketing).
+- [ ] `PATCH /promotions/{id}/` Actualizar parcialmente una promoción específica (IsMarketing).
+- [ ] `DELETE /promotions/{id}/` Eliminar una promoción específica (IsMarketing).
 
 ## Deliveries
 
@@ -135,7 +135,25 @@ TODO: recents and featured endpoint unificarlos con /posts agregando un filtro
 
 TODO: Agregar permiso para Recursos humanos
 
-## Locations
+## Locations [OK]
+
+- [ ] `GET /countries` Obtener la lista de todos los países.
+- [ ] `POST /countries` Registrar un nuevo país.
+- [ ] `GET /countries/{id}` Obtener los detalles de un país específico.
+- [ ] `PUT /countries/{id}` Actualizar los detalles de un país específico.
+- [ ] `DELETE /countries/{id}` Eliminar un país específico.
+
+- [ ] `GET /states` Obtener la lista de todos los estados.
+- [ ] `POST /states` Registrar un nuevo estado.
+- [ ] `GET /states/{id}` Obtener los detalles de un estado específico.
+- [ ] `PUT /states/{id}` Actualizar los detalles de un estado específico.
+- [ ] `DELETE /states/{id}` Eliminar un estado específico.
+
+- [ ] `GET /cities` Obtener la lista de todas las ciudades.
+- [ ] `POST /cities` Registrar una nueva ciudad.
+- [ ] `GET /cities/{id}` Obtener los detalles de una ciudad específica.
+- [ ] `PUT /cities/{id}` Actualizar los detalles de una ciudad específica.
+- [ ] `DELETE /api/v1/cities/{id}` Eliminar una ciudad específica.
 
 ## Users [OK]
 

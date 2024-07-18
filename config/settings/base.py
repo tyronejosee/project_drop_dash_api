@@ -130,18 +130,21 @@ REST_FRAMEWORK = {
         "rest_framework.throttling.UserRateThrottle",
     ],
     "DEFAULT_SCHEMA_CLASS": "drf_spectacular.openapi.AutoSchema",
-    # "DEFAULT_VERSIONING_CLASS": "rest_framework.versioning.NamespaceVersioning",
     "DEFAULT_CONTENT_LANGUAGE": "en",
-    "DEFAULT_PAGINATION_CLASS": "rest_framework.pagination.PageNumberPagination",
+    "DEFAULT_PAGINATION_CLASS": "apps.utilities.pagination.LimitSetPagination",
     "DEFAULT_FILTER_BACKENDS": [
         "rest_framework.filters.SearchFilter",
         "rest_framework.filters.OrderingFilter",
     ],
-    "DEFAULT_THROTTLE_RATES": {"anon": "100/day", "user": "1000/day"},
+    "DEFAULT_THROTTLE_RATES": {
+        "anon": "3/second",
+        "user": "60/minute",
+        "daily": "1000/day",
+    },
     "NUM_PROXIES": None,
     "PAGE_SIZE": 25,
     "SEARCH_PARAM": "q",
-    "ORDERING_PARAM": "ordering",
+    "ORDERING_PARAM": "order",
 }
 
 
