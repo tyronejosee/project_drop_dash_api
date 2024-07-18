@@ -21,7 +21,7 @@ class User(AbstractBaseUser, PermissionsMixin):
     date_birth = models.DateField(null=True, blank=True)
     points = models.IntegerField(default=0)
     role = models.CharField(
-        max_length=15,
+        max_length=20,
         choices=RoleChoices.choices,
         default=RoleChoices.CLIENT,
     )

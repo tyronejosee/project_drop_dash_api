@@ -20,6 +20,17 @@ class BaseRolePermission(BasePermission):
         return bool(is_user_authenticated and is_user_valid)
 
 
+class IsAdvertiser(BaseRolePermission):
+    """
+    Allows access only to users with the role "advertiser".
+    """
+
+    required_roles = [
+        RoleChoices.ADVERTISER,
+        RoleChoices.ADMINISTRATOR,
+    ]
+
+
 class IsClient(BaseRolePermission):
     """
     Allows access only to users with the role "client".
@@ -42,6 +53,17 @@ class IsDriver(BaseRolePermission):
     ]
 
 
+class IsDispatcher(BaseRolePermission):
+    """
+    Allows access only to users with the role "dispatcher".
+    """
+
+    required_roles = [
+        RoleChoices.DISPATCHER,
+        RoleChoices.ADMINISTRATOR,
+    ]
+
+
 class IsPartner(BaseRolePermission):
     """
     Allows access only to users with the role "business".
@@ -49,6 +71,17 @@ class IsPartner(BaseRolePermission):
 
     required_roles = [
         RoleChoices.PARTNER,
+        RoleChoices.ADMINISTRATOR,
+    ]
+
+
+class IsSupport(BaseRolePermission):
+    """
+    Allows access only to users with the role "support".
+    """
+
+    required_roles = [
+        RoleChoices.SUPPORT,
         RoleChoices.ADMINISTRATOR,
     ]
 
@@ -64,13 +97,35 @@ class IsMarketing(BaseRolePermission):
     ]
 
 
-class IsSupport(BaseRolePermission):
+class IsOperations(BaseRolePermission):
     """
-    Allows access only to users with the role "support".
+    Allows access only to users with the role "operations".
     """
 
     required_roles = [
-        RoleChoices.SUPPORT,
+        RoleChoices.OPERATIONS,
+        RoleChoices.ADMINISTRATOR,
+    ]
+
+
+class IsFinance(BaseRolePermission):
+    """
+    Allows access only to users with the role "finance".
+    """
+
+    required_roles = [
+        RoleChoices.FINANCE,
+        RoleChoices.ADMINISTRATOR,
+    ]
+
+
+class IsHumanResources(BaseRolePermission):
+    """
+    Allows access only to users with the role "human_resources".
+    """
+
+    required_roles = [
+        RoleChoices.HUMAN_RESOURCES,
         RoleChoices.ADMINISTRATOR,
     ]
 

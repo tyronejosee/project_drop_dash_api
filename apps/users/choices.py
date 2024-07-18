@@ -14,4 +14,5 @@ class RoleChoices(TextChoices):
     MARKETING = "marketing", "Marketing"
     OPERATIONS = "operations", "Operations"
     FINANCE = "finance", "Finance"
+    HUMAN_RESOURCES = "human_resources", "Human Resources"
     ADMINISTRATOR = "administrator", "Administrator"
