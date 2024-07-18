@@ -60,7 +60,7 @@ class RestaurantListView(APIView):
         cached_data = cache.get(self.cache_key)
 
         if cached_data is None:
-            restaurants = Restaurant.objects.get_available()
+            restaurants = Restaurant.objects.get_verified()
             if not restaurants.exists():
                 return Response(
                     {"detail": "No restaurants available."},

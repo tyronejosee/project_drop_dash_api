@@ -8,14 +8,13 @@ from apps.utilities.managers import BaseManager
 class RestaurantManager(BaseManager):
     """Manager for Restaurant model."""
 
-    # TODO: fix manager
+    def get_verified(self):
+        return self.get_available().filter(is_verified=True)
 
-    def get_available(self):
-        """Get all available restaurants"""
-        return self.filter(is_available=True, is_verified=True)
+    def get_unverified(self):
+        return self.get_available().filter(is_verified=True)
 
     def get_search(self, search_term):
-        """Filter restaurants based on a search term."""
         return self.get_available().filter(
             Q(name__icontains=search_term)
             | Q(description__icontains=search_term)

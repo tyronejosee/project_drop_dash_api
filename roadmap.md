@@ -42,12 +42,8 @@ Pending implementation
 - [ ] `POST /promotions/`
 - [ ] `GET /promotions/{id}/`
 - [ ] `PUT /promotions/{id}/`
+- [ ] `PATCH /promotions/{id}/`
 - [ ] `DELETE /promotions/{id}/`
-- [ ] `GET /restaurants/{restaurant_id}/promotions/`
-- [ ] `POST /restaurants/{restaurant_id}/promotions/`
-- [ ] `GET /restaurants/{restaurant_id}/promotions/{promotion_id}/`
-- [ ] `PUT /restaurants/{restaurant_id}/promotions/{promotion_id}/`
-- [ ] `DELETE /restaurants/{restaurant_id}/promotions/{promotion_id}/`
 
 ## Deliveries
 
@@ -73,29 +69,30 @@ Pending implementation
 
 ## Restaurants [OK]
 
-- [ ] `POST /restaurants/register` Registrar un nuevo restaurant (IsClient).
-- [ ] `GET /restaurants` Obtener una lista de todos los restaurantes (AllowAny).
-- [ ] `GET //restaurants/{id}` Obtener los detalles de un restaurante específico (AllowAny).
-- [ ] `PATCH /restaurants/{id}` Actualizar un restaurante específico (IsPartner).
-- [ ] `DELETE /restaurants/{id}/` Eliminar un restaurante específico (IsPartner). [LOGICAL]
-- [ ] `GET /restaurants/{id}/orders` Obtener todas las ordenes de un restaurant especifico (IsPartner).
-- [ ] `GET /restaurants/{id}/categories` Obtener todas las categorías de un restaurante específico (IsPartner).
+- [x] `GET /restaurants` Obtener una lista de todos los restaurantes (AllowAny).
+- [x] `POST /restaurants/` Registrar un nuevo restaurant (IsClient).
+- [x] `GET //restaurants/{id}` Obtener los detalles de un restaurante específico (AllowAny).
+- [x] `PATCH /restaurants/{id}` Actualizar un restaurante específico (IsPartner).
+- [x] `DELETE /restaurants/{id}/` Eliminar un restaurante específico (IsPartner). [LOGICAL]
+- [x] `GET /restaurants/{id}/orders` Obtener todas las ordenes de un restaurant especifico (IsPartner).
+
+- [x] `GET /restaurants/{id}/categories` Obtener todas las categorías de un restaurante específico (AllowAny).
 - [ ] `GET /restaurants/pending-verification` Obtener una lista de restaurantes que están esperando verificación. (IsSupport)
 - [ ] `POST /restaurants/{id}/verify` Marcar un restaurante como verificado (IsSupport).
 - [ ] `GET /restaurants/{id}/menu` Obtener el menú de un restaurante específico (lista de alimentos) (AllowAny) [STRUCTURED].
 - [ ] `GET /restaurants/{id}/historical` Obtener el historial de cambios de un restaurante específico (IsAdministrator).
 
-- [ ] `GET /restaurants/categories` Obtener una lista de todas las categorías asociadas a un restaurant (IsPartner).
-- [ ] `POST /restaurants/categories` Crear una nueva categoría (IsPartner).
-- [ ] `PATCH /restaurants/categories/{id}` Actualizar una categoría específica (IsPartner).
-- [ ] `DELETE /restaurants/categories/{id}` Eliminar una categoría específica (IsPartner).
+- [ ] `GET /categories` Obtener una lista de todas las categorías asociadas a un restaurant (IsPartner).
+- [ ] `POST /categories` Crear una nueva categoría (IsPartner).
+- [ ] `PATCH /categories/{id}` Actualizar una categoría específica (IsPartner).
+- [ ] `DELETE /categories/{id}` Eliminar una categoría específica (IsPartner).
 
-- [ ] `GET /restaurants/foods` Obtener una lista de todos los alimentos (IsPartner).
-- [ ] `POST /restaurants/foods` Crear un nuevo alimento (IsPartner).
-- [ ] `PATCH /restaurants/foods/{id}` Actualizar un alimento específico (IsPartner).
-- [ ] `DELETE /restaurants/foods/{id}` Eliminar un alimento específico (IsPartner).
-- [ ] `PATCH /restaurants/foods/{id}/feature` Obtener todas las ordenes de un restaurant especifico (IsPartner).
-- [ ] `GET /restaurants/foods/{id}/historical` Obtener el historial de cambios de un alimento específico (IsAdministrator).
+- [ ] `GET /foods` Obtener una lista de todos los alimentos (IsPartner).
+- [ ] `POST /foods` Crear un nuevo alimento (IsPartner).
+- [ ] `PATCH /foods/{id}` Actualizar un alimento específico (IsPartner).
+- [ ] `DELETE /foods/{id}` Eliminar un alimento específico (IsPartner).
+- [ ] `PATCH /foods/{id}/feature` Obtener todas las comidas destacadas de un restaurant especifico (IsPartner).
+- [ ] `GET /foods/{id}/historical` Obtener el historial de cambios de un alimento específico (IsAdministrator).
 
 - [ ] `GET /restaurants/{id}/reviews` Obtener una lista de todas las reseñas para un restaurante específico (AllowAny).
 - [ ] `POST /restaurants/{id}/reviews` Crear una nueva reseña para un restaurante específico (IsClient).

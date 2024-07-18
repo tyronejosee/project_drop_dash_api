@@ -31,6 +31,7 @@ class RestaurantReadSerializer(serializers.ModelSerializer):
             "phone",
             "website",
         ]
+        read_only_fields = fields
 
     def to_representation(self, instance):
         data = super().to_representation(instance)
@@ -66,8 +67,8 @@ class RestaurantWriteSerializer(serializers.ModelSerializer):
         ]
 
 
-class RestaurantListSerializer(serializers.ModelSerializer):
-    """Serializer for Restaurant model (List only)."""
+class RestaurantMinimalSerializer(serializers.ModelSerializer):
+    """Serializer for Restaurant model (Minimal)."""
 
     class Meta:
         model = Restaurant
@@ -99,6 +100,7 @@ class CategoryReadSerializer(serializers.ModelSerializer):
             "created_at",
             "updated_at",
         ]
+        read_only_fields = fields
 
 
 class CategoryWriteSerializer(serializers.ModelSerializer):
@@ -109,6 +111,18 @@ class CategoryWriteSerializer(serializers.ModelSerializer):
         fields = [
             "name",
         ]
+
+
+class CategoryMinimalSerializer(serializers.ModelSerializer):
+    """Serializer for Category model (Minimal)."""
+
+    class Meta:
+        model = Category
+        fields = [
+            "id",
+            "name",
+        ]
+        read_only_fields = fields
 
 
 class FoodReadSerializer(serializers.ModelSerializer):
@@ -132,6 +146,7 @@ class FoodReadSerializer(serializers.ModelSerializer):
             "created_at",
             "updated_at",
         ]
+        read_only_fields = fields
 
     def to_representation(self, instance):
         data = super().to_representation(instance)
@@ -157,8 +172,8 @@ class FoodWriteSerializer(serializers.ModelSerializer):
         extra_kwargs = {"category": {"required": True}}
 
 
-class FoodMiniSerializer(serializers.ModelSerializer):
-    """Serializer for Food model (Mini)."""
+class FoodMinimalSerializer(serializers.ModelSerializer):
+    """Serializer for Food model (Minimal)."""
 
     class Meta:
         model = Food
@@ -166,3 +181,4 @@ class FoodMiniSerializer(serializers.ModelSerializer):
             "id",
             "name",
         ]
+        read_only_fields = fields
