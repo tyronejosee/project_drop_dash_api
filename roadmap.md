@@ -1,5 +1,10 @@
 # Roadmap
 
+## Home
+
+- [ ] `GET /home/kwords` Obtener todas las palabras más buscadas (AllowAny). [10]
+- [ ] `GET /home/restaurants` Obtener todas los restaurants más popolares (AllowAny). [10]
+
 ## Orders [OK]
 
 - [ ] `GET /orders/` Obtener todas las ordenes (IsAdministrator)
@@ -137,7 +142,8 @@ TODO: Agregar permiso para Recursos humanos
 
 ## Users [OK]
 
-- [ ] `GET /users/reviews` Obtener todas las reseñas escritas por un usuario específico.
+- [ ] `GET /users/reviews` Obtener todas las reseñas escritas por un usuario específico (IsClient).
+- [ ] `GET /users/orders` Obtener todas las reseñas escritas por un usuario específico (IsClient).
 - [ ] `GET /users/{id}/historical` Obtener el historial de cambios de un usuario específico (IsAdministrator).
 
 TODO: Agregar reviews a restaurants y posts, limitar modelo de Review

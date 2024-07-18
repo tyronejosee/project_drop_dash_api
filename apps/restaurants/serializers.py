@@ -77,6 +77,7 @@ class RestaurantListSerializer(serializers.ModelSerializer):
             "slug",
             "image",
         ]
+        read_only_fields = fields
 
     def to_representation(self, instance):
         data = super().to_representation(instance)
