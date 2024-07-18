@@ -20,6 +20,7 @@ from .serializers import (
     RestaurantMinimalSerializer,
     CategoryMinimalSerializer,
 )
+from .filters import RestaurantFilter
 
 
 class RestaurantViewSet(ListCacheMixin, LogicalDeleteMixin, ModelViewSet):
@@ -38,7 +39,7 @@ class RestaurantViewSet(ListCacheMixin, LogicalDeleteMixin, ModelViewSet):
     permission_classes = [IsPartner]
     serializer_class = RestaurantWriteSerializer
     search_fields = ["name"]
-    # filterset_class = RestaurantFilter
+    filterset_class = RestaurantFilter
 
     def get_queryset(self):
         return Restaurant.objects.get_verified()
