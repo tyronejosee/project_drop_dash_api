@@ -8,6 +8,9 @@ from apps.utilities.managers import BaseManager
 class PromotionManager(BaseManager):
     """Manager for Promotion model."""
 
+    def get_active(self):
+        return self.get_available().filter(is_active=True)
+
     def get_search(self, search_term):
         return self.get_available().filter(
             Q(name__icontains=search_term) | Q(conditions__icontains=search_term)
@@ -17,10 +20,8 @@ class PromotionManager(BaseManager):
 class FixedCouponManager(BaseManager):
     """Manager for FixedCoupon model."""
 
-    # TODO: fix manager, add new manager
-
-    def get_available(self):
-        return self.filter(available=True, is_active=True)
+    def get_active(self):
+        return self.get_available().filter(is_active=True)
 
     def get_by_code(self, code):
         return self.get_available().filter(code=code).first()
@@ -29,10 +30,8 @@ class FixedCouponManager(BaseManager):
 class PercentageCouponManager(BaseManager):
     """Manager for PercentageCoupon model."""
 
-    # TODO: fix manager, add new manager
-
-    def get_available(self):
-        return self.filter(available=True, is_active=True)
+    def get_active(self):
+        return self.get_available().filter(is_active=True)
 
     def get_by_code(self, code):
         return self.get_available().filter(code=code).first()

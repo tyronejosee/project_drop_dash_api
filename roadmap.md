@@ -38,16 +38,30 @@ Pending implementation
 
 ## Promotions [OK]
 
-- [ ] `GET /promotions/` Obtener una lista de todas las promociones disponibles (IsMarketing).
-- [ ] `POST /promotions/` Crear una nueva promoción (IsMarketing).
-- [ ] `GET /promotions/{id}/` Obtener los detalles de una promoción específica (IsMarketing).
-- [ ] `PUT /promotions/{id}/` Actualizar todos los detalles de una promoción específica (IsMarketing).
-- [ ] `PATCH /promotions/{id}/` Actualizar parcialmente una promoción específica (IsMarketing).
-- [ ] `DELETE /promotions/{id}/` Eliminar una promoción específica (IsMarketing).
+- [x] `GET /promotions/` Obtener una lista de todas las promociones disponibles (IsMarketing).
+- [x] `POST /promotions/` Crear una nueva promoción (IsMarketing).
+- [x] `GET /promotions/{id}/` Obtener los detalles de una promoción específica (IsMarketing).
+- [x] `PUT /promotions/{id}/` Actualizar todos los detalles de una promoción específica (IsMarketing).
+- [x] `PATCH /promotions/{id}/` Actualizar parcialmente una promoción específica (IsMarketing).
+- [x] `DELETE /promotions/{id}/` Eliminar una promoción específica (IsMarketing).
+
+- [x] `GET /fixed-coupons/`
+- [x] `POST /fixed-coupons/`
+- [x] `GET /fixed-coupons/{id}/`
+- [x] `PUT /fixed-coupons/{id}/`
+- [x] `PATCH /fixed-coupons/{id}/`
+- [x] `DELETE /fixed-coupons/{id}/`
+
+- [x] `GET /percentage-coupons/`
+- [x] `POST /percentage-coupons/`
+- [x] `GET /percentage-coupons/{id}/`
+- [x] `PUT /percentage-coupons/{id}/`
+- [x] `PATCH /percentage-coupons/{id}/`
+- [x] `DELETE /percentage-coupons/{id}/`
 
 ## Deliveries
 
-- [ ] `GET /deliveries/`
+<!-- - [ ] `GET /deliveries/`
 - [ ] `POST /deliveries/`
 - [ ] `GET /deliveries/{id}/`
 - [ ] `PUT /deliveries/{id}/`
@@ -56,16 +70,7 @@ Pending implementation
 - [ ] `POST /orders/{order_id}/deliveries/`
 - [ ] `GET /orders/{order_id}/deliveries/{delivery_id}/`
 - [ ] `PUT /orders/{order_id}/deliveries/{delivery_id}/`
-- [ ] `DELETE /orders/{order_id}/deliveries/{delivery_id}/`
-
-## Coupons
-
-- [ ] `GET /coupons/`
-- [ ] `POST /coupons/`
-- [ ] `GET /coupons/{id}/`
-- [ ] `PUT /coupons/{id}/`
-- [ ] `DELETE /coupons/{id}/`
-- [ ] `GET /coupons/{coupon_id}/orders/`
+- [ ] `DELETE /orders/{order_id}/deliveries/{delivery_id}/` -->
 
 ## Restaurants [OK]
 
