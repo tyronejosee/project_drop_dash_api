@@ -133,7 +133,7 @@ class DriverResourceRequestView(APIView):
         # Submit a resource request
         serializer = ResourceWriteSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
-        driver = get_object_or_404(Driver, user=request.user)
+        driver = get_object_or_404(Driver, user_id=request.user)
         serializer.save(driver_id=driver)
         return Response(
             {"detail": "Request successful."}, status=status.HTTP_201_CREATED

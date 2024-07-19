@@ -9,6 +9,8 @@ DEBUG = True
 
 SECRET_KEY = env("SECRET_KEY")
 
+ALLOWED_HOSTS = ["localhost", "127.0.0.1"]
+
 INTERNAL_IPS = [
     "127.0.0.1",
     "http://127.0.0.1:8000/",

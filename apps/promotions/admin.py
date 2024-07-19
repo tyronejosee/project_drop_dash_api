@@ -10,7 +10,7 @@ from .models import Promotion, FixedCoupon, PercentageCoupon
 class PromotionAdmin(BaseAdmin):
     """Admin for Order model."""
 
-    search_fields = ["name", "user"]
+    search_fields = ["name", "user_id"]
     list_display = ["name", "created_at", "is_available"]
     list_filter = ["is_available"]
     list_editable = ["is_available"]

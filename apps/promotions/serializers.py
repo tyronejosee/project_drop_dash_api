@@ -15,7 +15,6 @@ class PromotionReadSerializer(ModelSerializer):
     class Meta:
         model = Promotion
         fields = "__all__"
-        # read_only_fields = fields
 
     def to_representation(self, instance):
         data = super().to_representation(instance)

@@ -16,7 +16,7 @@ class ReviewInline(GenericTabularInline):
 class RestaurantAdmin(BaseAdmin):
     """Admin for Restaurant model."""
 
-    search_fields = ["name", "user"]
+    search_fields = ["name", "user_id"]
     list_display = ["name", "is_verified", "is_available"]
     list_editable = ["is_available"]
     list_filter = ["specialty", "is_open"]
@@ -43,7 +43,7 @@ class FoodAdmin(BaseAdmin):
     search_fields = ["name", "restaurant_id"]
     list_display = ["name", "restaurant_id", "is_available", "created_at", "updated_at"]
     list_editable = ["is_available"]
-    list_filter = ["restaurant_id", "category"]
+    list_filter = ["restaurant_id", "category_id"]
     readonly_fields = ["pk", "sale_price", "created_at", "updated_at"]
     autocomplete_fields = ["restaurant_id", "category_id"]
     ordering = ["pk"]

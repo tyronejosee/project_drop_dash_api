@@ -92,7 +92,7 @@ class PostListView(APIView):
         # Create a new post
         serializer = PostWriteSerializer(data=request.data)
         if serializer.is_valid():
-            serializer.save(author=request.user)
+            serializer.save(author_id=request.user)
             cache.delete(self.cache_key)  # Invalidate cache
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)

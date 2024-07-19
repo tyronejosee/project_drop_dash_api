@@ -85,7 +85,7 @@ class RestaurantListView(APIView):
         # Create a new restaurant
         serializer = RestaurantWriteSerializer(data=request.data)
         if serializer.is_valid():
-            serializer.save(user=request.user)
+            serializer.save(user_id=request.user)
             # Invalidate cache
             cache.delete(self.cache_key)
             return Response(serializer.data, status=status.HTTP_201_CREATED)
@@ -222,7 +222,7 @@ class RestaurantReviewListView(APIView):
         serializer = ReviewWriteSerializer(data=request.data)
 
         if Review.objects.filter(
-            user=request.user,
+            user_id=request.user,
             content_type=restaurant_content_type,
             object_id=restaurant.pk,
         ).exists():
@@ -233,7 +233,7 @@ class RestaurantReviewListView(APIView):
 
         if serializer.is_valid():
             serializer.save(
-                user=request.user,
+                user_id=request.user,
                 content_type=restaurant_content_type,
                 object_id=restaurant.pk,
             )
@@ -268,7 +268,7 @@ class RestaurantReviewDetailView(APIView):
         # Update a review of a restaurant
         review = get_object_or_404(Review, pk=review_id, object_id=restaurant_id)
 
-        if review.user != request.user:
+        if review.user_id != request.user:
             return Response(
                 {"detail": "You can only modify or delete your own reviews."},
                 status=status.HTTP_403_FORBIDDEN,
@@ -284,7 +284,7 @@ class RestaurantReviewDetailView(APIView):
         # Remove a review of a restaurant
         review = get_object_or_404(Review, pk=review_id, object_id=restaurant_id)
 
-        if review.user != request.user:
+        if review.user_id != request.user:
             return Response(
                 {"detail": "You can only delete your own reviews."},
                 status=status.HTTP_403_FORBIDDEN,

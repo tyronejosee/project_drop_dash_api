@@ -16,7 +16,7 @@ from .serializers import (
 from .filters import PromotionFilter, FixedCouponFilter, PercentageCouponFilter
 
 
-class PromotionViewSet(ListCacheMixin, LogicalDeleteMixin, ModelViewSet):
+class PromotionViewSet(LogicalDeleteMixin, ModelViewSet):
     """
     ViewSet for managing Promotion instances.
 
@@ -35,7 +35,9 @@ class PromotionViewSet(ListCacheMixin, LogicalDeleteMixin, ModelViewSet):
     filterset_class = PromotionFilter
 
     def get_queryset(self):
-        return Promotion.objects.get_active()
+        return Promotion.objects.get_available().select_related(
+            "creator_id"
+        )  # ! TODO: Add manager, exclude conditions field
 
     def get_serializer_class(self):
         if self.action in ["list", "retrieve"]:

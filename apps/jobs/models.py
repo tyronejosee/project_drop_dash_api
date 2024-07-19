@@ -55,7 +55,7 @@ class Worker(BaseModel):
         verbose_name_plural = "workers"
 
     def __str__(self):
-        return str(self.user)
+        return str(self.user_id)
 
 
 class Applicant(BaseModel):
@@ -84,4 +84,4 @@ class Applicant(BaseModel):
         verbose_name_plural = "applicants"
 
     def __str__(self):
-        return str(self.user)
+        return str(self.user_id)

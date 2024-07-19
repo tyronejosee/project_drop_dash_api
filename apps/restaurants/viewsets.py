@@ -59,7 +59,7 @@ class RestaurantViewSet(ListCacheMixin, LogicalDeleteMixin, ModelViewSet):
         return super().get_serializer_class()
 
     def perform_create(self, serializer):
-        serializer.save(user=self.request.user)
+        serializer.save(user_id=self.request.user)
 
     @action(
         detail=True,

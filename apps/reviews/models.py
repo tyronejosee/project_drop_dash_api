@@ -30,4 +30,4 @@ class Review(BaseModel):
         unique_together = ["content_type", "object_id", "user_id"]
 
     def __str__(self):
-        return str(f"{self.user} - {self.content_object}")
+        return str(f"{self.user_id} - {self.content_object}")

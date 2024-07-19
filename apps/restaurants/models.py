@@ -23,7 +23,7 @@ User = settings.AUTH_USER_MODEL
 class Restaurant(BaseModel, SlugMixin):
     """Model definition for Restaurant."""
 
-    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    user_id = models.OneToOneField(User, on_delete=models.CASCADE)
     name = models.CharField(max_length=50, unique=True, db_index=True)
     image = models.ImageField(upload_to=image_path)
     banner = models.ImageField(upload_to=image_banner_path, blank=True)

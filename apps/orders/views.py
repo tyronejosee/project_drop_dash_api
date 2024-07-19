@@ -41,7 +41,7 @@ class OrderCreateView(APIView):
             country = get_object_or_404(Country, id=data["country"])
 
             order = Order.objects.create(
-                user=user,
+                user_id=user,
                 restaurant_id=restaurant,
                 address=data["address"],
                 city_id=city,
@@ -68,8 +68,8 @@ class OrderCreateView(APIView):
                 price = food.price
 
                 order_item = OrderItem(
-                    order=order,
-                    food=food,
+                    order_id=order,
+                    food_id=food,
                     quantity=quantity,
                     price=price,
                     subtotal=price * quantity,

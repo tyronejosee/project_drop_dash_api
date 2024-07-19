@@ -79,4 +79,4 @@ class PostReport(BaseModel):
         verbose_name_plural = "post reports"
 
     def __str__(self):
-        return str(f"{self.user} > {self.post}")
+        return str(f"{self.user_id} > {self.post_id}")
