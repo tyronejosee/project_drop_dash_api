@@ -31,7 +31,7 @@ class RestaurantReadSerializer(serializers.ModelSerializer):
             "phone",
             "website",
         ]
-        read_only_fields = fields
+        # read_only_fields = fields
 
     def to_representation(self, instance):
         data = super().to_representation(instance)
@@ -78,7 +78,7 @@ class RestaurantMinimalSerializer(serializers.ModelSerializer):
             "slug",
             "image",
         ]
-        read_only_fields = fields
+        # read_only_fields = fields
 
     def to_representation(self, instance):
         data = super().to_representation(instance)
@@ -100,7 +100,7 @@ class CategoryReadSerializer(serializers.ModelSerializer):
             "created_at",
             "updated_at",
         ]
-        read_only_fields = fields
+        # read_only_fields = fields
 
 
 class CategoryWriteSerializer(serializers.ModelSerializer):
@@ -122,7 +122,7 @@ class CategoryMinimalSerializer(serializers.ModelSerializer):
             "id",
             "name",
         ]
-        read_only_fields = fields
+        # read_only_fields = fields
 
 
 class FoodReadSerializer(serializers.ModelSerializer):
@@ -146,7 +146,7 @@ class FoodReadSerializer(serializers.ModelSerializer):
             "created_at",
             "updated_at",
         ]
-        read_only_fields = fields
+        # read_only_fields = fields
 
     def to_representation(self, instance):
         data = super().to_representation(instance)
@@ -181,4 +181,4 @@ class FoodMinimalSerializer(serializers.ModelSerializer):
             "id",
             "name",
         ]
-        read_only_fields = fields
+        # read_only_fields = fields

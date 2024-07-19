@@ -61,16 +61,7 @@ Pending implementation
 
 ## Deliveries
 
-<!-- - [ ] `GET /deliveries/`
-- [ ] `POST /deliveries/`
-- [ ] `GET /deliveries/{id}/`
-- [ ] `PUT /deliveries/{id}/`
-- [ ] `DELETE /deliveries/{id}/`
-- [ ] `GET /orders/{order_id}/deliveries/`
-- [ ] `POST /orders/{order_id}/deliveries/`
-- [ ] `GET /orders/{order_id}/deliveries/{delivery_id}/`
-- [ ] `PUT /orders/{order_id}/deliveries/{delivery_id}/`
-- [ ] `DELETE /orders/{order_id}/deliveries/{delivery_id}/` -->
+Pending implementation
 
 ## Restaurants [OK]
 
@@ -104,8 +95,6 @@ Pending implementation
 - [ ] `GET /restaurants/{id}/reviews/{id}` Obtener los detalles de una reseña específica para un restaurante (IsClient).
 - [ ] `PATCH /restaurants/{id}/reviews/{id}` Actualizar una reseña específica para un restaurante (IsClient).
 - [ ] `DELETE /restaurants/{id}/reviews/{id}` Eliminar una reseña específica para un restaurante (IsClient).
-
-TODO: Agregar logica de /search en el endpoint /restaurants con filtros
 
 ## Blogs [OK]
 

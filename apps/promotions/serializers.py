@@ -15,7 +15,7 @@ class PromotionReadSerializer(ModelSerializer):
     class Meta:
         model = Promotion
         fields = "__all__"
-        read_only_fields = fields
+        # read_only_fields = fields
 
     def to_representation(self, instance):
         data = super().to_representation(instance)
@@ -65,7 +65,7 @@ class FixedCouponReadSerializer(ModelSerializer):
     class Meta:
         model = FixedCoupon
         fields = "__all__"
-        read_only_fields = fields
+        # read_only_fields = fields
 
 
 class FixedCouponWriteSerializer(ModelSerializer):
@@ -93,7 +93,7 @@ class PercentageCouponReadSerializer(ModelSerializer):
     class Meta:
         model = PercentageCoupon
         fields = "__all__"
-        read_only_fields = fields
+        # read_only_fields = fields
 
 
 class PercentageCouponWriteSerializer(ModelSerializer):

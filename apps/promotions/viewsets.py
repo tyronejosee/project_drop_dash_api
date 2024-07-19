@@ -13,6 +13,7 @@ from .serializers import (
     PercentageCouponReadSerializer,
     PercentageCouponWriteSerializer,
 )
+from .filters import PromotionFilter, FixedCouponFilter, PercentageCouponFilter
 
 
 class PromotionViewSet(ListCacheMixin, LogicalDeleteMixin, ModelViewSet):
@@ -31,7 +32,7 @@ class PromotionViewSet(ListCacheMixin, LogicalDeleteMixin, ModelViewSet):
     permission_classes = [IsMarketing]
     serializer_class = PromotionWriteSerializer
     search_fields = ["name"]
-    # filterset_class = PromotionFilter
+    filterset_class = PromotionFilter
 
     def get_queryset(self):
         return Promotion.objects.get_active()
@@ -61,7 +62,7 @@ class FixedCoponViewSet(ListCacheMixin, LogicalDeleteMixin, ModelViewSet):
     permission_classes = [IsMarketing]
     serializer_class = FixedCouponWriteSerializer
     search_fields = ["name"]
-    # filterset_class = FixedCouponFilter
+    filterset_class = FixedCouponFilter
 
     def get_queryset(self):
         return FixedCoupon.objects.get_active()
@@ -91,7 +92,7 @@ class PercentageCoponViewSet(ListCacheMixin, LogicalDeleteMixin, ModelViewSet):
     permission_classes = [IsMarketing]
     serializer_class = PercentageCouponWriteSerializer
     search_fields = ["name"]
-    # filterset_class = FixedCouponFilter
+    filterset_class = PercentageCouponFilter
 
     def get_queryset(self):
         return PercentageCoupon.objects.get_active()

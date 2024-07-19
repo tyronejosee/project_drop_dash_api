@@ -2,7 +2,7 @@
 
 from django_filters import rest_framework as filters
 
-from apps.utilitiess.filters import BaseFilter
+from apps.utilities.filters import BaseFilter
 from .models import Restaurant
 from .choices import SpecialtyChoices
 
