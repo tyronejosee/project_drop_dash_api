@@ -8,13 +8,13 @@ from .models import Review
 class ReviewReadSerializer(serializers.ModelSerializer):
     """Serializer for Review model (List/retrieve)."""
 
-    user = serializers.StringRelatedField()
+    user_id = serializers.StringRelatedField()
 
     class Meta:
         model = Review
         fields = [
             "id",
-            "user",
+            "user_id",
             "comment",
             "rating",
             "created_at",

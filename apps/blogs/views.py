@@ -138,7 +138,7 @@ class PostDetailView(APIView):
     def delete(self, request, post_id):
         # Delete a post
         post = self.get_object(post_id)
-        if post.author != request.user:
+        if post.author_id != request.user:
             return Response(status=status.HTTP_401_UNAUTHORIZED)
         post.is_available = False  # Logical deletion
         post.save()
@@ -250,7 +250,7 @@ class PostReportView(APIView):
             post = get_object_or_404(Post, pk=post_id)
 
             # Check if the user has already reported this post
-            if PostReport.objects.filter(post=post, user=request.user).exists():
+            if PostReport.objects.filter(post_id=post, user_id=request.user).exists():
                 return Response(
                     {"detail": "You have already reported this post."},
                     status=status.HTTP_400_BAD_REQUEST,
@@ -273,7 +273,7 @@ class PostReportView(APIView):
                 else:
                     priority = PriorityChoices.LOW
 
-                serializer.save(user=request.user, post=post, priority=priority)
+                serializer.save(user_id=request.user, post_id=post, priority=priority)
             return Response(
                 {"detail": "Your report has been submitted successfully."},
                 status=status.HTTP_201_CREATED,
@@ -290,12 +290,9 @@ class ReportsView(APIView):
 
     permission_classes = [IsSupport]
 
-    # TODO: Add filters
-
     def get(self, request):
         # Get all reports from users to the posts
         reports = PostReport.objects.filter(is_available=True)
-        # TODO: add manager
 
         paginator = LargeSetPagination()
         page = paginator.paginate_queryset(reports, request)

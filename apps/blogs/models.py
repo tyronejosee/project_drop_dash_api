@@ -37,7 +37,7 @@ class Post(BaseModel, SlugMixin):
     title = models.CharField(max_length=100)
     content = models.TextField()
     tags = models.ManyToManyField(Tag)
-    author = models.ForeignKey(User, on_delete=models.CASCADE)
+    author_id = models.ForeignKey(User, on_delete=models.CASCADE)
     points = models.IntegerField(default=100)
     is_featured = models.BooleanField(default=False)
 
@@ -59,8 +59,8 @@ class Post(BaseModel, SlugMixin):
 class PostReport(BaseModel):
     """Model definition for PostReport."""
 
-    user = models.ForeignKey(User, on_delete=models.DO_NOTHING)
-    post = models.ForeignKey(Post, on_delete=models.CASCADE)
+    user_id = models.ForeignKey(User, on_delete=models.DO_NOTHING)
+    post_id = models.ForeignKey(Post, on_delete=models.CASCADE)
     reason = models.TextField()
     priority = models.CharField(
         max_length=10,

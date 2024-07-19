@@ -28,13 +28,13 @@ class Position(BaseModel):
 class Worker(BaseModel):
     """Model definition for Worker (Entity)."""
 
-    user = models.OneToOneField(User, on_delete=models.DO_NOTHING)
+    user_id = models.OneToOneField(User, on_delete=models.DO_NOTHING)
     phone_number = models.CharField(max_length=15)
     address = models.CharField(max_length=255)
-    city = models.ForeignKey(City, on_delete=models.PROTECT)
-    state = models.ForeignKey(State, on_delete=models.PROTECT)
-    country = models.ForeignKey(Country, on_delete=models.PROTECT)
-    position = models.ForeignKey(Position, on_delete=models.PROTECT)
+    city_id = models.ForeignKey(City, on_delete=models.PROTECT)
+    state_id = models.ForeignKey(State, on_delete=models.PROTECT)
+    country_id = models.ForeignKey(Country, on_delete=models.PROTECT)
+    position_id = models.ForeignKey(Position, on_delete=models.PROTECT)
     hired_date = models.DateField()
     termination_date = models.DateField(null=True, blank=True)
     hourly_rate = models.DecimalField(max_digits=10, decimal_places=2)
@@ -61,10 +61,14 @@ class Worker(BaseModel):
 class Applicant(BaseModel):
     """Model definition for Applicant (Entity)."""
 
-    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    user_id = models.OneToOneField(User, on_delete=models.CASCADE)
     phone_number = models.CharField(max_length=15)
     email = models.EmailField(max_length=100)
-    applied_for = models.ForeignKey(Position, on_delete=models.CASCADE)
+    position_id = models.ForeignKey(
+        Position,
+        on_delete=models.CASCADE,
+        help_text="Applied for position...",
+    )
     cv = models.FileField(upload_to="jobs/applicants/cv/")
     message = models.TextField()
     submitted_at = models.DateTimeField(auto_now_add=True)

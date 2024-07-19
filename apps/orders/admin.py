@@ -10,7 +10,7 @@ from .models import Order, OrderItem
 class OrderAdmin(BaseAdmin):
     """Admin for Order model."""
 
-    search_fields = ["transaction", "user"]
+    search_fields = ["transaction", "user_id"]
     list_display = ["transaction", "is_available", "created_at", "status"]
     list_filter = ["status"]
     list_editable = ["is_available"]
@@ -22,8 +22,8 @@ class OrderAdmin(BaseAdmin):
 class OrderItemAdmin(BaseAdmin):
     """Admin for OrderItem model."""
 
-    search_fields = ["order", "food"]
-    list_display = ["order", "food", "created_at", "is_available"]
+    search_fields = ["order_id", "food_id"]
+    list_display = ["order_id", "food_id", "created_at", "is_available"]
     list_editable = ["is_available"]
     readonly_fields = ["pk", "price", "subtotal", "created_at", "updated_at"]
     ordering = ["created_at"]

@@ -9,10 +9,12 @@ from .models import Food
 @receiver(post_save, sender=Food)
 def update_restaurant_verification(sender, instance, **kwargs):
     """Signal update the restaurant verification status."""
-    restaurant = instance.restaurant
+    restaurant = instance.restaurant_id
 
     # Count the number of foods for that restaurant
-    product_count = Food.objects.filter(restaurant=restaurant, is_available=True).count()
+    product_count = Food.objects.filter(
+        restaurant_id=restaurant, is_available=True
+    ).count()
 
     # Mark the restaurant as is_verified
     if product_count >= 5:

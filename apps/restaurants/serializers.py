@@ -8,9 +8,9 @@ from .models import Restaurant, Category, Food
 class RestaurantReadSerializer(serializers.ModelSerializer):
     """Serializer for Restaurant model (List/retrieve)."""
 
-    city = serializers.StringRelatedField()
-    state = serializers.StringRelatedField()
-    country = serializers.StringRelatedField()
+    city_id = serializers.StringRelatedField()
+    state_id = serializers.StringRelatedField()
+    country_id = serializers.StringRelatedField()
 
     class Meta:
         model = Restaurant
@@ -23,9 +23,9 @@ class RestaurantReadSerializer(serializers.ModelSerializer):
             "description",
             "specialty",
             "address",
-            "city",
-            "state",
-            "country",
+            "city_id",
+            "state_id",
+            "country_id",
             "opening_time",
             "closing_time",
             "phone",
@@ -52,9 +52,9 @@ class RestaurantWriteSerializer(serializers.ModelSerializer):
             "description",
             "specialty",
             "address",
-            "city",
-            "state",
-            "country",
+            "city_id",
+            "state_id",
+            "country_id",
             "phone",
             "opening_time",
             "closing_time",
@@ -89,14 +89,14 @@ class RestaurantMinimalSerializer(serializers.ModelSerializer):
 class CategoryReadSerializer(serializers.ModelSerializer):
     """Serializer for Category model (List/retrieve)."""
 
-    restaurant = serializers.StringRelatedField()
+    restaurant_id = serializers.StringRelatedField()
 
     class Meta:
         model = Category
         fields = [
             "id",
             "name",
-            "restaurant",
+            "restaurant_id",
             "created_at",
             "updated_at",
         ]

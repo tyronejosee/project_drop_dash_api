@@ -22,15 +22,14 @@ class OrderCreateView(APIView):
         """Get my orders."""
         orders = (
             Order.objects.select_related(
-                "user", "restaurant", "city", "state", "country"
+                "user_id", "restaurant_id", "city_id", "state_id", "country_id"
             )
             .prefetch_related("orderitem_set__food")
-            .filter(user=request.user)
+            .filter(user_id=request.user)
         )
         serializer = OrderReadSerializer(orders, many=True)
         return Response(serializer.data)
 
-    # TODO: Refactor
     def post(self, request):
         user = request.user
         data = request.data
@@ -43,11 +42,11 @@ class OrderCreateView(APIView):
 
             order = Order.objects.create(
                 user=user,
-                restaurant=restaurant,
+                restaurant_id=restaurant,
                 address=data["address"],
-                city=city,
-                state=state,
-                country=country,
+                city_id=city,
+                state_id=state,
+                country_id=country,
                 phone=data["phone"],
                 note=data.get("note", ""),
                 payment_method=data["payment_method"],
@@ -85,5 +84,6 @@ class OrderCreateView(APIView):
             order.save()
 
         return Response(
-            {"detail": "Order created successfully"}, status=status.HTTP_201_CREATED
+            {"detail": "Order created successfully"},
+            status=status.HTTP_201_CREATED,
         )

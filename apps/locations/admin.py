@@ -20,7 +20,7 @@ class CountryAdmin(BaseAdmin):
 class StateAdmin(BaseAdmin):
     """Admin for State model."""
 
-    search_fields = ["name", "country"]
+    search_fields = ["name", "country_id"]
     list_display = ["name", "is_available", "created_at", "updated_at"]
     readonly_fields = ["pk", "created_at", "updated_at"]
     ordering = ["pk"]
@@ -30,7 +30,7 @@ class StateAdmin(BaseAdmin):
 class CityAdmin(BaseAdmin):
     """Admin for City model."""
 
-    search_fields = ["name", "state"]
+    search_fields = ["name", "state_id"]
     list_display = ["name", "is_available", "created_at", "updated_at"]
     readonly_fields = ["pk", "created_at", "updated_at"]
     ordering = ["pk"]

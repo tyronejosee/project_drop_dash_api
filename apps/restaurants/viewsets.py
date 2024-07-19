@@ -77,7 +77,7 @@ class RestaurantViewSet(ListCacheMixin, LogicalDeleteMixin, ModelViewSet):
         - GET api/v1/restaurants/{id}/orders/
         """
         restaurant = self.get_object()
-        orders = Order.objects.filter(restaurant=restaurant)
+        orders = Order.objects.filter(restaurant_id=restaurant)
         if orders.exists():
             serializer = OrderReadSerializer(orders, many=True)
             return Response(serializer.data)
@@ -102,7 +102,7 @@ class RestaurantViewSet(ListCacheMixin, LogicalDeleteMixin, ModelViewSet):
         - GET api/v1/restaurants/{id}/categories/
         """
         restaurant = self.get_object()
-        categories = Category.objects.filter(restaurant=restaurant)
+        categories = Category.objects.filter(restaurant_id=restaurant)
         if categories.exists():
             serializer = CategoryMinimalSerializer(categories, many=True)
             return Response(serializer.data)

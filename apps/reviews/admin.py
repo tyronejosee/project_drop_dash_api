@@ -10,8 +10,14 @@ from .models import Review
 class ReviewAdmin(BaseAdmin):
     """Admin for Review model."""
 
-    search_fields = ["user", "object_id"]
-    list_display = ["user", "content_type", "content_object", "rating", "is_available"]
+    search_fields = ["user_id", "object_id"]
+    list_display = [
+        "user_id",
+        "content_type",
+        "content_object",
+        "rating",
+        "is_available",
+    ]
     list_editable = ["is_available"]
     list_filter = ["rating", "content_type"]
     readonly_fields = ["pk", "created_at", "updated_at"]

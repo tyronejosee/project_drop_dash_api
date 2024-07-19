@@ -428,8 +428,10 @@ class FoodListView(APIView):
         # Create a new food
         serializer = FoodWriteSerializer(data=request.data)
         if serializer.is_valid():
-            restaurant = get_object_or_404(Restaurant, id=restaurant_id)
-            serializer.save(restaurant=restaurant)
+            restaurant = get_object_or_404(
+                Restaurant, id=restaurant_id
+            )  # ! TODO: Fix variable and field name
+            serializer.save(restaurant_id=restaurant)
             # Invalidate cache
             cache.delete(self.cache_key)
             return Response(serializer.data, status=status.HTTP_201_CREATED)

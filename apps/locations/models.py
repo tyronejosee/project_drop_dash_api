@@ -26,7 +26,7 @@ class State(BaseModel):
     """Model definition for State."""
 
     name = models.CharField(max_length=100, unique=True)
-    country = models.ForeignKey(Country, on_delete=models.CASCADE)
+    country_id = models.ForeignKey(Country, on_delete=models.CASCADE)
 
     class Meta:
         ordering = ["pk"]
@@ -44,7 +44,7 @@ class City(BaseModel):
     """Model definition for City."""
 
     name = models.CharField(max_length=100, unique=True)
-    state = models.ForeignKey(State, on_delete=models.CASCADE)
+    state_id = models.ForeignKey(State, on_delete=models.CASCADE)
 
     class Meta:
         ordering = ["pk"]

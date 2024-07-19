@@ -17,7 +17,7 @@ class Review(BaseModel):
     content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE)
     object_id = models.UUIDField()
     content_object = GenericForeignKey("content_type", "object_id")
-    user = models.ForeignKey(User, on_delete=models.CASCADE, db_index=True)  # Test
+    user_id = models.ForeignKey(User, on_delete=models.CASCADE, db_index=True)
     rating = models.IntegerField(
         validators=[MinValueValidator(1), MaxValueValidator(5)]
     )
@@ -27,7 +27,7 @@ class Review(BaseModel):
         ordering = ["-created_at"]
         verbose_name = "review"
         verbose_name_plural = "reviews"
-        unique_together = ["content_type", "object_id", "user"]
+        unique_together = ["content_type", "object_id", "user_id"]
 
     def __str__(self):
         return str(f"{self.user} - {self.content_object}")

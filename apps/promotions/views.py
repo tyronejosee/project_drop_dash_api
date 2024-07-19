@@ -70,7 +70,7 @@ class PromotionListView(APIView):
         # Create a promotion
         serializer = PromotionWriteSerializer(data=request.data)
         if serializer.is_valid():
-            serializer.save(creator=request.user)
+            serializer.save(creator_id=request.user)
             cache.delete(self.cache_key)  # Invalidate cache
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
@@ -98,7 +98,7 @@ class PromotionDetailView(APIView):
         # Update a promotion
         promotion = self.get_object(promotion_id)
 
-        if promotion.creator == request.user:
+        if promotion.creator_id == request.user:
             serializer = PromotionWriteSerializer(
                 promotion, data=request.data, partial=True
             )
@@ -192,7 +192,7 @@ class FixedCouponListView(APIView):
         serializer = FixedCouponWriteSerializer(data=request.data)
 
         if serializer.is_valid():
-            serializer.save(creator=request.user)
+            serializer.save(creator_id=request.user)
             cache.delete(self.cache_key)  # Invalidate cache
             return Response(serializer.data, status=status.HTTP_201_CREATED)
 
@@ -221,7 +221,7 @@ class FixedCouponDetailView(APIView):
         # Update a promotion
         fixed_coupon = self.get_object(fixed_coupon_id)
 
-        if fixed_coupon.creator == request.user:
+        if fixed_coupon.creator_id == request.user:
             serializer = FixedCouponWriteSerializer(
                 fixed_coupon, data=request.data, partial=True
             )
@@ -285,7 +285,7 @@ class PercentageCouponListView(APIView):
         # Create a new percentage coupon
         serializer = PercentageCouponWriteSerializer(data=request.data)
         if serializer.is_valid():
-            serializer.save(creator=request.user)
+            serializer.save(creator_id=request.user)
             cache.delete(self.cache_key)  # Invalidate cache
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
@@ -313,7 +313,7 @@ class PercentageCouponDetailView(APIView):
         # Update a percentage coupon
         percentage_coupon = self.get_object(percentage_coupon_id)
 
-        if percentage_coupon.creator == request.user:
+        if percentage_coupon.creator_id == request.user:
             serializer = PercentageCouponWriteSerializer(
                 percentage_coupon, data=request.data, partial=True
             )

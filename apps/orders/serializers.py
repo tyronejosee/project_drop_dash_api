@@ -8,14 +8,19 @@ from .models import Order, OrderItem
 class OrderItemReadSerializer(ModelSerializer):
     """Serializer for OrderItem model (List/update)."""
 
-    food = SerializerMethodField()
+    food_id = SerializerMethodField()
 
     class Meta:
         model = OrderItem
-        fields = ["food", "quantity", "price", "subtotal"]
+        fields = [
+            "food_id",
+            "quantity",
+            "price",
+            "subtotal",
+        ]
 
-    def get_food(self, obj):
-        return str(obj.food)
+    def get_food_id(self, obj):
+        return str(obj.food_id)
 
 
 class OrderReadSerializer(ModelSerializer):
@@ -28,16 +33,16 @@ class OrderReadSerializer(ModelSerializer):
         fields = [
             "id",
             "transaction",
-            "user",
+            "user_id",
             "shipping_name",
             "shipping_phone",
             "shipping_time",
             "shipping_price",
             "address_1",
             "address_2",
-            "city",
-            "state",
-            "country",
+            "city_id",
+            "state_id",
+            "country_id",
             "note",
             "zip_code",
             "status",

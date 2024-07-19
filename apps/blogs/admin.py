@@ -28,8 +28,8 @@ class TagAdmin(BaseAdmin):
 class PostAdmin(BaseAdmin):
     """Admin for Post model."""
 
-    search_fields = ["title", "author"]
-    list_display = ["title", "author", "is_available"]
+    search_fields = ["title", "author_id"]
+    list_display = ["title", "author_id", "is_available"]
     list_editable = ["is_available"]
     list_filter = ["tags", "is_available"]
     readonly_fields = ["pk", "slug", "created_at", "updated_at"]
@@ -41,8 +41,8 @@ class PostAdmin(BaseAdmin):
 class PostReportAdmin(BaseAdmin):
     """Admin for PostReport model."""
 
-    search_fields = ["user"]
-    list_display = ["user", "priority", "status"]
+    search_fields = ["user_id"]
+    list_display = ["user_id", "priority", "status"]
     list_editable = ["status"]
     list_filter = ["priority", "status"]
     readonly_fields = ["pk", "created_at", "updated_at"]

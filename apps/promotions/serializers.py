@@ -10,7 +10,7 @@ from .models import Promotion, FixedCoupon, PercentageCoupon
 class PromotionReadSerializer(ModelSerializer):
     """Serializer for Promotion model (List/retrieve)."""
 
-    creator = UserMinimalSerializer()
+    creator_id = UserMinimalSerializer()
 
     class Meta:
         model = Promotion
@@ -60,7 +60,7 @@ class PromotionWriteSerializer(ModelSerializer):
 class FixedCouponReadSerializer(ModelSerializer):
     """Serializer for FixedCoupon model (List)."""
 
-    creator = UserMinimalSerializer()
+    creator_id = UserMinimalSerializer()
 
     class Meta:
         model = FixedCoupon
@@ -88,7 +88,7 @@ class FixedCouponWriteSerializer(ModelSerializer):
 class PercentageCouponReadSerializer(ModelSerializer):
     """Serializer for PercentageCoupon model (List)."""
 
-    creator = UserMinimalSerializer()
+    creator_id = UserMinimalSerializer()
 
     class Meta:
         model = PercentageCoupon

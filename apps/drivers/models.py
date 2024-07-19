@@ -21,7 +21,7 @@ User = settings.AUTH_USER_MODEL
 class Driver(BaseModel):
     """Model definition for Driver."""
 
-    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    user_id = models.OneToOneField(User, on_delete=models.CASCADE)
     phone = models.CharField(max_length=100)
     birth_date = models.CharField(max_length=100)
     driver_license = models.FileField(
@@ -43,9 +43,9 @@ class Driver(BaseModel):
         validators=[FileExtensionValidator(["pdf", "jpg"])],
     )
     address = models.CharField(max_length=100)
-    city = models.ForeignKey(City, on_delete=models.PROTECT)
-    state = models.ForeignKey(State, on_delete=models.PROTECT)
-    country = models.ForeignKey(Country, on_delete=models.PROTECT)
+    city_id = models.ForeignKey(City, on_delete=models.PROTECT)
+    state_id = models.ForeignKey(State, on_delete=models.PROTECT)
+    country_id = models.ForeignKey(Country, on_delete=models.PROTECT)
     vehicle_type = models.CharField(max_length=15, choices=VehicleChoices.choices)
     is_verified = models.BooleanField(default=False)
     status = models.CharField(
@@ -53,8 +53,6 @@ class Driver(BaseModel):
         choices=StatusChoices.choices,
         default=StatusChoices.BRONCE,
     )
-
-    # TODO: Add crontab or signals for logic
 
     objects = DriverManager()
 
@@ -64,13 +62,13 @@ class Driver(BaseModel):
         verbose_name_plural = "drivers"
 
     def __str__(self):
-        return str(self.user.username)
+        return str(self.user_id.username)
 
 
 class Resource(BaseModel):
     """Model definition for Resource."""
 
-    driver = models.ForeignKey(Driver, on_delete=models.CASCADE)
+    driver_id = models.ForeignKey(Driver, on_delete=models.CASCADE)
     resource_type = models.CharField(
         max_length=15,
         choices=ResourceTypeChoices.choices,
@@ -90,4 +88,4 @@ class Resource(BaseModel):
         verbose_name_plural = "resources"
 
     def __str__(self):
-        return f"Resources for {self.driver}"
+        return f"Resources for {self.driver_id}"

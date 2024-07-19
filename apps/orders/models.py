@@ -19,7 +19,7 @@ User = get_user_model()
 class Order(BaseModel):
     """Model definition for Order."""
 
-    user = models.ForeignKey(User, on_delete=models.DO_NOTHING)
+    user_id = models.ForeignKey(User, on_delete=models.DO_NOTHING)
     shipping_name = models.CharField(max_length=255)
     shipping_phone = models.CharField(
         max_length=12,
@@ -31,12 +31,12 @@ class Order(BaseModel):
     transaction = models.CharField(max_length=255, unique=True, editable=False)
     address_1 = models.CharField(max_length=255)
     address_2 = models.CharField(max_length=255, blank=True)
-    city = models.ForeignKey(City, on_delete=models.PROTECT)
-    state = models.ForeignKey(State, on_delete=models.PROTECT)
-    country = models.ForeignKey(Country, on_delete=models.PROTECT)
+    city_id = models.ForeignKey(City, on_delete=models.PROTECT)
+    state_id = models.ForeignKey(State, on_delete=models.PROTECT)
+    country_id = models.ForeignKey(Country, on_delete=models.PROTECT)
     note = models.TextField(blank=True)
     zip_code = models.CharField(max_length=20)
-    restaurant = models.ForeignKey(Restaurant, on_delete=models.DO_NOTHING)
+    restaurant_id = models.ForeignKey(Restaurant, on_delete=models.DO_NOTHING)
     amount = models.DecimalField(max_digits=10, decimal_places=2)
     status = models.CharField(
         max_length=50,
@@ -74,8 +74,8 @@ class Order(BaseModel):
 class OrderItem(BaseModel):
     """Model definition for OrderItem."""
 
-    order = models.ForeignKey(Order, on_delete=models.CASCADE)
-    food = models.ForeignKey(Food, on_delete=models.DO_NOTHING)
+    order_id = models.ForeignKey(Order, on_delete=models.CASCADE)
+    food_id = models.ForeignKey(Food, on_delete=models.DO_NOTHING)
     price = models.DecimalField(
         max_digits=10,
         decimal_places=2,

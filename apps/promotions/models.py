@@ -24,7 +24,7 @@ User = settings.AUTH_USER_MODEL
 class Promotion(BaseModel):
     """Model definition for Promotion."""
 
-    creator = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
+    creator_id = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
     name = models.CharField(max_length=255)
     conditions = models.TextField()
     start_date = models.DateField(DateRangeValidator(days=90))
@@ -53,7 +53,7 @@ class Promotion(BaseModel):
 class CouponBase(BaseModel):
     """Model definition for CouponBase."""
 
-    creator = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
+    creator_id = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
     name = models.CharField(max_length=255, unique=True)
     code = models.CharField(max_length=36, unique=True, blank=True)
     start_date = models.DateField()

@@ -12,7 +12,7 @@ class OrderManager(BaseManager):
 
     def get_by_user(self, user):
         """Get orders by status"""
-        return self.get_available().filter(user=user)
+        return self.get_available().filter(user_id=user)
 
 
 class OrderItemManager(BaseManager):

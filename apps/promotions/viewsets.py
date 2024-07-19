@@ -43,7 +43,7 @@ class PromotionViewSet(ListCacheMixin, LogicalDeleteMixin, ModelViewSet):
         return super().get_serializer_class()
 
     def perform_create(self, serializer):
-        serializer.save(creator=self.request.user)
+        serializer.save(creator_id=self.request.user)
 
 
 class FixedCoponViewSet(ListCacheMixin, LogicalDeleteMixin, ModelViewSet):
@@ -73,7 +73,7 @@ class FixedCoponViewSet(ListCacheMixin, LogicalDeleteMixin, ModelViewSet):
         return super().get_serializer_class()
 
     def perform_create(self, serializer):
-        serializer.save(creator=self.request.user)
+        serializer.save(creator_id=self.request.user)
 
 
 class PercentageCoponViewSet(ListCacheMixin, LogicalDeleteMixin, ModelViewSet):
@@ -103,4 +103,4 @@ class PercentageCoponViewSet(ListCacheMixin, LogicalDeleteMixin, ModelViewSet):
         return super().get_serializer_class()
 
     def perform_create(self, serializer):
-        serializer.save(creator=self.request.user)
+        serializer.save(creator_id=self.request.user)

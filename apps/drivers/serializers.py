@@ -11,23 +11,23 @@ from .choices import StatusChoices
 class DriverReadSerializer(serializers.ModelSerializer):
     """Serializer for Driver model (List/retrieve)"""
 
-    user = serializers.UUIDField(read_only=True)
-    city = serializers.StringRelatedField()
-    state = serializers.StringRelatedField()
-    country = serializers.StringRelatedField()
+    user_id = serializers.UUIDField(read_only=True)
+    city_id = serializers.StringRelatedField()
+    state_id = serializers.StringRelatedField()
+    country_id = serializers.StringRelatedField()
     status = serializers.ChoiceField(choices=StatusChoices.choices)
 
     class Meta:
         model = Driver
         fields = [
             "id",
-            "user",
+            "user_id",
             "address",
             "phone",
             "birth_date",
-            "city",
-            "state",
-            "country",
+            "city_id",
+            "state_id",
+            "country_id",
             "status",
         ]
 
@@ -55,9 +55,9 @@ class DriverWriteSerializer(serializers.ModelSerializer):
             "criminal_record_certificate",
             "social_security_certificate",
             "address",
-            "city",
-            "state",
-            "country",
+            "city_id",
+            "state_id",
+            "country_id",
             "vehicle_type",
         ]
 

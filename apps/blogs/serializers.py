@@ -42,7 +42,7 @@ class PostReadSerializer(ModelSerializer):
             "slug",
             "content",
             "tags",
-            "author",
+            "author_id",
             "created_at",
             "updated_at",
         ]
@@ -75,8 +75,8 @@ class PostReportReadSerializer(ModelSerializer):
         model = PostReport
         fields = [
             "id",
-            "user",
-            "post",
+            "user_id",
+            "post_id",
             "reason",
             "priority",
             "status",

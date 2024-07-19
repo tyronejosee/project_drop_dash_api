@@ -45,14 +45,14 @@ class StateMinimalSerializer(ModelSerializer):
 class CityReadSerializer(ModelSerializer):
     """Serializer for City model (List/retrieve)."""
 
-    state = StateReadSerializer()
+    state_id = StateReadSerializer()
 
     class Meta:
         model = City
         fields = [
             "id",
             "name",
-            "state",
+            "state_id",
             "created_at",
             "updated_at",
         ]

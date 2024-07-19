@@ -36,7 +36,7 @@ class DriverProfileView(APIView):
     def get_object(self, request):
         # Get a driver instance by user
         user = request.user
-        return get_object_or_404(Driver, user=user)
+        return get_object_or_404(Driver, user_id=user)
 
     def get(self, request):
         # Get driver profile
@@ -54,7 +54,7 @@ class DriverProfileView(APIView):
         # Update driver profile
         driver_profile = self.get_object(request)
 
-        if driver_profile.user == request.user:
+        if driver_profile.user_id == request.user:
             serializer = DriverReadSerializer(
                 driver_profile, data=request.data, partial=True
             )
@@ -71,9 +71,8 @@ class DriverProfileView(APIView):
     def delete(self, request):
         # Delete driver profile
         driver_profile = self.get_object(request)
-        if driver_profile.user == request.user:
+        if driver_profile.user_id == request.user:
             driver_profile.is_available = False  # Logical deletion
-            # TODO: Add signal
             driver_profile.save()
             return Response(status=status.HTTP_204_NO_CONTENT)
         return Response(
@@ -97,7 +96,7 @@ class DriverCreateView(APIView):
     def post(self, request):
         # Create a new driver
         # Check if the user already has a driver profile
-        if Driver.objects.filter(user=request.user).exists():
+        if Driver.objects.filter(user_id=request.user).exists():
             return Response(
                 {"detail": "This user already has a driver profile."},
                 status=status.HTTP_400_BAD_REQUEST,
@@ -111,7 +110,7 @@ class DriverCreateView(APIView):
             validated_data["phone"] = encrypt_field(validated_data["phone"])
             validated_data["address"] = encrypt_field(validated_data["address"])
 
-            serializer.save(user=request.user)
+            serializer.save(user_id=request.user)
             request.user.role = RoleChoices.DRIVER  # Update role
             request.user.save()
             cache.delete(self.cache_key)  # Invalidate cache
@@ -135,7 +134,7 @@ class DriverResourceRequestView(APIView):
         serializer = ResourceWriteSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         driver = get_object_or_404(Driver, user=request.user)
-        serializer.save(driver=driver)
+        serializer.save(driver_id=driver)
         return Response(
             {"detail": "Request successful."}, status=status.HTTP_201_CREATED
         )
@@ -153,8 +152,8 @@ class DriverResourceHistoryView(APIView):
 
     def get(self, request, *args, **kwargs):
         # Retrieve a driver's resource history
-        driver = get_object_or_404(Driver, user=request.user)
-        resources = Resource.objects.filter(driver=driver)
+        driver = get_object_or_404(Driver, user_id=request.user)
+        resources = Resource.objects.filter(driver_id=driver)
         if not resources:
             return Response(
                 {"detail": "There are no resources available."},

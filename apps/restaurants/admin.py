@@ -30,8 +30,8 @@ class CategoryAdmin(BaseAdmin):
     """Admin for Category model."""
 
     list_per_page = 25
-    search_fields = ["name", "restaurant"]
-    list_display = ["name", "restaurant", "is_available"]
+    search_fields = ["name", "restaurant_id"]
+    list_display = ["name", "restaurant_id", "is_available"]
     readonly_fields = ["pk", "created_at", "updated_at"]
     ordering = ["name"]
 
@@ -40,10 +40,10 @@ class CategoryAdmin(BaseAdmin):
 class FoodAdmin(BaseAdmin):
     """Admin for Food model."""
 
-    search_fields = ["name", "restaurant"]
-    list_display = ["name", "restaurant", "is_available", "created_at", "updated_at"]
+    search_fields = ["name", "restaurant_id"]
+    list_display = ["name", "restaurant_id", "is_available", "created_at", "updated_at"]
     list_editable = ["is_available"]
-    list_filter = ["restaurant", "category"]
+    list_filter = ["restaurant_id", "category"]
     readonly_fields = ["pk", "sale_price", "created_at", "updated_at"]
-    autocomplete_fields = ["restaurant", "category"]
+    autocomplete_fields = ["restaurant_id", "category_id"]
     ordering = ["pk"]

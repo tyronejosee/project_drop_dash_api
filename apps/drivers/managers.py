@@ -12,7 +12,7 @@ class DriverManager(BaseManager):
 
     def get_drivers_by_city(self, city_id):
         """Return a queryset of drivers in a specific city."""
-        return self.get_available().filter(city=city_id)
+        return self.get_available().filter(city_id=city_id)
 
 
 class ResourceManager(BaseManager):

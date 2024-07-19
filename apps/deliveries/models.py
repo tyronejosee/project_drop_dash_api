@@ -12,8 +12,8 @@
 # class Delivery(models.Model):
 #     """Model definition for Delivery."""
 
-#     order = models.OneToOneField(Order, on_delete=models.CASCADE)
-#     driver = models.ForeignKey(
+#     order_id = models.OneToOneField(Order, on_delete=models.CASCADE)
+#     driver_id = models.ForeignKey(
 #         User,
 #         on_delete=models.SET_NULL,
 #         null=True,
@@ -27,7 +27,7 @@
 #     special_instructions = models.TextField(blank=True)
 #     delivery_type = models.CharField(max_length=50)
 #     delivery_cost = models.DecimalField(max_digits=10, decimal_places=2)
-#     order_details = models.ForeignKey("Order", on_delete=models.CASCADE)
+#     order_id = models.ForeignKey("Order", on_delete=models.CASCADE)
 #     estimated_delivery_time = models.DateTimeField()
 #     payment_status = models.BooleanField(default=False)
 #     signature = models.ImageField(upload_to="deliveries/signatures/", blank=True)

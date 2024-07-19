@@ -34,9 +34,9 @@ class Restaurant(BaseModel, SlugMixin):
         default=SpecialtyChoices.VARIED,
     )
     address = models.CharField(max_length=255)
-    city = models.ForeignKey(City, on_delete=models.PROTECT)
-    state = models.ForeignKey(State, on_delete=models.PROTECT)
-    country = models.ForeignKey(Country, on_delete=models.PROTECT)
+    city_id = models.ForeignKey(City, on_delete=models.PROTECT)
+    state_id = models.ForeignKey(State, on_delete=models.PROTECT)
+    country_id = models.ForeignKey(Country, on_delete=models.PROTECT)
     opening_time = models.TimeField()
     closing_time = models.TimeField()
     phone = models.CharField(max_length=12, unique=True, validators=[validate_phone])
@@ -69,8 +69,10 @@ class Category(BaseModel):
     """Model definition for Category."""
 
     name = models.CharField(max_length=100)
-    restaurant = models.ForeignKey(
-        Restaurant, on_delete=models.CASCADE, related_name="categories"
+    restaurant_id = models.ForeignKey(
+        Restaurant,
+        on_delete=models.CASCADE,
+        related_name="categories",
     )
 
     objects = CategoryManager()
@@ -101,12 +103,16 @@ class Food(BaseModel):
             validate_food_image,
         ],
     )
-    restaurant = models.ForeignKey(
+    restaurant_id = models.ForeignKey(
         Restaurant,
         on_delete=models.CASCADE,
         related_name="foods",
     )
-    category = models.ForeignKey(Category, on_delete=models.PROTECT, null=True)
+    category_id = models.ForeignKey(
+        Category,
+        on_delete=models.PROTECT,
+        null=True,
+    )
     is_vegetarian = models.BooleanField(default=False)
     is_gluten_free = models.BooleanField(default=False)
     is_spicy = models.BooleanField(default=False)

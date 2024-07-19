@@ -31,4 +31,5 @@ def delete_sensitive_documents(sender, instance, **kwargs):
                 )
         except FileNotFoundError:
             # logger.error(f"File not found error")
+            # ! TODO: Add sentry for logs
             pass

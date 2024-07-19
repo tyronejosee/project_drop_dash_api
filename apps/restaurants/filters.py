@@ -22,17 +22,17 @@ class RestaurantFilter(BaseFilter):
         label="Filter by specialty, ex `/?specialty=italian`",
     )
     city = filters.CharFilter(
-        field_name="city__name",
+        field_name="city_id__name",
         lookup_expr="icontains",
         label="Filter by city name, ex `/?city=newyork`",
     )
     state = filters.CharFilter(
-        field_name="state__name",
+        field_name="state_id__name",
         lookup_expr="icontains",
         label="Filter by state name, ex `/?state=california`",
     )
     country = filters.CharFilter(
-        field_name="country__name",
+        field_name="country_id__name",
         lookup_expr="icontains",
         label="Filter by country name, ex `/?country=usa`",
     )
