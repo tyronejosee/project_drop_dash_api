@@ -1,5 +1,6 @@
 """Settings for config project (Base)."""
 
+import os
 from pathlib import Path
 from datetime import timedelta
 import environ
@@ -67,7 +68,7 @@ ROOT_URLCONF = "config.urls"
 TEMPLATES = [
     {
         "BACKEND": "django.template.backends.django.DjangoTemplates",
-        "DIRS": [],
+        "DIRS": [os.path.join(BASE_DIR, "templates")],
         "APP_DIRS": True,
         "OPTIONS": {
             "context_processors": [
