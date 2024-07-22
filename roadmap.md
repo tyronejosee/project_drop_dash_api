@@ -131,29 +131,29 @@ TODO: Agregar permiso para Recursos humanos
 
 ## Locations [OK]
 
-- [ ] `GET /countries` Obtener la lista de todos los países.
-- [ ] `POST /countries` Registrar un nuevo país.
-- [ ] `GET /countries/{id}` Obtener los detalles de un país específico.
-- [ ] `PUT /countries/{id}` Actualizar los detalles de un país específico.
-- [ ] `DELETE /countries/{id}` Eliminar un país específico.
+- [x] `GET /countries` Obtener la lista de todos los países.
+- [x] `POST /countries` Registrar un nuevo país.
+- [x] `GET /countries/{id}` Obtener los detalles de un país específico.
+- [x] `PUT /countries/{id}` Actualizar los detalles de un país específico.
+- [x] `DELETE /countries/{id}` Eliminar un país específico.
 
-- [ ] `GET /states` Obtener la lista de todos los estados.
-- [ ] `POST /states` Registrar un nuevo estado.
-- [ ] `GET /states/{id}` Obtener los detalles de un estado específico.
-- [ ] `PUT /states/{id}` Actualizar los detalles de un estado específico.
-- [ ] `DELETE /states/{id}` Eliminar un estado específico.
+- [x] `GET /states` Obtener la lista de todos los estados.
+- [x] `POST /states` Registrar un nuevo estado.
+- [x] `GET /states/{id}` Obtener los detalles de un estado específico.
+- [x] `PUT /states/{id}` Actualizar los detalles de un estado específico.
+- [x] `DELETE /states/{id}` Eliminar un estado específico.
 
-- [ ] `GET /cities` Obtener la lista de todas las ciudades.
-- [ ] `POST /cities` Registrar una nueva ciudad.
-- [ ] `GET /cities/{id}` Obtener los detalles de una ciudad específica.
-- [ ] `PUT /cities/{id}` Actualizar los detalles de una ciudad específica.
-- [ ] `DELETE /api/v1/cities/{id}` Eliminar una ciudad específica.
+- [x] `GET /cities` Obtener la lista de todas las ciudades.
+- [x] `POST /cities` Registrar una nueva ciudad.
+- [x] `GET /cities/{id}` Obtener los detalles de una ciudad específica.
+- [x] `PUT /cities/{id}` Actualizar los detalles de una ciudad específica.
+- [x] `DELETE /api/v1/cities/{id}` Eliminar una ciudad específica.
 
 ## Users [OK]
 
-- [ ] `GET /users/reviews` Obtener todas las reseñas escritas por un usuario específico (IsClient).
-- [ ] `GET /users/orders` Obtener todas las reseñas escritas por un usuario específico (IsClient).
-- [ ] `GET /users/{id}/historical` Obtener el historial de cambios de un usuario específico (IsAdministrator).
+- [x] `GET /accounts/reviews` Obtener todas las reseñas escritas por un usuario específico (IsClient).
+- [x] `GET /accounts/orders` Obtener todas las reseñas escritas por un usuario específico (IsClient).
+- [x] `GET /accounts/{id}/historical` Obtener el historial de cambios de un usuario específico (IsAdministrator).
 
 TODO: Agregar reviews a restaurants y posts, limitar modelo de Review
 

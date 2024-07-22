@@ -3,12 +3,15 @@
 from django.db import models
 
 from apps.utilities.models import BaseModel
+from .managers import CountryManager, StateManager, CityManager
 
 
 class Country(BaseModel):
     """Model definition for Country."""
 
     name = models.CharField(max_length=100, unique=True)
+
+    objects = CountryManager()
 
     class Meta:
         ordering = ["pk"]
@@ -28,6 +31,8 @@ class State(BaseModel):
     name = models.CharField(max_length=100, unique=True)
     country_id = models.ForeignKey(Country, on_delete=models.CASCADE)
 
+    objects = StateManager()
+
     class Meta:
         ordering = ["pk"]
         verbose_name = "state"
@@ -45,6 +50,8 @@ class City(BaseModel):
 
     name = models.CharField(max_length=100, unique=True)
     state_id = models.ForeignKey(State, on_delete=models.CASCADE)
+
+    objects = CityManager()
 
     class Meta:
         ordering = ["pk"]

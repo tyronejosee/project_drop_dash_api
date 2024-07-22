@@ -18,16 +18,51 @@ class CountryReadSerializer(ModelSerializer):
         ]
 
 
+class CountryWriteSerializer(ModelSerializer):
+    """Serializer for Country model (Create/update)."""
+
+    class Meta:
+        model = Country
+        fields = [
+            "name",
+        ]
+
+
+class CountryMinimalSerializer(ModelSerializer):
+    """Serializer for Country model (Minimal)."""
+
+    class Meta:
+        model = Country
+        fields = [
+            "id",
+            "name",
+        ]
+
+
 class StateReadSerializer(ModelSerializer):
     """Serializer for State model (List/retrieve)."""
+
+    country_id = CountryMinimalSerializer()
 
     class Meta:
         model = State
         fields = [
             "id",
             "name",
+            "country_id",
             "created_at",
             "updated_at",
+        ]
+
+
+class StateWriteSerializer(ModelSerializer):
+    """Serializer for State model (Create/update)."""
+
+    class Meta:
+        model = State
+        fields = [
+            "name",
+            "country_id",
         ]
 
 
@@ -45,7 +80,7 @@ class StateMinimalSerializer(ModelSerializer):
 class CityReadSerializer(ModelSerializer):
     """Serializer for City model (List/retrieve)."""
 
-    state_id = StateReadSerializer()
+    state_id = StateMinimalSerializer()
 
     class Meta:
         model = City
@@ -55,6 +90,17 @@ class CityReadSerializer(ModelSerializer):
             "state_id",
             "created_at",
             "updated_at",
+        ]
+
+
+class CityWriteSerializer(ModelSerializer):
+    """Serializer for City model (Create/update)."""
+
+    class Meta:
+        model = City
+        fields = [
+            "name",
+            "state_id",
         ]
 
 
