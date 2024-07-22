@@ -1,6 +1,7 @@
 """Serializers for Users App."""
 
 from django.contrib.auth import get_user_model
+from rest_framework import serializers
 from djoser.serializers import UserCreateSerializer
 
 User = get_user_model()
@@ -49,4 +50,18 @@ class UserMinimalSerializer(UserCreateSerializer):
             "id",
             "username",
             "role",
+        ]
+
+
+class UserHistorySerializer(serializers.ModelSerializer):
+    """Serializer for User history."""
+
+    class Meta:
+        model = User.history.model
+        fields = [
+            "id",
+            "username",
+            "history_date",
+            "history_user",
+            "history_type",
         ]

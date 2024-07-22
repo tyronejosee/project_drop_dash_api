@@ -16,7 +16,7 @@ from .serializers import (
 from .filters import PromotionFilter, FixedCouponFilter, PercentageCouponFilter
 
 
-class PromotionViewSet(LogicalDeleteMixin, ModelViewSet):
+class PromotionViewSet(ListCacheMixin, LogicalDeleteMixin, ModelViewSet):
     """
     ViewSet for managing Promotion instances.
 
