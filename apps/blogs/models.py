@@ -5,7 +5,7 @@ from django.db import models
 
 from apps.utilities.models import BaseModel
 from apps.utilities.mixins import SlugMixin
-from .managers import TagManager, PostManager
+from .managers import TagManager, PostManager, PostReportManager
 from .choices import PriorityChoices, StatusChoices
 
 User = settings.AUTH_USER_MODEL
@@ -72,6 +72,8 @@ class PostReport(BaseModel):
         choices=StatusChoices.choices,
         default=StatusChoices.PENDING,
     )
+
+    objects = PostReportManager()
 
     class Meta:
         ordering = ["pk"]

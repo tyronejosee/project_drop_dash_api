@@ -1,11 +1,12 @@
 """Serializers for Blogs App."""
 
-from rest_framework.serializers import ModelSerializer, CharField
+from rest_framework.serializers import ModelSerializer, CharField, StringRelatedField
 
+from apps.utilities.mixins import ReadOnlyFieldsMixin
 from .models import Post, Tag, PostReport
 
 
-class TagReadSerializer(ModelSerializer):
+class TagReadSerializer(ReadOnlyFieldsMixin, ModelSerializer):
     """Serializer for Category model (List/retrieve)."""
 
     class Meta:
@@ -13,10 +14,6 @@ class TagReadSerializer(ModelSerializer):
         fields = [
             "id",
             "name",
-            "slug",
-        ]
-        read_only_fields = [
-            "id",
             "slug",
         ]
 
@@ -29,10 +26,11 @@ class TagWriteSerializer(ModelSerializer):
         fields = ["name"]
 
 
-class PostReadSerializer(ModelSerializer):
+class PostReadSerializer(ReadOnlyFieldsMixin, ModelSerializer):
     """Serializer for Post model (List/retrieve)."""
 
     tags = TagReadSerializer(many=True)
+    author_id = StringRelatedField()
 
     class Meta:
         model = Post
@@ -43,11 +41,6 @@ class PostReadSerializer(ModelSerializer):
             "content",
             "tags",
             "author_id",
-            "created_at",
-            "updated_at",
-        ]
-        read_only_fields = [
-            "slug",
             "created_at",
             "updated_at",
         ]
@@ -65,7 +58,7 @@ class PostWriteSerializer(ModelSerializer):
         ]
 
 
-class PostReportReadSerializer(ModelSerializer):
+class PostReportReadSerializer(ReadOnlyFieldsMixin, ModelSerializer):
     """Serializer for PostReport model (List)."""
 
     priority = CharField(source="get_priority_display")

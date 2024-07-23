@@ -98,15 +98,15 @@ Pending implementation
 
 ## Blogs [OK]
 
-- [ ] `GET /posts` Obtener una lista de todos los posts (AllowAny).
-- [ ] `POST /posts` Crear un nuevo post (IsMarketing).
-- [ ] `GET /posts/{id}` Obtener los detalles de un post específico por su ID (AllowAny).
-- [ ] `PATCH /posts/{id}` Actualizar un post específico por su ID (IsMarketing).
-- [ ] `DELETE /posts/{id}` Eliminar un post específico por su ID (IsMarketing).
+- [x] `GET /posts` Obtener una lista de todos los posts (AllowAny).
+- [x] `POST /posts` Crear un nuevo post (IsMarketing).
+- [x] `GET /posts/{id}` Obtener los detalles de un post específico por su ID (AllowAny).
+- [x] `PATCH /posts/{id}` Actualizar un post específico por su ID (IsMarketing).
+- [x] `DELETE /posts/{id}` Eliminar un post específico por su ID (IsMarketing).
+
 - [ ] `POST /posts/{id}/report` Reportar un post específico por su ID (IsClient).
 - [ ] `GET /posts/tags` Obtener una lista de todas las etiquetas (IsMarketing).
-- [ ] `GET /posts/tags` Crear una nueva etiqueta (IsMarketing).
-- [ ] `GET /posts/search/` Buscar posts basados en una consulta de búsqueda (AllowAny).
+- [ ] `POST /posts/tags` Crear una nueva etiqueta (IsMarketing).
 
 TODO: recents and featured endpoint unificarlos con /posts agregando un filtro
 

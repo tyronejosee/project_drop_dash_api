@@ -32,14 +32,15 @@ urlpatterns = [
     # ! TODO: Remove urls
     # path("", include("apps.restaurants.urls")),
     # path("", include("apps.promotions.urls")),
+    # path("", include("apps.blogs.urls")),
     # Apps urls
     path("", include("apps.restaurants.routers")),
     path("", include("apps.promotions.routers")),
     path("", include("apps.locations.routers")),
+    path("", include("apps.blogs.routers")),
     path("", include("apps.home.urls")),
     path("", include("apps.drivers.urls")),
     path("", include("apps.orders.urls")),
-    path("", include("apps.blogs.urls")),
     path("", include("apps.users.urls")),
 ]
 

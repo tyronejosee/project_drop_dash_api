@@ -30,3 +30,7 @@ class PostManager(BaseManager):
             | Q(content__icontains=search_term)
             | Q(tags__name__icontains=search_term)
         )
+
+
+class PostReportManager(BaseManager):
+    """Manager for Post Model."""
