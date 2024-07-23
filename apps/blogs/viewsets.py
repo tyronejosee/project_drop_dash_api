@@ -12,12 +12,14 @@ from rest_framework import status
 
 from apps.users.permissions import IsMarketing, IsClient
 from apps.utilities.mixins import ListCacheMixin, LogicalDeleteMixin
-from .models import Post, PostReport
+from .models import Post, PostReport, Tag
 from .serializers import (
     PostReadSerializer,
     PostWriteSerializer,
     PostReportReadSerializer,
     PostReportWriteSerializer,
+    TagReadSerializer,
+    TagWriteSerializer,
 )
 from .choices import PriorityChoices
 
@@ -125,4 +127,101 @@ class PostViewSet(ListCacheMixin, LogicalDeleteMixin, ModelViewSet):
         return Response(
             {"detail": "No reports found."},
             status=status.HTTP_404_NOT_FOUND,
+        )
+
+    @action(
+        detail=False,
+        methods=["get"],
+        permission_classes=[AllowAny],
+        url_path="featured",
+    )
+    @method_decorator(cache_page(60 * 60 * 2))
+    @method_decorator(vary_on_headers("User-Agent"))
+    def get_featured_posts(self, request, *args, **kwargs):
+        """
+        Action retrieve all featured posts.
+
+        Endpoints:
+        - GET api/v1/posts/featured/
+        """
+        featured_posts = Post.objects.get_featured()
+        if featured_posts.exists():
+            serializer = PostReadSerializer(featured_posts, many=True)
+            return Response(serializer.data)
+        return Response(
+            {"detail": "No featured posts found."},
+            status=status.HTTP_404_NOT_FOUND,
+        )
+
+    @action(
+        detail=False,
+        methods=["get"],
+        permission_classes=[AllowAny],
+        url_path="recent",
+    )
+    @method_decorator(cache_page(60 * 60 * 2))
+    @method_decorator(vary_on_headers("User-Agent"))
+    def get_recent_posts(self, request, *args, **kwargs):
+        """
+        Action retrieve all recent posts (7 days).
+
+        Endpoints:
+        - GET api/v1/posts/recent/
+        """
+        recent_posts = Post.objects.get_recent()
+        if recent_posts.exists():
+            serializer = PostReadSerializer(recent_posts, many=True)
+            return Response(serializer.data)
+        return Response(
+            {"detail": "No recent posts found."},
+            status=status.HTTP_404_NOT_FOUND,
+        )
+
+    @action(
+        detail=False,
+        methods=["get"],
+        permission_classes=[AllowAny],
+        url_path="tags",
+    )
+    @method_decorator(cache_page(60 * 60 * 2))
+    @method_decorator(vary_on_headers("User-Agent"))
+    def get_tags(self, request, *args, **kwargs):
+        """
+        Action retrieve all tags.
+
+        Endpoints:
+        - GET api/v1/posts/tags/
+        """
+        tags = Tag.objects.get_available()
+        if tags.exists():
+            serializer = TagReadSerializer(tags, many=True)
+            return Response(serializer.data)
+        return Response(
+            {"detail": "No tags found."},
+            status=status.HTTP_404_NOT_FOUND,
+        )
+
+    @action(
+        detail=False,
+        methods=["post"],
+        permission_classes=[IsMarketing],
+        url_path="create-tag",
+    )
+    def create_tag(self, request, *args, **kwargs):
+        """
+        Action create a new tag.
+
+        Endpoints:
+        - POST api/v1/posts/create-tag/
+        """
+        serializer = TagWriteSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(
+                serializer.data,
+                status=status.HTTP_201_CREATED,
+            )
+        return Response(
+            serializer.errors,
+            status=status.HTTP_400_BAD_REQUEST,
         )

@@ -179,6 +179,7 @@ class PostSearchView(APIView):
 class FeaturedPostsView(APIView):
     """
     View to list featured posts.
+    # ! NOTE: This view has been refactored into an action of the viewsets.
 
     Endpoints:
     - GET api/v1/posts/featured/
@@ -208,6 +209,7 @@ class FeaturedPostsView(APIView):
 class RecentPostsView(APIView):
     """
     View to list recent posts.
+    # ! NOTE: This view has been refactored into an action of the viewsets.
 
     Endpoints:
     - GET api/v1/posts/recent/
@@ -237,6 +239,7 @@ class RecentPostsView(APIView):
 class PostReportView(APIView):
     """
     View for reporting a post.
+    # ! NOTE: This view has been refactored into an action of the viewsets.
 
     Endpoints:
     - POST api/v1/posts/{id}/report/
@@ -283,6 +286,7 @@ class PostReportView(APIView):
 
 class ReportsView(APIView):
     """View for listing all reports.
+    # ! NOTE: This view has been refactored into an action of the viewsets.
 
     Endpoints:
     - GET api/v1/posts/reports/

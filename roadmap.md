@@ -104,7 +104,7 @@ Pending implementation
 - [x] `PATCH /posts/{id}` Actualizar un post específico por su ID (IsMarketing).
 - [x] `DELETE /posts/{id}` Eliminar un post específico por su ID (IsMarketing).
 
-- [ ] `POST /posts/{id}/report` Reportar un post específico por su ID (IsClient).
+- [x] `POST /posts/{id}/report` Reportar un post específico por su ID (IsClient).
 - [ ] `GET /posts/tags` Obtener una lista de todas las etiquetas (IsMarketing).
 - [ ] `POST /posts/tags` Crear una nueva etiqueta (IsMarketing).
 
