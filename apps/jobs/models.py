@@ -11,7 +11,7 @@ User = settings.AUTH_USER_MODEL
 
 
 class Position(BaseModel):
-    """Model definition for JobPosition (Catalog)."""
+    """Model definition for Position."""
 
     position = models.CharField(max_length=100, unique=True)
     description = models.TextField()
@@ -26,7 +26,7 @@ class Position(BaseModel):
 
 
 class Worker(BaseModel):
-    """Model definition for Worker (Entity)."""
+    """Model definition for Worker."""
 
     user_id = models.OneToOneField(User, on_delete=models.DO_NOTHING)
     phone_number = models.CharField(max_length=15)
@@ -59,7 +59,7 @@ class Worker(BaseModel):
 
 
 class Applicant(BaseModel):
-    """Model definition for Applicant (Entity)."""
+    """Model definition for Applicant."""
 
     user_id = models.OneToOneField(User, on_delete=models.CASCADE)
     phone_number = models.CharField(max_length=15)

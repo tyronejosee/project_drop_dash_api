@@ -81,6 +81,7 @@ class PostViewSet(ListCacheMixin, LogicalDeleteMixin, ModelViewSet):
                     status=status.HTTP_400_BAD_REQUEST,
                 )
 
+            # ! TODO: Move logic to the service layer
             with transaction.atomic():
                 # Update points of the post
                 post.points = post.points - 1

@@ -26,6 +26,7 @@ from .choices import PriorityChoices
 class TagListView(APIView):
     """
     View to list and create tags.
+    NOTE: This view has been refactored into an action of the viewsets.
 
     Endpoints:
     - GET api/v1/posts/tags/
@@ -57,6 +58,7 @@ class TagListView(APIView):
 class PostListView(APIView):
     """
     View to list and create posts.
+    NOTE: This view has been refactored into an viewset.
 
     Endpoints:
     - GET api/v1/posts/
@@ -101,6 +103,7 @@ class PostListView(APIView):
 class PostDetailView(APIView):
     """
     View to retrieve, update, and delete a post.
+    NOTE: This view has been refactored into an viewset.
 
     Endpoints:
     - GET api/v1/posts/{id}/
@@ -148,6 +151,7 @@ class PostDetailView(APIView):
 class PostSearchView(APIView):
     """
     View to search posts.
+    NOTE: This view has been refactored into an viewset.
 
     Endpoints:
     - GET api/v1/posts/?q={query}
@@ -179,7 +183,7 @@ class PostSearchView(APIView):
 class FeaturedPostsView(APIView):
     """
     View to list featured posts.
-    # ! NOTE: This view has been refactored into an action of the viewsets.
+    NOTE: This view has been refactored into an action of the viewsets.
 
     Endpoints:
     - GET api/v1/posts/featured/
@@ -209,7 +213,7 @@ class FeaturedPostsView(APIView):
 class RecentPostsView(APIView):
     """
     View to list recent posts.
-    # ! NOTE: This view has been refactored into an action of the viewsets.
+    NOTE: This view has been refactored into an action of the viewsets.
 
     Endpoints:
     - GET api/v1/posts/recent/
@@ -239,7 +243,7 @@ class RecentPostsView(APIView):
 class PostReportView(APIView):
     """
     View for reporting a post.
-    # ! NOTE: This view has been refactored into an action of the viewsets.
+    NOTE: This view has been refactored into an action of the viewsets.
 
     Endpoints:
     - POST api/v1/posts/{id}/report/
@@ -286,7 +290,7 @@ class PostReportView(APIView):
 
 class ReportsView(APIView):
     """View for listing all reports.
-    # ! NOTE: This view has been refactored into an action of the viewsets.
+    NOTE: This view has been refactored into an action of the viewsets.
 
     Endpoints:
     - GET api/v1/posts/reports/

@@ -7,11 +7,6 @@ from .models import Tag, Post, PostReport
 from .choices import StatusChoices
 
 
-class TagInline(admin.TabularInline):
-    model = Post.tags.through
-    extra = 1
-
-
 @admin.register(Tag)
 class TagAdmin(BaseAdmin):
     """Admin for Tag model."""
@@ -34,7 +29,6 @@ class PostAdmin(BaseAdmin):
     list_filter = ["tags", "is_available"]
     readonly_fields = ["pk", "slug", "created_at", "updated_at"]
     ordering = ["title"]
-    inlines = [TagInline]
 
 
 @admin.register(PostReport)

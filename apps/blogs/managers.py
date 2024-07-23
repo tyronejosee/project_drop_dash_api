@@ -8,7 +8,7 @@ from apps.utilities.managers import BaseManager
 
 
 class TagManager(BaseManager):
-    """Manager for Post Model."""
+    """Manager for Tag Model."""
 
 
 class PostManager(BaseManager):
@@ -33,4 +33,4 @@ class PostManager(BaseManager):
 
 
 class PostReportManager(BaseManager):
-    """Manager for Post Model."""
+    """Manager for PostReport Model."""

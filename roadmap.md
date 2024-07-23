@@ -1,10 +1,5 @@
 # Roadmap
 
-## Home
-
-- [ ] `GET /home/kwords` Obtener todas las palabras más buscadas (AllowAny). [10]
-- [ ] `GET /home/restaurants` Obtener todas los restaurants más popolares (AllowAny). [10]
-
 ## Orders [OK]
 
 - [ ] `GET /orders/` Obtener todas las ordenes (IsAdministrator)
@@ -105,10 +100,8 @@ Pending implementation
 - [x] `DELETE /posts/{id}` Eliminar un post específico por su ID (IsMarketing).
 
 - [x] `POST /posts/{id}/report` Reportar un post específico por su ID (IsClient).
-- [ ] `GET /posts/tags` Obtener una lista de todas las etiquetas (IsMarketing).
-- [ ] `POST /posts/tags` Crear una nueva etiqueta (IsMarketing).
-
-TODO: recents and featured endpoint unificarlos con /posts agregando un filtro
+- [x] `GET /posts/tags` Obtener una lista de todas las etiquetas (IsMarketing).
+- [x] `POST /posts/tags` Crear una nueva etiqueta (IsMarketing).
 
 ## Jobs [OK]
 
@@ -117,12 +110,14 @@ TODO: recents and featured endpoint unificarlos con /posts agregando un filtro
 - [ ] `GET /positions/{id}` Obtener los detalles de una posición de trabajo específica por su ID (IsRRHH).
 - [ ] `PATCH /positions/{id}` Actualizar una posición de trabajo específica por su ID (IsRRHH).
 - [ ] `DELETE /positions/{id}` Eliminar una posición de trabajo específica por su ID (IsRRHH).
+
 - [ ] `GET /workers` Obtener una lista de todos los trabajadores (IsRRHH).
 - [ ] `POST /workers` Crear un nuevo trabajador (IsRRHH).
 - [ ] `GET /workers/{id}` Obtener los detalles de un trabajador específico por su ID (IsRRHH).
 - [ ] `PATCH /workers/{id}` Actualizar un trabajador específico por su ID (IsRRHH).
 - [ ] `DELETE /workers/{id}` Eliminar un trabajador específico por su ID (IsRRHH).
 - [ ] `POST /workers/{id}/terminate` Dar por terminado un contrato de trabajo (IsRRHH).
+
 - [ ] `POST /applicants/{id}/status` Actualizar el estado de una solicitud de trabajo específica (IsRRHH).
 - [ ] `GET /contracts/` Obtener una lista de todos los contratos de trabajo (IsRRHH).
 - [ ] `GET /contracts/{id}` Obtener los detalles de un contrato específico por su ID (IsRRHH).
