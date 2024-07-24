@@ -34,9 +34,9 @@ urlpatterns = [
     path("", include("apps.promotions.routers")),
     path("", include("apps.locations.routers")),
     path("", include("apps.blogs.routers")),
+    path("", include("apps.home.routers")),
     path("", include("apps.jobs.routers")),
     # Apps urls
-    path("", include("apps.home.urls")),
     path("", include("apps.drivers.urls")),
     path("", include("apps.orders.urls")),
     path("", include("apps.users.urls")),

@@ -3,6 +3,7 @@
 from rest_framework.serializers import ModelSerializer, CharField, StringRelatedField
 
 from apps.utilities.mixins import ReadOnlyFieldsMixin
+from apps.users.serializers import UserMinimalSerializer
 from .models import Post, Tag, PostReport
 
 
@@ -58,9 +59,22 @@ class PostWriteSerializer(ModelSerializer):
         ]
 
 
+class PostMinimalSerializer(ReadOnlyFieldsMixin, ModelSerializer):
+    """Serializer for Post model (Minimal)."""
+
+    class Meta:
+        model = Post
+        fields = [
+            "id",
+            "title",
+        ]
+
+
 class PostReportReadSerializer(ReadOnlyFieldsMixin, ModelSerializer):
     """Serializer for PostReport model (List)."""
 
+    user_id = UserMinimalSerializer()
+    post_id = PostMinimalSerializer()
     priority = CharField(source="get_priority_display")
     status = CharField(source="get_status_display")
 

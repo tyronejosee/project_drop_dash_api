@@ -40,6 +40,10 @@ class ListCacheMixin:
     @method_decorator(cache_page(60 * 60 * 2))
     @method_decorator(vary_on_headers("User-Agent"))
     def list(self, request, *args, **kwargs):
+        queryset = self.filter_queryset(self.get_queryset())
+        model_name = queryset.model._meta.verbose_name_plural.lower()
+        if not queryset.exists():
+            return Response({"message": f"No {model_name} available"})
         return super().list(request, *args, **kwargs)
 
 
