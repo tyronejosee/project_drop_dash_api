@@ -105,24 +105,22 @@ Pending implementation
 
 ## Jobs [OK]
 
-- [ ] `GET /positions/` Obtener una lista de todas las posiciones de trabajo (AllowAny).
-- [ ] `POST /positions` Crear una nueva posición de trabajo (IsRRHH).
-- [ ] `GET /positions/{id}` Obtener los detalles de una posición de trabajo específica por su ID (IsRRHH).
-- [ ] `PATCH /positions/{id}` Actualizar una posición de trabajo específica por su ID (IsRRHH).
-- [ ] `DELETE /positions/{id}` Eliminar una posición de trabajo específica por su ID (IsRRHH).
+- [x] `GET /positions/` Obtener una lista de todas las posiciones de trabajo (AllowAny).
+- [x] `POST /positions` Crear una nueva posición de trabajo (IsRRHH).
+- [x] `GET /positions/{id}` Obtener los detalles de una posición de trabajo específica por su ID (IsRRHH).
+- [x] `PATCH /positions/{id}` Actualizar una posición de trabajo específica por su ID (IsRRHH).
+- [x] `DELETE /positions/{id}` Eliminar una posición de trabajo específica por su ID (IsRRHH).
 
-- [ ] `GET /workers` Obtener una lista de todos los trabajadores (IsRRHH).
-- [ ] `POST /workers` Crear un nuevo trabajador (IsRRHH).
-- [ ] `GET /workers/{id}` Obtener los detalles de un trabajador específico por su ID (IsRRHH).
-- [ ] `PATCH /workers/{id}` Actualizar un trabajador específico por su ID (IsRRHH).
-- [ ] `DELETE /workers/{id}` Eliminar un trabajador específico por su ID (IsRRHH).
+- [x] `GET /workers` Obtener una lista de todos los trabajadores (IsRRHH).
+- [x] `POST /workers` Crear un nuevo trabajador (IsRRHH).
+- [x] `GET /workers/{id}` Obtener los detalles de un trabajador específico por su ID (IsRRHH).
+- [x] `PATCH /workers/{id}` Actualizar un trabajador específico por su ID (IsRRHH).
+- [x] `DELETE /workers/{id}` Eliminar un trabajador específico por su ID (IsRRHH).
 - [ ] `POST /workers/{id}/terminate` Dar por terminado un contrato de trabajo (IsRRHH).
 
 - [ ] `POST /applicants/{id}/status` Actualizar el estado de una solicitud de trabajo específica (IsRRHH).
-- [ ] `GET /contracts/` Obtener una lista de todos los contratos de trabajo (IsRRHH).
-- [ ] `GET /contracts/{id}` Obtener los detalles de un contrato específico por su ID (IsRRHH).
 
-TODO: Agregar permiso para Recursos humanos
+TODO: [x] Agregar permiso para Recursos humanos
 
 ## Locations [OK]
 

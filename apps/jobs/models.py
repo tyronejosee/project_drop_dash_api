@@ -5,6 +5,7 @@ from django.db import models
 
 from apps.utilities.models import BaseModel
 from apps.locations.models import Country, State, City
+from .managers import PositionManager, WorkerManager, ApplicantManager
 from .choices import StatusChoices, ContractTypeChoices
 
 User = settings.AUTH_USER_MODEL
@@ -15,6 +16,8 @@ class Position(BaseModel):
 
     position = models.CharField(max_length=100, unique=True)
     description = models.TextField()
+
+    objects = PositionManager()
 
     class Meta:
         ordering = ["pk"]
@@ -49,6 +52,8 @@ class Worker(BaseModel):
         blank=True,
     )
 
+    objects = WorkerManager()
+
     class Meta:
         ordering = ["pk"]
         verbose_name = "worker"
@@ -77,6 +82,8 @@ class Applicant(BaseModel):
         choices=StatusChoices.choices,
         default=StatusChoices.PENDING,
     )
+
+    objects = ApplicantManager()
 
     class Meta:
         ordering = ["pk"]

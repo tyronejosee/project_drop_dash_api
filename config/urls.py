@@ -29,19 +29,21 @@ urlpatterns = [
         name="redoc",
     ),
     path("api/schema/", SpectacularAPIView.as_view(), name="schema"),
-    # ! TODO: Remove urls
-    # path("", include("apps.restaurants.urls")),
-    # path("", include("apps.promotions.urls")),
-    # path("", include("apps.blogs.urls")),
-    # Apps urls
+    # Apps routers
     path("", include("apps.restaurants.routers")),
     path("", include("apps.promotions.routers")),
     path("", include("apps.locations.routers")),
     path("", include("apps.blogs.routers")),
+    path("", include("apps.jobs.routers")),
+    # Apps urls
     path("", include("apps.home.urls")),
     path("", include("apps.drivers.urls")),
     path("", include("apps.orders.urls")),
     path("", include("apps.users.urls")),
+    # ! TODO: Remove urls
+    # path("", include("apps.restaurants.urls")),
+    # path("", include("apps.promotions.urls")),
+    # path("", include("apps.blogs.urls")),
 ]
 
 
