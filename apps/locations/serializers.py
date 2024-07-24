@@ -2,10 +2,11 @@
 
 from rest_framework.serializers import ModelSerializer
 
+from apps.utilities.mixins import ReadOnlyFieldsMixin
 from .models import Country, State, City
 
 
-class CountryReadSerializer(ModelSerializer):
+class CountryReadSerializer(ReadOnlyFieldsMixin, ModelSerializer):
     """Serializer for Country model (List/retrieve)."""
 
     class Meta:
@@ -28,7 +29,7 @@ class CountryWriteSerializer(ModelSerializer):
         ]
 
 
-class CountryMinimalSerializer(ModelSerializer):
+class CountryMinimalSerializer(ReadOnlyFieldsMixin, ModelSerializer):
     """Serializer for Country model (Minimal)."""
 
     class Meta:
@@ -39,7 +40,7 @@ class CountryMinimalSerializer(ModelSerializer):
         ]
 
 
-class StateReadSerializer(ModelSerializer):
+class StateReadSerializer(ReadOnlyFieldsMixin, ModelSerializer):
     """Serializer for State model (List/retrieve)."""
 
     country_id = CountryMinimalSerializer()
@@ -66,7 +67,7 @@ class StateWriteSerializer(ModelSerializer):
         ]
 
 
-class StateMinimalSerializer(ModelSerializer):
+class StateMinimalSerializer(ReadOnlyFieldsMixin, ModelSerializer):
     """Serializer for State model (Minimal)."""
 
     class Meta:
@@ -77,7 +78,7 @@ class StateMinimalSerializer(ModelSerializer):
         ]
 
 
-class CityReadSerializer(ModelSerializer):
+class CityReadSerializer(ReadOnlyFieldsMixin, ModelSerializer):
     """Serializer for City model (List/retrieve)."""
 
     state_id = StateMinimalSerializer()
@@ -104,7 +105,7 @@ class CityWriteSerializer(ModelSerializer):
         ]
 
 
-class CityMinimalSerializer(ModelSerializer):
+class CityMinimalSerializer(ReadOnlyFieldsMixin, ModelSerializer):
     """Serializer for City model (Minimal)."""
 
     class Meta:

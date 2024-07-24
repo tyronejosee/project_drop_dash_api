@@ -2,10 +2,11 @@
 
 from rest_framework.serializers import ModelSerializer, SerializerMethodField
 
+from apps.utilities.mixins import ReadOnlyFieldsMixin
 from .models import Order, OrderItem
 
 
-class OrderItemReadSerializer(ModelSerializer):
+class OrderItemReadSerializer(ReadOnlyFieldsMixin, ModelSerializer):
     """Serializer for OrderItem model (List/update)."""
 
     food_id = SerializerMethodField()
@@ -23,7 +24,7 @@ class OrderItemReadSerializer(ModelSerializer):
         return str(obj.food_id)
 
 
-class OrderReadSerializer(ModelSerializer):
+class OrderReadSerializer(ReadOnlyFieldsMixin, ModelSerializer):
     """Serializer for Order model (List/retrieve)."""
 
     foods = OrderItemReadSerializer(source="orderitem_set", many=True)

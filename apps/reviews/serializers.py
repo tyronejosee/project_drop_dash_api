@@ -2,10 +2,11 @@
 
 from rest_framework import serializers
 
+from apps.utilities.mixins import ReadOnlyFieldsMixin
 from .models import Review
 
 
-class ReviewReadSerializer(serializers.ModelSerializer):
+class ReviewReadSerializer(ReadOnlyFieldsMixin, serializers.ModelSerializer):
     """Serializer for Review model (List/retrieve)."""
 
     user_id = serializers.StringRelatedField()

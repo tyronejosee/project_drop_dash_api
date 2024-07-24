@@ -3,11 +3,12 @@
 from datetime import datetime, timedelta
 from rest_framework.serializers import ModelSerializer, ValidationError
 
+from apps.utilities.mixins import ReadOnlyFieldsMixin
 from apps.users.serializers import UserMinimalSerializer
 from .models import Promotion, FixedCoupon, PercentageCoupon
 
 
-class PromotionReadSerializer(ModelSerializer):
+class PromotionReadSerializer(ReadOnlyFieldsMixin, ModelSerializer):
     """Serializer for Promotion model (List/retrieve)."""
 
     creator_id = UserMinimalSerializer()
@@ -56,7 +57,7 @@ class PromotionWriteSerializer(ModelSerializer):
         return value
 
 
-class FixedCouponReadSerializer(ModelSerializer):
+class FixedCouponReadSerializer(ReadOnlyFieldsMixin, ModelSerializer):
     """Serializer for FixedCoupon model (List)."""
 
     creator_id = UserMinimalSerializer()
@@ -64,7 +65,6 @@ class FixedCouponReadSerializer(ModelSerializer):
     class Meta:
         model = FixedCoupon
         fields = "__all__"
-        # read_only_fields = fields
 
 
 class FixedCouponWriteSerializer(ModelSerializer):
@@ -84,7 +84,7 @@ class FixedCouponWriteSerializer(ModelSerializer):
         }
 
 
-class PercentageCouponReadSerializer(ModelSerializer):
+class PercentageCouponReadSerializer(ReadOnlyFieldsMixin, ModelSerializer):
     """Serializer for PercentageCoupon model (List)."""
 
     creator_id = UserMinimalSerializer()
@@ -92,7 +92,6 @@ class PercentageCouponReadSerializer(ModelSerializer):
     class Meta:
         model = PercentageCoupon
         fields = "__all__"
-        # read_only_fields = fields
 
 
 class PercentageCouponWriteSerializer(ModelSerializer):

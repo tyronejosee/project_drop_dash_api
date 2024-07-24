@@ -2,10 +2,11 @@
 
 from rest_framework import serializers
 
+from apps.utilities.mixins import ReadOnlyFieldsMixin
 from .models import Restaurant, Category, Food
 
 
-class RestaurantReadSerializer(serializers.ModelSerializer):
+class RestaurantReadSerializer(ReadOnlyFieldsMixin, serializers.ModelSerializer):
     """Serializer for Restaurant model (List/retrieve)."""
 
     city_id = serializers.StringRelatedField()
@@ -31,7 +32,6 @@ class RestaurantReadSerializer(serializers.ModelSerializer):
             "phone",
             "website",
         ]
-        # read_only_fields = fields
 
     def to_representation(self, instance):
         data = super().to_representation(instance)
@@ -67,7 +67,7 @@ class RestaurantWriteSerializer(serializers.ModelSerializer):
         ]
 
 
-class RestaurantMinimalSerializer(serializers.ModelSerializer):
+class RestaurantMinimalSerializer(ReadOnlyFieldsMixin, serializers.ModelSerializer):
     """Serializer for Restaurant model (Minimal)."""
 
     class Meta:
@@ -78,7 +78,6 @@ class RestaurantMinimalSerializer(serializers.ModelSerializer):
             "slug",
             "image",
         ]
-        # read_only_fields = fields
 
     def to_representation(self, instance):
         data = super().to_representation(instance)
@@ -100,7 +99,6 @@ class CategoryReadSerializer(serializers.ModelSerializer):
             "created_at",
             "updated_at",
         ]
-        # read_only_fields = fields
 
 
 class CategoryWriteSerializer(serializers.ModelSerializer):
@@ -113,7 +111,7 @@ class CategoryWriteSerializer(serializers.ModelSerializer):
         ]
 
 
-class CategoryMinimalSerializer(serializers.ModelSerializer):
+class CategoryMinimalSerializer(ReadOnlyFieldsMixin, serializers.ModelSerializer):
     """Serializer for Category model (Minimal)."""
 
     class Meta:
@@ -122,10 +120,9 @@ class CategoryMinimalSerializer(serializers.ModelSerializer):
             "id",
             "name",
         ]
-        # read_only_fields = fields
 
 
-class FoodReadSerializer(serializers.ModelSerializer):
+class FoodReadSerializer(ReadOnlyFieldsMixin, serializers.ModelSerializer):
     """Serializer for Food model (List/retrieve)."""
 
     category = serializers.StringRelatedField()
@@ -146,7 +143,6 @@ class FoodReadSerializer(serializers.ModelSerializer):
             "created_at",
             "updated_at",
         ]
-        # read_only_fields = fields
 
     def to_representation(self, instance):
         data = super().to_representation(instance)
@@ -172,7 +168,7 @@ class FoodWriteSerializer(serializers.ModelSerializer):
         extra_kwargs = {"category": {"required": True}}
 
 
-class FoodMinimalSerializer(serializers.ModelSerializer):
+class FoodMinimalSerializer(ReadOnlyFieldsMixin, serializers.ModelSerializer):
     """Serializer for Food model (Minimal)."""
 
     class Meta:
@@ -181,4 +177,3 @@ class FoodMinimalSerializer(serializers.ModelSerializer):
             "id",
             "name",
         ]
-        # read_only_fields = fields

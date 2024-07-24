@@ -4,6 +4,8 @@ from django.contrib.auth import get_user_model
 from rest_framework import serializers
 from djoser.serializers import UserCreateSerializer
 
+from apps.utilities.mixins import ReadOnlyFieldsMixin
+
 User = get_user_model()
 
 
@@ -41,7 +43,7 @@ class UserWriteSerializer(UserCreateSerializer):
         ]
 
 
-class UserMinimalSerializer(UserCreateSerializer):
+class UserMinimalSerializer(ReadOnlyFieldsMixin, UserCreateSerializer):
     """Serializer for User model (Minimal)."""
 
     class Meta(UserCreateSerializer.Meta):
@@ -53,7 +55,7 @@ class UserMinimalSerializer(UserCreateSerializer):
         ]
 
 
-class UserHistorySerializer(serializers.ModelSerializer):
+class UserHistorySerializer(ReadOnlyFieldsMixin, serializers.ModelSerializer):
     """Serializer for User history."""
 
     class Meta:

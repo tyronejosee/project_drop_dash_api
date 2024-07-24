@@ -37,7 +37,7 @@ class CountryViewSet(ListCacheMixin, LogicalDeleteMixin, ModelViewSet):
     search_fields = ["name"]
 
     def get_queryset(self):
-        return Country.objects.get_available()
+        return Country.objects.get_available().defer("is_available")
 
     def get_serializer_class(self):
         if self.action == "list":

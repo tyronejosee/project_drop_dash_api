@@ -2,13 +2,14 @@
 
 from rest_framework import serializers
 
+from apps.utilities.mixins import ReadOnlyFieldsMixin
 from apps.utilities.functions import decrypt_field
 from apps.utilities.validators import validate_phone, validate_birth_date
 from .models import Driver, Resource
 from .choices import StatusChoices
 
 
-class DriverReadSerializer(serializers.ModelSerializer):
+class DriverReadSerializer(ReadOnlyFieldsMixin, serializers.ModelSerializer):
     """Serializer for Driver model (List/retrieve)"""
 
     user_id = serializers.UUIDField(read_only=True)
@@ -62,7 +63,7 @@ class DriverWriteSerializer(serializers.ModelSerializer):
         ]
 
 
-class ResourceReadSerializer(serializers.ModelSerializer):
+class ResourceReadSerializer(ReadOnlyFieldsMixin, serializers.ModelSerializer):
     """Serializer for Resource model (List/retrieve)."""
 
     class Meta:
