@@ -40,6 +40,8 @@ class PositionMinimalSerializer(ReadOnlyFieldsMixin, serializers.ModelSerializer
         fields = [
             "id",
             "position",
+            "created_at",
+            "updated_at",
         ]
 
 

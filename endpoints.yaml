@@ -1,11 +1,11 @@
 _type: export
 __export_format: 4
-__export_date: 2024-07-24T21:57:18.280Z
+__export_date: 2024-07-25T18:57:21.295Z
 __export_source: insomnia.desktop.app:v9.3.2
 resources:
   - _id: req_2516d47c5cff4cb196ac801b5fa9fa61
-    parentId: fld_a3911940a85e499f92be37b73ba1a6f9
-    modified: 1721858019947
+    parentId: fld_38ece4167bde4e9988c714e34fed757e
+    modified: 1721932840282
     created: 1721846033844
     url: "{{ _.BASE_URL }}{{ _.PREFIX }}positions/"
     name: Get positions
@@ -17,7 +17,7 @@ resources:
       - name: User-Agent
         value: insomnia/9.3.2
     authentication: {}
-    metaSortKey: -1721846033844
+    metaSortKey: -1721929389779
     isPrivate: false
     pathParameters: []
     settingStoreCookies: true
@@ -27,15 +27,15 @@ resources:
     settingRebuildPath: true
     settingFollowRedirects: global
     _type: request
-  - _id: fld_a3911940a85e499f92be37b73ba1a6f9
+  - _id: fld_38ece4167bde4e9988c714e34fed757e
     parentId: wrk_46cdcb8a09f8464398d845c87f23d5ef
-    modified: 1721846030356
-    created: 1721846030356
-    name: Positions
+    modified: 1721929380834
+    created: 1721929380834
+    name: Jobs
     description: ""
     environment: {}
     environmentPropertyOrder: null
-    metaSortKey: -1721846030356
+    metaSortKey: -1721929380834
     _type: request_group
   - _id: wrk_46cdcb8a09f8464398d845c87f23d5ef
     parentId: null
@@ -46,15 +46,45 @@ resources:
     scope: collection
     _type: workspace
   - _id: req_55ad7184bf814fe584d9807093c246e9
-    parentId: fld_a3911940a85e499f92be37b73ba1a6f9
-    modified: 1721851301394
+    parentId: fld_38ece4167bde4e9988c714e34fed757e
+    modified: 1721933805150
     created: 1721851048779
     url: "{{ _.BASE_URL }}{{ _.PREFIX }}workers/"
     name: Get workers
     description: ""
     method: GET
     body: {}
-    parameters: []
+    parameters:
+      - id: pair_77cbce7f80c240da8ca4c52a6afceb19
+        name: user
+        value: laglock
+        description: ""
+        disabled: true
+      - id: pair_1c86558ed4e9489ea5b78fd5a0d71ba5
+        name: city
+        value: providencia
+        description: ""
+        disabled: true
+      - id: pair_049f6a7740c44f29a7d05519a861a6ba
+        name: state
+        value: región metropolitana de santiago
+        description: ""
+        disabled: true
+      - id: pair_ccc0d4bc1462466299dc9af0b50fd365
+        name: country
+        value: chile
+        description: ""
+        disabled: true
+      - id: pair_d2ab709d707c42b8a5bb3648af43853d
+        name: position
+        value: hr specialist
+        description: ""
+        disabled: true
+      - id: pair_cd6570ef0d4c4833a1d94a8c50ba261d
+        name: contract_type
+        value: fixed_term
+        description: ""
+        disabled: true
     headers:
       - name: User-Agent
         value: insomnia/9.3.2
@@ -65,7 +95,7 @@ resources:
         description: ""
         disabled: false
     authentication: {}
-    metaSortKey: -1721799858752.5
+    metaSortKey: -1721929389729
     isPrivate: false
     pathParameters: []
     settingStoreCookies: true
@@ -109,6 +139,30 @@ resources:
     environmentPropertyOrder: null
     metaSortKey: -1721753668515
     _type: request_group
+  - _id: req_c650d51fede64a758fdb04dc366ee3b6
+    parentId: fld_8ecab593acec4771807c25143317b552
+    modified: 1721926531541
+    created: 1721926523410
+    url: "{{ _.BASE_URL }}{{ _.PREFIX }}company/"
+    name: Get company
+    description: ""
+    method: GET
+    body: {}
+    parameters: []
+    headers:
+      - name: User-Agent
+        value: insomnia/9.3.2
+    authentication: {}
+    metaSortKey: -1721753683711
+    isPrivate: false
+    pathParameters: []
+    settingStoreCookies: true
+    settingSendCookies: true
+    settingDisableRenderRequestBody: false
+    settingEncodeUrl: true
+    settingRebuildPath: true
+    settingFollowRedirects: global
+    _type: request
   - _id: req_df474a64ca82438395d6792fb188fe75
     parentId: fld_8ecab593acec4771807c25143317b552
     modified: 1721858042009

@@ -1,4 +1,4 @@
-"""Filters for Animes App."""
+"""Filters for Promotions App."""
 
 from django_filters import rest_framework as filters
 

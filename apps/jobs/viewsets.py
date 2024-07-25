@@ -17,6 +17,7 @@ from .serializers import (
     ApplicantWriteSerializer,
     ApplicantMinimalSerializer,
 )
+from .filters import WorkerFilter
 
 
 class PositionViewSet(ListCacheMixin, LogicalDeleteMixin, ModelViewSet):
@@ -35,9 +36,10 @@ class PositionViewSet(ListCacheMixin, LogicalDeleteMixin, ModelViewSet):
     permission_classes = [IsHumanResources]
     serializer_class = PositionWriteSerializer
     search_fields = ["position"]
-    # filterset_class = PositionFilter
 
     def get_queryset(self):
+        if self.action == "list":
+            return Position.objects.get_list()
         return Position.objects.get_available()
 
     def get_serializer_class(self):
@@ -69,7 +71,7 @@ class WorkerViewSet(ListCacheMixin, LogicalDeleteMixin, ModelViewSet):
     permission_classes = [IsHumanResources]
     serializer_class = WorkerWriteSerializer
     search_fields = ["user_id", "contract_type"]
-    # filterset_class = WorkerFilter
+    filterset_class = WorkerFilter
 
     def get_queryset(self):
         return Worker.objects.get_available()
