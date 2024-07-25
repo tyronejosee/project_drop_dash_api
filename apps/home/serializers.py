@@ -3,7 +3,26 @@
 from rest_framework.serializers import ModelSerializer
 
 from apps.utilities.mixins import ReadOnlyFieldsMixin
-from .models import Page, Keyword
+from .models import Company, Page, Keyword
+
+
+class CompanyReadSerializer(ReadOnlyFieldsMixin, ModelSerializer):
+    """Serializer for Company model (Retrieve)."""
+
+    class Meta:
+        model = Company
+        fields = [
+            "name",
+            "logo",
+            "description",
+            "rights",
+            "email",
+            "facebook",
+            "twitter",
+            "instagram",
+            "github",
+            "updated_at",
+        ]
 
 
 class PageReadSerializer(ReadOnlyFieldsMixin, ModelSerializer):
