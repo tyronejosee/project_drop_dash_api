@@ -1,15 +1,89 @@
 """Serializers for Orders App."""
 
-from rest_framework.serializers import ModelSerializer, SerializerMethodField
+from rest_framework import serializers
 
 from apps.utilities.mixins import ReadOnlyFieldsMixin
 from .models import Order, OrderItem
 
+# ! TODO: Add extra serializers
 
-class OrderItemReadSerializer(ReadOnlyFieldsMixin, ModelSerializer):
+
+class OrderReadSerializer(ReadOnlyFieldsMixin, serializers.ModelSerializer):
+    """Serializer for Order model (List/retrieve)."""
+
+    class Meta:
+        model = Order
+        fields = [
+            "id",
+            "user_id",
+            "shipping_name",
+            "shipping_phone",
+            "shipping_time",
+            "shipping_price",
+            "transaction",
+            "address_1",
+            "address_2",
+            "city_id",
+            "state_id",
+            "country_id",
+            "note",
+            "zip_code",
+            "restaurant_id",
+            "amount",
+            "status",
+            "payment_method",
+            "updated_at",
+            "created_at",
+        ]
+
+
+class OrderWriteSerializer(serializers.ModelSerializer):
+    """Serializer for Order model (Create/update)."""
+
+    class Meta:
+        model = Order
+        fields = [
+            "shipping_name",
+            "shipping_phone",
+            "shipping_time",
+            "shipping_price",
+            "address_1",
+            "address_2",
+            "city_id",
+            "state_id",
+            "country_id",
+            "note",
+            "zip_code",
+            "restaurant_id",
+            # "amount",
+            "status",
+            "payment_method",
+        ]
+
+
+class OrderMinimalSerializer(ReadOnlyFieldsMixin, serializers.ModelSerializer):
+    """Serializer for Order model (Minimal)."""
+
+    restaurant_id = serializers.StringRelatedField()
+
+    class Meta:
+        model = Order
+        fields = [
+            "id",
+            "shipping_name",
+            "transaction",
+            "restaurant_id",
+            "amount",
+            "status",
+            "updated_at",
+            "created_at",
+        ]
+
+
+class OrderItemReadSerializer(ReadOnlyFieldsMixin, serializers.ModelSerializer):
     """Serializer for OrderItem model (List/update)."""
 
-    food_id = SerializerMethodField()
+    food_id = serializers.SerializerMethodField()
 
     class Meta:
         model = OrderItem
@@ -22,32 +96,3 @@ class OrderItemReadSerializer(ReadOnlyFieldsMixin, ModelSerializer):
 
     def get_food_id(self, obj):
         return str(obj.food_id)
-
-
-class OrderReadSerializer(ReadOnlyFieldsMixin, ModelSerializer):
-    """Serializer for Order model (List/retrieve)."""
-
-    foods = OrderItemReadSerializer(source="orderitem_set", many=True)
-
-    class Meta:
-        model = Order
-        fields = [
-            "id",
-            "transaction",
-            "user_id",
-            "shipping_name",
-            "shipping_phone",
-            "shipping_time",
-            "shipping_price",
-            "address_1",
-            "address_2",
-            "city_id",
-            "state_id",
-            "country_id",
-            "note",
-            "zip_code",
-            "status",
-            "amount",
-            "payment_method",
-            "foods",
-        ]

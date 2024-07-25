@@ -37,7 +37,7 @@ class Order(BaseModel):
     note = models.TextField(blank=True)
     zip_code = models.CharField(max_length=20)
     restaurant_id = models.ForeignKey(Restaurant, on_delete=models.DO_NOTHING)
-    amount = models.DecimalField(max_digits=10, decimal_places=2)
+    amount = models.DecimalField(max_digits=10, decimal_places=2)  # TODO: Fix
     status = models.CharField(
         max_length=50,
         choices=OrderStatusChoices.choices,

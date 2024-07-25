@@ -2,9 +2,9 @@
 
 ## Orders [OK]
 
-- [ ] `GET /orders/` Obtener todas las ordenes (IsAdministrator)
-- [ ] `POST /orders/` Crear una nueva orden (IsClient)
-- [ ] `PATCH /orders/{id}` Actualizar una orden (IsClient)
+- [x] `GET /orders/` Obtener todas las ordenes (IsOperations)
+- [x] `POST /orders/` Crear una nueva orden (IsClient)
+- [x] `PATCH /orders/{id}` Actualizar una orden (IsClient)
 - [ ] `PATCH /orders/{id}/cancel` Cancelar una orden (IsClient)
 - [ ] `GET /orders/available` Obtener lista de pedidos disponibles para aceptar. (IsDriver)
 - [ ] `PATCH /orders/{id}/details` Obtener detalles de un pedido (ubicaciones de recogida y entrega) (IsDriver).
