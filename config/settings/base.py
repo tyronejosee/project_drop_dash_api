@@ -137,7 +137,6 @@ REST_FRAMEWORK = {
     "DEFAULT_PAGINATION_CLASS": "apps.utilities.pagination.LimitSetPagination",
     "DEFAULT_FILTER_BACKENDS": [
         "rest_framework.filters.SearchFilter",
-        "rest_framework.filters.OrderingFilter",
         "django_filters.rest_framework.DjangoFilterBackend",
     ],
     "DEFAULT_THROTTLE_RATES": {

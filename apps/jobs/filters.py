@@ -3,8 +3,8 @@
 from django_filters import rest_framework as filters
 
 from apps.utilities.filters import BaseFilter
-from .models import Worker
-from .choices import ContractTypeChoices
+from .models import Worker, Applicant
+from .choices import ContractTypeChoices, StatusChoices
 
 
 class WorkerFilter(BaseFilter):
@@ -33,7 +33,7 @@ class WorkerFilter(BaseFilter):
     position = filters.CharFilter(
         field_name="position_id__position",
         lookup_expr="icontains",
-        label="Filter by position (position), ex `/?position=Data Analyst`",
+        label="Filter by position (position name), ex `/?position=Data Analyst`",
     )
     contract_type = filters.ChoiceFilter(
         field_name="contract_type",
@@ -50,4 +50,42 @@ class WorkerFilter(BaseFilter):
             "country",
             "position",
             "contract_type",
+        ]
+
+
+class ApplicantFilter(BaseFilter):
+    """Filter for Applicant model."""
+
+    position = filters.CharFilter(
+        field_name="position_id__position",
+        lookup_expr="icontains",
+        label="Filter by position (position name), ex `/?position=Data Analyst`",
+    )
+    submitted_at = filters.DateTimeFilter(
+        field_name="submitted_at",
+        lookup_expr="exact",
+        label="Filter by submission date (exact match), ex `/?submitted_at=2024-01-01T22:30:00`",
+    )
+    submitted_at__gte = filters.DateTimeFilter(
+        field_name="submitted_at",
+        lookup_expr="gte",
+        label="Filter by submission date (greater than or equal), ex `/?submitted_at__gte=2024-01-01`",
+    )
+    submitted_at__lte = filters.DateTimeFilter(
+        field_name="submitted_at",
+        lookup_expr="lte",
+        label="Filter by submission date (less than or equal), ex `/?submitted_at__lte=2024-01-01`",
+    )
+    status = filters.ChoiceFilter(
+        field_name="status",
+        choices=StatusChoices.choices,
+        label="Filter by status, ex `/?status=accepted`",
+    )
+
+    class Meta:
+        model = Applicant
+        fields = [
+            "position",
+            "submitted_at",
+            "status",
         ]

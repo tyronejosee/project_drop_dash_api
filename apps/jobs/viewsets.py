@@ -17,7 +17,7 @@ from .serializers import (
     ApplicantWriteSerializer,
     ApplicantMinimalSerializer,
 )
-from .filters import WorkerFilter
+from .filters import WorkerFilter, ApplicantFilter
 
 
 class PositionViewSet(ListCacheMixin, LogicalDeleteMixin, ModelViewSet):
@@ -100,7 +100,7 @@ class ApplicantViewSet(ListCacheMixin, LogicalDeleteMixin, ModelViewSet):
     permission_classes = [IsHumanResources]
     serializer_class = ApplicantWriteSerializer
     search_fields = ["user_id", "contract_type"]
-    # filterset_class = ApplicantFilter
+    filterset_class = ApplicantFilter
 
     def get_queryset(self):
         return Applicant.objects.get_available()
