@@ -35,10 +35,13 @@ def validate_birth_date(value):
         )
 
 
+# ! TODO: Refactor to class-based validator
+
+
 def validate_food_image(image):
     """Validate that the uploaded image for a food item meets the required dimensions."""
-    max_width = 500
-    max_height = 500
+    max_width = 600
+    max_height = 600
     img = Image.open(image)
     width, height = img.size
 

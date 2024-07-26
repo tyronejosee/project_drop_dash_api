@@ -10,6 +10,7 @@ from apps.restaurants.models import Restaurant
 from apps.restaurants.models import Food
 from apps.locations.models import Country, State, City
 from apps.payments.choices import PaymentMethodChoices
+from .services import OrderService, OrderItemService
 from .managers import OrderManager, OrderItemManager
 from .choices import OrderStatusChoices
 
@@ -37,7 +38,11 @@ class Order(BaseModel):
     note = models.TextField(blank=True)
     zip_code = models.CharField(max_length=20)
     restaurant_id = models.ForeignKey(Restaurant, on_delete=models.DO_NOTHING)
-    amount = models.DecimalField(max_digits=10, decimal_places=2)  # TODO: Fix
+    amount = models.DecimalField(
+        max_digits=10,
+        decimal_places=2,
+        blank=True,
+    )  # TODO: Add service method for subtotal orderitem
     status = models.CharField(
         max_length=50,
         choices=OrderStatusChoices.choices,
@@ -46,7 +51,6 @@ class Order(BaseModel):
     payment_method = models.CharField(
         max_length=15,
         choices=PaymentMethodChoices.choices,
-        default=PaymentMethodChoices.BANK_TRANSFER,
     )
 
     objects = OrderManager()
@@ -61,13 +65,8 @@ class Order(BaseModel):
         return str(f"{self.shipping_name} - {self.transaction}")
 
     def save(self, *args, **kwargs):
-        self.set_transaction()
+        OrderService.set_transaction(self)
         super().save(*args, **kwargs)
-
-    def set_transaction(self):
-        """Set the transaction ID based on Order IDs."""
-        # if not self.transaction:
-        self.transaction = f"trans-{self.pk}"
 
 
 class OrderItem(BaseModel):
@@ -101,18 +100,6 @@ class OrderItem(BaseModel):
         return f"{self.order_id} - {self.food_id}"
 
     def save(self, *args, **kwargs):
-        # Apply methods on save
-        self.set_price()
-        self.calculate_subtotal()
+        OrderItemService.set_price(self)
+        OrderItemService.set_subtotal(self)
         super(OrderItem, self).save(*args, **kwargs)
-
-    def set_price(self):
-        """Set the price based on the Food's sale price or regular price."""
-        if self.food_id.sale_price:
-            self.price = self.food_id.sale_price
-        else:
-            self.price = self.food_id.price
-
-    def calculate_subtotal(self):
-        """Calculate the subtotal for the OrderItem."""
-        self.subtotal = self.price * self.quantity

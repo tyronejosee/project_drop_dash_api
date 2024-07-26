@@ -4,8 +4,12 @@ from rest_framework import serializers
 
 from apps.utilities.mixins import ReadOnlyFieldsMixin
 from apps.users.serializers import UserMinimalSerializer
-from apps.restaurants.serializers import RestaurantMinimalSerializer
+from apps.restaurants.serializers import (
+    RestaurantMinimalSerializer,
+    FoodMinimalSerializer,
+)
 from .models import Order, OrderItem
+from .services import OrderItemService
 
 
 class OrderReadSerializer(ReadOnlyFieldsMixin, serializers.ModelSerializer):
@@ -89,19 +93,21 @@ class OrderMinimalSerializer(ReadOnlyFieldsMixin, serializers.ModelSerializer):
         ]
 
 
-# >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
-
-
 class OrderItemReadSerializer(ReadOnlyFieldsMixin, serializers.ModelSerializer):
     """Serializer for OrderItem model (List/update)."""
+
+    food_id = FoodMinimalSerializer()
 
     class Meta:
         model = OrderItem
         fields = [
+            "id",
             "food_id",
             "quantity",
             "price",
             "subtotal",
+            "updated_at",
+            "created_at",
         ]
 
 
@@ -113,6 +119,7 @@ class OrderItemWriteSerializer(serializers.ModelSerializer):
         fields = [
             "food_id",
             "quantity",
-            "price",
-            "subtotal",
         ]
+
+    def validate_quantity(self, value):
+        return OrderItemService.validate_quantity(value)

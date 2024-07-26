@@ -63,14 +63,16 @@ class OrderItemViewSet(ModelViewSet):
     - DELETE /api/v1/orders/{id}/items/{pk}/
     """
 
-    permission_classes = [IsClient, IsOwner]
+    permission_classes = [IsClient]
     serializer_class = OrderItemWriteSerializer
     search_fields = ["food_id"]
     pagination_class = None
     # filterset_class = OrderItemFilter
 
     def get_queryset(self):
-        return OrderItem.objects.filter(order_id=self.kwargs["order_pk"])
+        return OrderItem.objects.filter(
+            order_id=self.kwargs["order_pk"]
+        ).select_related("order_id", "food_id")
 
     def get_serializer_class(self):
         if self.action in ["list", "retrieve"]:
