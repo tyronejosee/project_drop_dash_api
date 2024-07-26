@@ -75,6 +75,7 @@ class OrderItem(BaseModel):
 
     order_id = models.ForeignKey(Order, on_delete=models.CASCADE)
     food_id = models.ForeignKey(Food, on_delete=models.DO_NOTHING)
+    quantity = models.IntegerField()
     price = models.DecimalField(
         max_digits=10,
         decimal_places=2,
@@ -88,7 +89,6 @@ class OrderItem(BaseModel):
         editable=False,
         default=0,
     )
-    quantity = models.IntegerField()
 
     objects = OrderItemManager()
 
@@ -98,7 +98,7 @@ class OrderItem(BaseModel):
         verbose_name_plural = "order items"
 
     def __str__(self):
-        return f"{self.order} - {self.food}"
+        return f"{self.order_id} - {self.food_id}"
 
     def save(self, *args, **kwargs):
         # Apply methods on save
@@ -108,10 +108,10 @@ class OrderItem(BaseModel):
 
     def set_price(self):
         """Set the price based on the Food's sale price or regular price."""
-        if self.food.sale_price:
-            self.price = self.food.sale_price
+        if self.food_id.sale_price:
+            self.price = self.food_id.sale_price
         else:
-            self.price = self.food.price
+            self.price = self.food_id.price
 
     def calculate_subtotal(self):
         """Calculate the subtotal for the OrderItem."""

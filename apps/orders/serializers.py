@@ -89,10 +89,11 @@ class OrderMinimalSerializer(ReadOnlyFieldsMixin, serializers.ModelSerializer):
         ]
 
 
+# >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+
+
 class OrderItemReadSerializer(ReadOnlyFieldsMixin, serializers.ModelSerializer):
     """Serializer for OrderItem model (List/update)."""
-
-    food_id = serializers.SerializerMethodField()
 
     class Meta:
         model = OrderItem
@@ -103,5 +104,15 @@ class OrderItemReadSerializer(ReadOnlyFieldsMixin, serializers.ModelSerializer):
             "subtotal",
         ]
 
-    def get_food_id(self, obj):
-        return str(obj.food_id)
+
+class OrderItemWriteSerializer(serializers.ModelSerializer):
+    """Serializer for OrderItem model (Create/update)."""
+
+    class Meta:
+        model = OrderItem
+        fields = [
+            "food_id",
+            "quantity",
+            "price",
+            "subtotal",
+        ]

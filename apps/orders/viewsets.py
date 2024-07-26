@@ -1,14 +1,17 @@
 """ViewSets for Orders App."""
 
+from django.shortcuts import get_object_or_404
 from rest_framework.viewsets import ModelViewSet
 
 from apps.users.permissions import IsOwner, IsClient
 from apps.utilities.mixins import ListCacheMixin, LogicalDeleteMixin
-from .models import Order
+from .models import Order, OrderItem
 from .serializers import (
     OrderReadSerializer,
     OrderWriteSerializer,
     OrderMinimalSerializer,
+    OrderItemReadSerializer,
+    OrderItemWriteSerializer,
 )
 
 
@@ -45,3 +48,35 @@ class OrderViewSet(ListCacheMixin, LogicalDeleteMixin, ModelViewSet):
 
     def perform_create(self, serializer):
         serializer.save(user_id=self.request.user)
+
+
+class OrderItemViewSet(ModelViewSet):
+    """
+    ViewSet for managing OrderItem instances.
+
+    Endpoints:
+    - GET /api/v1/orders/{id}/items/
+    - POST /api/v1/orders/{id}/items/
+    - GET /api/v1/orders/{id}/items/{pk}/
+    - PUT /api/v1/orders/{id}/items/{pk}/
+    - PATCH /api/v1/orders/{id}/items/{pk}/
+    - DELETE /api/v1/orders/{id}/items/{pk}/
+    """
+
+    permission_classes = [IsClient, IsOwner]
+    serializer_class = OrderItemWriteSerializer
+    search_fields = ["food_id"]
+    pagination_class = None
+    # filterset_class = OrderItemFilter
+
+    def get_queryset(self):
+        return OrderItem.objects.filter(order_id=self.kwargs["order_pk"])
+
+    def get_serializer_class(self):
+        if self.action in ["list", "retrieve"]:
+            return OrderItemReadSerializer
+        return super().get_serializer_class()
+
+    def perform_create(self, serializer):
+        order = get_object_or_404(Order, user_id=self.request.user)
+        serializer.save(order_id=order)
