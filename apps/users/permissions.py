@@ -5,6 +5,13 @@ from rest_framework.permissions import BasePermission
 from .choices import RoleChoices
 
 
+class IsOwner(BasePermission):
+    """Allows access only allow owners of an object to access it."""
+
+    def has_object_permission(self, request, view, obj):
+        return bool(obj.user_id == request.user)
+
+
 class BaseRolePermission(BasePermission):
     """
     Base permission class that checks if a user has a specific role.

@@ -3,13 +3,21 @@
 from rest_framework import serializers
 
 from apps.utilities.mixins import ReadOnlyFieldsMixin
+from apps.users.serializers import UserMinimalSerializer
+from apps.restaurants.serializers import RestaurantMinimalSerializer
 from .models import Order, OrderItem
-
-# ! TODO: Add extra serializers
 
 
 class OrderReadSerializer(ReadOnlyFieldsMixin, serializers.ModelSerializer):
     """Serializer for Order model (List/retrieve)."""
+
+    user_id = UserMinimalSerializer()
+    city_id = serializers.StringRelatedField()
+    state_id = serializers.StringRelatedField()
+    country_id = serializers.StringRelatedField()
+    restaurant_id = RestaurantMinimalSerializer()
+    status = serializers.CharField(source="get_status_display")
+    payment_method = serializers.CharField(source="get_payment_method_display")
 
     class Meta:
         model = Order
@@ -56,7 +64,7 @@ class OrderWriteSerializer(serializers.ModelSerializer):
             "zip_code",
             "restaurant_id",
             # "amount",
-            "status",
+            # "status",
             "payment_method",
         ]
 
@@ -65,6 +73,7 @@ class OrderMinimalSerializer(ReadOnlyFieldsMixin, serializers.ModelSerializer):
     """Serializer for Order model (Minimal)."""
 
     restaurant_id = serializers.StringRelatedField()
+    status = serializers.CharField(source="get_status_display")
 
     class Meta:
         model = Order

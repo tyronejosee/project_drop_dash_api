@@ -12,6 +12,8 @@ User = get_user_model()
 class UserReadSerializer:
     """Serializer for User model."""
 
+    role = serializers.CharField(source="get_role_display")
+
     class Meta(UserCreateSerializer.Meta):
         model = User
         fields = [
@@ -45,6 +47,8 @@ class UserWriteSerializer(UserCreateSerializer):
 
 class UserMinimalSerializer(ReadOnlyFieldsMixin, UserCreateSerializer):
     """Serializer for User model (Minimal)."""
+
+    role = serializers.CharField(source="get_role_display")
 
     class Meta(UserCreateSerializer.Meta):
         model = User

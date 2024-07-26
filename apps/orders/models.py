@@ -61,7 +61,6 @@ class Order(BaseModel):
         return str(f"{self.shipping_name} - {self.transaction}")
 
     def save(self, *args, **kwargs):
-        # Apply methods on save
         self.set_transaction()
         super().save(*args, **kwargs)
 
