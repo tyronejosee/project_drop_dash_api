@@ -13,6 +13,7 @@ from rest_framework import status
 from apps.users.permissions import IsMarketing, IsClient
 from apps.utilities.mixins import ListCacheMixin, LogicalDeleteMixin
 from .models import Post, PostReport, Tag
+from .services import PostService
 from .serializers import (
     PostReadSerializer,
     PostWriteSerializer,
@@ -21,7 +22,6 @@ from .serializers import (
     TagReadSerializer,
     TagWriteSerializer,
 )
-from .choices import PriorityChoices
 
 
 class PostViewSet(ListCacheMixin, LogicalDeleteMixin, ModelViewSet):
@@ -75,31 +75,15 @@ class PostViewSet(ListCacheMixin, LogicalDeleteMixin, ModelViewSet):
         post = self.get_object()
         serializer = PostReportWriteSerializer(data=request.data)
         if serializer.is_valid():
-            if PostReport.objects.filter(post_id=post, user_id=request.user).exists():
-                return Response(
-                    {"detail": "You have already reported this post."},
-                    status=status.HTTP_400_BAD_REQUEST,
-                )
+            try:
+                PostService.validate_report(post, request.user)
+            except Exception as e:
+                return Response({"detail": str(e)}, status=status.HTTP_400_BAD_REQUEST)
 
-            # ! TODO: Move logic to the service layer
             with transaction.atomic():
-                # Update points of the post
-                post.points = post.points - 1
-                if post.points <= 5:
-                    post.is_available = False
-                post.save()
+                PostService.update_post_points(post)
+                PostService.create_report(serializer, post, request.user)
 
-                # Determine priority for the new report
-                if post.points <= 25:
-                    priority = PriorityChoices.URGENT
-                elif post.points <= 50:
-                    priority = PriorityChoices.HIGH
-                elif post.points <= 75:
-                    priority = PriorityChoices.MEDIUM
-                else:
-                    priority = PriorityChoices.LOW
-
-                serializer.save(user_id=request.user, post_id=post, priority=priority)
             return Response(
                 {"detail": "Your report has been submitted successfully."},
                 status=status.HTTP_201_CREATED,
@@ -114,7 +98,7 @@ class PostViewSet(ListCacheMixin, LogicalDeleteMixin, ModelViewSet):
     )
     @method_decorator(cache_page(60 * 60 * 2))
     @method_decorator(vary_on_headers("User-Agent"))
-    def get_reports(self, request, *args, **kwargs):
+    def reports(self, request, *args, **kwargs):
         """
         Action retrieve a list of all post reports.
 
@@ -138,7 +122,7 @@ class PostViewSet(ListCacheMixin, LogicalDeleteMixin, ModelViewSet):
     )
     @method_decorator(cache_page(60 * 60 * 2))
     @method_decorator(vary_on_headers("User-Agent"))
-    def get_featured_posts(self, request, *args, **kwargs):
+    def featured_posts(self, request, *args, **kwargs):
         """
         Action retrieve all featured posts.
 
@@ -162,7 +146,7 @@ class PostViewSet(ListCacheMixin, LogicalDeleteMixin, ModelViewSet):
     )
     @method_decorator(cache_page(60 * 60 * 2))
     @method_decorator(vary_on_headers("User-Agent"))
-    def get_recent_posts(self, request, *args, **kwargs):
+    def recent_posts(self, request, *args, **kwargs):
         """
         Action retrieve all recent posts (7 days).
 
@@ -186,7 +170,7 @@ class PostViewSet(ListCacheMixin, LogicalDeleteMixin, ModelViewSet):
     )
     @method_decorator(cache_page(60 * 60 * 2))
     @method_decorator(vary_on_headers("User-Agent"))
-    def get_tags(self, request, *args, **kwargs):
+    def tags(self, request, *args, **kwargs):
         """
         Action retrieve all tags.
 

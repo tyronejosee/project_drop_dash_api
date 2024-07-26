@@ -23,7 +23,7 @@ class PostManager(BaseManager):
         seven_days_ago = timezone.now() - timedelta(days=7)
         return self.get_available().filter(created_at__gte=seven_days_ago)[:25]
 
-    def get_search(self, search_term):
+    def search_by_term(self, search_term):
         """Filter promotions based on a search term."""
         return self.get_available().filter(
             Q(title__icontains=search_term)

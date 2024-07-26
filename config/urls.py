@@ -44,7 +44,6 @@ urlpatterns = [
     # path("", include("apps.orders.urls")),
     # path("", include("apps.restaurants.urls")),
     # path("", include("apps.promotions.urls")),
-    # path("", include("apps.blogs.urls")),
 ]
 
 
