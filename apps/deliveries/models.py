@@ -1,6 +1,7 @@
 """Models for Deliveries App."""
 
 from django.db import models
+from django.contrib.auth import get_user_model
 from simple_history.models import HistoricalRecords
 
 from apps.utilities.models import BaseModel
@@ -9,6 +10,8 @@ from apps.orders.models import Order
 from apps.drivers.models import Driver
 from .managers import DeliveryManager
 from .choices import StatusChoices
+
+User = get_user_model()
 
 
 class Delivery(BaseModel):
@@ -43,18 +46,18 @@ class Delivery(BaseModel):
         verbose_name = "delivery"
         verbose_name_plural = "deliveries"
         indexes = [
-            models.Index(fields=["order"]),
-            models.Index(fields=["driver"]),
+            models.Index(fields=["order_id"]),
+            models.Index(fields=["driver_id"]),
             models.Index(fields=["status"]),
             # Composite indexes
-            models.Index(fields=["order", "status"]),
+            models.Index(fields=["order_id", "status"]),
         ]
         constraints = [
-            models.UniqueConstraint(fields=["order"], name="unique_order_delivery"),
+            models.UniqueConstraint(fields=["order_id"], name="unique_order_delivery"),
         ]
 
     def __str__(self):
-        return f"Delivery for Order {self.order.id} - {self.status}"
+        return f"Delivery for {self.order.id} - {self.status}"
 
     def save(self, *args, **kwargs):
         if self.status == StatusChoices.DELIVERED:

@@ -10,3 +10,11 @@ class OrderStatusChoices(models.TextChoices):
     SHIPPING = "shipping", "Shipping"
     DELIVERED = "delivered", "Delivered"
     CANCELLED = "cancelled", "Cancelled"
+
+
+class ReportStatusChoices(models.TextChoices):
+
+    PENDING = "pending", "Pending"
+    RESOLVED = "resolved", "Resolved"
+    REJECTED = "rejected", "Rejected"
+    CLOSED = "closed", "Closed"

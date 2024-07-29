@@ -12,7 +12,7 @@ from apps.locations.models import Country, State, City
 from apps.payments.choices import PaymentMethodChoices
 from .services import OrderService, OrderItemService
 from .managers import OrderManager, OrderItemManager
-from .choices import OrderStatusChoices
+from .choices import OrderStatusChoices, ReportStatusChoices
 
 User = get_user_model()
 
@@ -104,3 +104,79 @@ class OrderItem(BaseModel):
         OrderItemService.set_price(self)
         OrderItemService.set_subtotal(self)
         super(OrderItem, self).save(*args, **kwargs)
+
+
+class OrderRating(BaseModel):
+    """Model definition for OrderRating."""
+
+    order_id = models.ForeignKey(
+        Order,
+        on_delete=models.CASCADE,
+    )
+    user_id = models.ForeignKey(
+        User,
+        on_delete=models.CASCADE,
+        related_name="order_ratings",
+    )
+    rating = models.PositiveIntegerField(
+        choices=[(i, str(i)) for i in range(1, 6)],
+    )
+    comment = models.TextField(blank=True)
+
+    class Meta:
+        verbose_name = "order rating"
+        verbose_name_plural = "order ratings"
+        constraints = [
+            models.UniqueConstraint(
+                fields=["order_id", "user_id"],
+                name="unique_order_user_rating",
+            ),
+        ]
+
+    def __str__(self):
+        return f"Rating for Order {self.order.id} by User {self.user.id}: {self.rating}"
+
+
+class OrderReport(BaseModel):
+    """Model definition for OrderReport."""
+
+    order_id = models.ForeignKey(
+        Order,
+        on_delete=models.CASCADE,
+    )
+    user_id = models.ForeignKey(
+        User,
+        on_delete=models.CASCADE,
+        related_name="order_reports",
+    )
+    reason = models.CharField(
+        max_length=50,
+        help_text="Short description of the reason for reporting",
+    )
+    description = models.TextField(
+        blank=True,
+        help_text="Detailed description of the issue",
+    )
+    status = models.CharField(
+        max_length=20,
+        choices=ReportStatusChoices.choices,
+        default=ReportStatusChoices.PENDING,
+    )
+    is_resolved = models.BooleanField(default=False)
+
+    class Meta:
+        ordering = ["-created_at"]
+        verbose_name = "order report"
+        verbose_name_plural = "order reports"
+        indexes = [
+            models.Index(fields=["is_resolved"]),
+        ]
+        constraints = [
+            models.UniqueConstraint(
+                fields=["order_id", "user_id"],
+                name="unique_order_user_report",
+            ),
+        ]
+
+    def __str__(self):
+        return f"Report {self.order_id} by User {self.user_is}: {self.reason}"
