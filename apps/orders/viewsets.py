@@ -2,6 +2,7 @@
 
 import random
 from django.shortcuts import get_object_or_404
+from django.utils import timezone
 from rest_framework.viewsets import ModelViewSet
 from rest_framework.decorators import action
 from rest_framework.response import Response
@@ -12,6 +13,7 @@ from apps.utilities.mixins import ListCacheMixin, LogicalDeleteMixin
 from apps.drivers.models import Driver, DriverAssignment
 from apps.drivers.choices import AssignmentStatusChoices
 from apps.deliveries.models import Delivery
+from apps.deliveries.choices import StatusChoices
 from .models import Order, OrderItem, OrderReport
 from .serializers import (
     OrderReadSerializer,
@@ -89,7 +91,7 @@ class OrderViewSet(ListCacheMixin, LogicalDeleteMixin, ModelViewSet):
 
     @action(
         detail=True,
-        methods=["POST"],
+        methods=["patch"],
         permission_classes=[IsDispatcher],
         url_path="asign_driver",
     )
@@ -123,7 +125,7 @@ class OrderViewSet(ListCacheMixin, LogicalDeleteMixin, ModelViewSet):
     @action(
         detail=True,
         permission_classes=[IsDriver],
-        methods=["POST"],
+        methods=["patch"],
         url_path="accept",
     )
     def accept_order(self, request, *args, **kwargs):
@@ -147,7 +149,11 @@ class OrderViewSet(ListCacheMixin, LogicalDeleteMixin, ModelViewSet):
             assignment.save()
 
             # Create delivery entries
-            Delivery.objects.create(order_id=order, driver_id=driver)
+            Delivery.objects.create(
+                order_id=order,
+                driver_id=driver,
+                status=StatusChoices.ASSIGNED,
+            )
 
             return Response(
                 {"detail": f"The order {order} was accepted."},
@@ -197,6 +203,45 @@ class OrderViewSet(ListCacheMixin, LogicalDeleteMixin, ModelViewSet):
                 {"detail": f"{e}"},
                 status=status.HTTP_500_INTERNAL_SERVER_ERROR,
             )
+
+    @action(
+        detail=True,
+        methods=["patch"],
+        permission_classes=[IsDriver],
+        url_path="picked_up",
+    )
+    def picked_up_order(self, request, *args, **kwargs):
+        """
+        Action to mark a delivery status to pickup.
+
+        Endpoints:
+        - PATCH api/v1/orders/{id}/picked_up/
+        """
+        order = self.get_object()
+        driver = request.user.driver
+
+        delivery = Delivery.objects.get(
+            order_id=order,
+            driver_id=driver,
+        )
+        # ! TODO: Add service layer
+        if delivery.status == StatusChoices.ASSIGNED:
+            delivery.status = StatusChoices.PICKED_UP
+            delivery.picked_up_at = timezone.now()
+            delivery.save()
+            return Response(
+                {"detail": "Delivery status was changed to 'Picked Up'."},
+                status=status.HTTP_200_OK,
+            )
+        elif delivery.status == StatusChoices.PICKED_UP:
+            return Response(
+                {"detail": "Delivery has already been marked as 'Picked Up'."},
+                status=status.HTTP_409_CONFLICT,
+            )
+        return Response(
+            {"detail": "Delivery with status pending cannot be marked."},
+            status=status.HTTP_400_BAD_REQUEST,
+        )
 
 
 class OrderItemViewSet(ModelViewSet):
