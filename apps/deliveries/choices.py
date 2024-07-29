@@ -5,6 +5,8 @@ from django.db.models import TextChoices
 
 class StatusChoices(TextChoices):
 
-    IN_PROGRESS = "progress", "In Progress"
-    COMPLETED = "completed", "Completed"
-    CANCELLED = "cancelled", "Cancelled"
+    PENDING = "pending", "Pending"
+    ASSIGNED = "assigned", "Assigned"
+    PICKED_UP = "picked_up", "Picked Up"
+    DELIVERED = "delivered", "Delivered"
+    FAILED = "failed", "Failed"

@@ -1,37 +1,62 @@
 """Models for Deliveries App."""
 
-# from django.db import models
-# from django.contrib.auth import get_user_model
+from django.db import models
+from simple_history.models import HistoricalRecords
 
-# from apps.orders.models import Order
-# from .choices import StatusChoices
+from apps.utilities.models import BaseModel
+from apps.utilities.paths import signature_path
+from apps.orders.models import Order
+from apps.drivers.models import Driver
+from .managers import DeliveryManager
+from .choices import StatusChoices
 
-# User = get_user_model()
 
+class Delivery(BaseModel):
+    """Model definition for Delivery."""
 
-# class Delivery(models.Model):
-#     """Model definition for Delivery."""
+    order_id = models.OneToOneField(Order, on_delete=models.CASCADE)
+    driver_id = models.ForeignKey(
+        Driver,
+        on_delete=models.SET_NULL,
+        blank=True,
+        null=True,
+        related_name="deliveries",
+    )
+    signature = models.ImageField(
+        upload_to=signature_path,
+        blank=True,
+    )
+    status = models.CharField(
+        max_length=20,
+        choices=StatusChoices.choices,
+        default=StatusChoices.PENDING,
+    )
+    picked_up_at = models.DateTimeField(blank=True)
+    delivered_at = models.DateTimeField(blank=True)
+    is_completed = models.BooleanField(default=False)
 
-#     order_id = models.OneToOneField(Order, on_delete=models.CASCADE)
-#     driver_id = models.ForeignKey(
-#         User,
-#         on_delete=models.SET_NULL,
-#         null=True,
-#         blank=True,
-#         related_name="deliveries",
-#     )
-#     delivery_date = models.DateTimeField()
-#     pickup_address = models.CharField(max_length=255)
-#     delivery_address = models.CharField(max_length=255)
-#     contact_phone = models.CharField(max_length=15)
-#     special_instructions = models.TextField(blank=True)
-#     delivery_type = models.CharField(max_length=50)
-#     delivery_cost = models.DecimalField(max_digits=10, decimal_places=2)
-#     order_id = models.ForeignKey("Order", on_delete=models.CASCADE)
-#     estimated_delivery_time = models.DateTimeField()
-#     payment_status = models.BooleanField(default=False)
-#     signature = models.ImageField(upload_to="deliveries/signatures/", blank=True)
-#     internal_notes = models.TextField(blank=True)
-#     status = models.CharField(
-#         max_length=20, choices=StatusChoices.choices, default=StatusChoices.IN_PROGRESS
-#     )
+    objects = DeliveryManager()
+    history = HistoricalRecords()
+
+    class Meta:
+        ordering = ["pk"]
+        verbose_name = "delivery"
+        verbose_name_plural = "deliveries"
+        indexes = [
+            models.Index(fields=["order"]),
+            models.Index(fields=["driver"]),
+            models.Index(fields=["status"]),
+            # Composite indexes
+            models.Index(fields=["order", "status"]),
+        ]
+        constraints = [
+            models.UniqueConstraint(fields=["order"], name="unique_order_delivery"),
+        ]
+
+    def __str__(self):
+        return f"Delivery for Order {self.order.id} - {self.status}"
+
+    def save(self, *args, **kwargs):
+        if self.status == StatusChoices.DELIVERED:
+            self.is_completed = True
+        super().save(*args, **kwargs)

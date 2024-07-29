@@ -52,6 +52,7 @@ class Order(BaseModel):
         max_length=15,
         choices=PaymentMethodChoices.choices,
     )
+    is_payment = models.BooleanField(default=False)
 
     objects = OrderManager()
     history = HistoricalRecords()

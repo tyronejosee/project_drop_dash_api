@@ -1,5 +1,7 @@
 """Paths for Utilities App."""
 
+import os
+from django.utils import timezone
 from django.utils.text import slugify
 
 
@@ -38,3 +40,13 @@ def docs_path(instance, filename):
     filename = f"{name_slug}.{extension}"
 
     return f"{appname}/{modelname}/{username}/{filename}"
+
+
+def signature_path(instance, filename):
+    """Generate the upload path for the signature."""
+    timestamp = timezone.now().strftime("%Y%m%d_%H%M%S")
+    return os.path.join(
+        "deliveries",
+        "signatures",
+        f"order_{instance.order_id.id}_driver_{instance.driver_id.id}_{timestamp}",
+    )
