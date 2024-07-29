@@ -34,8 +34,8 @@ class Delivery(BaseModel):
         choices=StatusChoices.choices,
         default=StatusChoices.PENDING,
     )
-    picked_up_at = models.DateTimeField(blank=True)
-    delivered_at = models.DateTimeField(blank=True)
+    picked_up_at = models.DateTimeField(blank=True, null=True)
+    delivered_at = models.DateTimeField(blank=True, null=True)
     is_completed = models.BooleanField(default=False)
 
     objects = DeliveryManager()
@@ -57,7 +57,7 @@ class Delivery(BaseModel):
         ]
 
     def __str__(self):
-        return f"Delivery for {self.order.id} - {self.status}"
+        return f"Delivery for {self.order_id} - {self.status}"
 
     def save(self, *args, **kwargs):
         if self.status == StatusChoices.DELIVERED:

@@ -8,7 +8,7 @@ from apps.restaurants.serializers import (
     RestaurantMinimalSerializer,
     FoodMinimalSerializer,
 )
-from .models import Order, OrderItem
+from .models import Order, OrderItem, OrderReport
 from .services import OrderItemService
 
 
@@ -123,3 +123,14 @@ class OrderItemWriteSerializer(serializers.ModelSerializer):
 
     def validate_quantity(self, value):
         return OrderItemService.validate_quantity(value)
+
+
+class OrderReportWriteSerializer(serializers.ModelSerializer):
+    """Serializer for OrderReport model (Create/update)."""
+
+    class Meta:
+        model = OrderReport
+        fields = [
+            "reason",
+            "description",
+        ]

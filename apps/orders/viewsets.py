@@ -2,16 +2,22 @@
 
 from django.shortcuts import get_object_or_404
 from rest_framework.viewsets import ModelViewSet
+from rest_framework.decorators import action
+from rest_framework.response import Response
+from rest_framework import status
 
-from apps.users.permissions import IsOwner, IsClient
+from apps.users.permissions import IsOwner, IsClient, IsDriver
 from apps.utilities.mixins import ListCacheMixin, LogicalDeleteMixin
-from .models import Order, OrderItem
+from apps.deliveries.models import Delivery
+from apps.deliveries.choices import StatusChoices
+from .models import Order, OrderItem, OrderReport
 from .serializers import (
     OrderReadSerializer,
     OrderWriteSerializer,
     OrderMinimalSerializer,
     OrderItemReadSerializer,
     OrderItemWriteSerializer,
+    OrderReportWriteSerializer,
 )
 
 
@@ -48,6 +54,65 @@ class OrderViewSet(ListCacheMixin, LogicalDeleteMixin, ModelViewSet):
 
     def perform_create(self, serializer):
         serializer.save(user_id=self.request.user)
+
+    @action(
+        detail=True,
+        methods=["post"],
+        permission_classes=[IsClient],
+        url_path="report",
+    )
+    def report_order(self, request, *args, **kwargs):
+        """
+        Action report a specific order by ID.
+
+        Endpoints:
+        - GET api/v1/orders/{id}/report/
+        """
+        order = self.get_object()
+        serializer = OrderReportWriteSerializer(data=request.data)
+        if serializer.is_valid():
+            if OrderReport.objects.filter(
+                order_id=order, user_id=request.user
+            ).exists():
+                return Response(
+                    {"detail": "You have already reported this order."},
+                    status=status.HTTP_409_CONFLICT,
+                )
+            serializer.save(order_id=order, user_id=request.user)
+            return Response(
+                {"detail": "Your report has been submitted successfully."},
+                status=status.HTTP_201_CREATED,
+            )
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    @action(
+        detail=True,
+        methods=["patch"],
+        permission_classes=[IsDriver],
+        url_path="reject",
+    )
+    def reject_order(self, request, pk=None):
+        """
+        Action to mark a specific order report as rejected.
+        TODO: Concept tests, temporal
+
+        Endpoints:
+        - PATCH api/v1/orders/{id}/reject/
+        """
+        order = self.get_object()
+        delivery = Delivery.objects.get(order_id=order)
+
+        if delivery:
+            delivery.status = StatusChoices.FAILED
+            delivery.save()
+            return Response(
+                {"detail": f"The order {order} was rejected."},
+                status=status.HTTP_200_OK,
+            )
+        return Response(
+            {"detail": f"Order {order} not found."},
+            status=status.HTTP_404_NOT_FOUND,
+        )
 
 
 class OrderItemViewSet(ModelViewSet):

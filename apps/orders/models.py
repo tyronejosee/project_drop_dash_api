@@ -134,7 +134,7 @@ class OrderRating(BaseModel):
         ]
 
     def __str__(self):
-        return f"Rating for Order {self.order.id} by User {self.user.id}: {self.rating}"
+        return f"Rating {self.pk}"
 
 
 class OrderReport(BaseModel):
@@ -179,4 +179,4 @@ class OrderReport(BaseModel):
         ]
 
     def __str__(self):
-        return f"Report {self.order_id} by User {self.user_is}: {self.reason}"
+        return f"Report {self.pk}"
