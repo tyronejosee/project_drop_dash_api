@@ -6,11 +6,13 @@ from django.core.validators import FileExtensionValidator
 
 from apps.utilities.models import BaseModel
 from apps.utilities.paths import docs_path
+from apps.orders.models import Order
 from apps.locations.models import Country, State, City
 from .managers import DriverManager, ResourceManager
 from .choices import (
     VehicleChoices,
     StatusChoices,
+    AssignmentStatusChoices,
     ResourceTypeChoices,
     RequestStatusChoices,
 )
@@ -53,6 +55,10 @@ class Driver(BaseModel):
         choices=StatusChoices.choices,
         default=StatusChoices.BRONCE,
     )
+    is_active = models.BooleanField(
+        default=False,
+        help_text="Indicates if the driver is active to receive orders.",
+    )
 
     objects = DriverManager()
 
@@ -60,9 +66,37 @@ class Driver(BaseModel):
         ordering = ["pk"]
         verbose_name = "driver"
         verbose_name_plural = "drivers"
+        indexes = [
+            models.Index(fields=["is_verified", "is_active"]),
+        ]
 
     def __str__(self):
         return str(self.user_id.username)
+
+
+class DriverAssignment(BaseModel):
+    """Model definition for DriverAssignment."""
+
+    driver_id = models.ForeignKey(Driver, on_delete=models.CASCADE)
+    order_id = models.ForeignKey(Order, on_delete=models.CASCADE)
+    assigned_at = models.DateTimeField(auto_now_add=True)
+    status = models.CharField(
+        max_length=10,
+        choices=AssignmentStatusChoices.choices,
+        default=AssignmentStatusChoices.PENDING,
+    )
+
+    class Meta:
+        ordering = ["-assigned_at"]
+        verbose_name = "driver assignment"
+        verbose_name_plural = "driver assignments"
+        indexes = [
+            models.Index(fields=["status"]),
+        ]
+        # ! TODO: Add constrains
+
+    def __str__(self):
+        return f"{self.driver_id} assigned to {self.order_id} on {self.assigned_at}"
 
 
 class Resource(BaseModel):

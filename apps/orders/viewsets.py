@@ -1,15 +1,17 @@
 """ViewSets for Orders App."""
 
+import random
 from django.shortcuts import get_object_or_404
 from rest_framework.viewsets import ModelViewSet
 from rest_framework.decorators import action
 from rest_framework.response import Response
 from rest_framework import status
 
-from apps.users.permissions import IsOwner, IsClient, IsDriver
+from apps.users.permissions import IsOwner, IsClient, IsDriver, IsDispatcher
 from apps.utilities.mixins import ListCacheMixin, LogicalDeleteMixin
+from apps.drivers.models import Driver, DriverAssignment
+from apps.drivers.choices import AssignmentStatusChoices
 from apps.deliveries.models import Delivery
-from apps.deliveries.choices import StatusChoices
 from .models import Order, OrderItem, OrderReport
 from .serializers import (
     OrderReadSerializer,
@@ -87,32 +89,114 @@ class OrderViewSet(ListCacheMixin, LogicalDeleteMixin, ModelViewSet):
 
     @action(
         detail=True,
-        methods=["patch"],
+        methods=["POST"],
+        permission_classes=[IsDispatcher],
+        url_path="asign_driver",
+    )
+    def assign_driver(self, request, *args, **kwargs):
+        """
+        Pending.
+
+        Endpoints:
+        - POST api/v1/orders/{id}/asign_driver/
+        """
+        order = self.get_object()
+        available_drivers = Driver.objects.get_available().filter(
+            is_verified=True, is_active=True
+        )
+        # ! TODO: Add location filter and manager
+
+        if not available_drivers.exists():
+            return Response(
+                {"detail": "There are no drivers available for assignment."},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+        driver = random.choice(available_drivers)
+        DriverAssignment.objects.create(order_id=order, driver_id=driver)
+
+        return Response(
+            {"detail": f"Driver {driver.id} assigned to order {order.id}."},
+            status=status.HTTP_200_OK,
+        )
+
+    @action(
+        detail=True,
+        permission_classes=[IsDriver],
+        methods=["POST"],
+        url_path="accept",
+    )
+    def accept_order(self, request, *args, **kwargs):
+        """
+        Action to mark a specific order assignment as accepted.
+
+        Endpoints:
+        - POST api/v1/orders/{id}/accept/
+        """
+        try:
+            order = self.get_object()
+            driver = request.user.driver
+
+            assignment = DriverAssignment.objects.filter(
+                is_available=True,
+                driver_id=driver,
+                status=AssignmentStatusChoices.PENDING,
+            ).first()
+            assignment.status = AssignmentStatusChoices.ACCEPTED
+            assignment.is_available = False
+            assignment.save()
+
+            # Create delivery entries
+            Delivery.objects.create(order_id=order, driver_id=driver)
+
+            return Response(
+                {"detail": f"The order {order} was accepted."},
+                status=status.HTTP_200_OK,
+            )
+        except DriverAssignment.DoesNotExist:
+            return Response(
+                {"detail": "No pending assignment found for this driver."},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+        except Exception as e:
+            return Response(
+                {"detail": f"{e}"},
+                status=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            )
+
+    @action(
+        detail=True,
+        methods=["post"],
         permission_classes=[IsDriver],
         url_path="reject",
     )
-    def reject_order(self, request, pk=None):
+    def reject_order(self, request, *args, **kwargs):
         """
-        Action to mark a specific order report as rejected.
-        TODO: Concept tests, temporal
+        Action to mark a specific order assignment as rejected.
 
         Endpoints:
         - PATCH api/v1/orders/{id}/reject/
         """
-        order = self.get_object()
-        delivery = Delivery.objects.get(order_id=order)
+        try:
+            order = self.get_object()
+            driver = request.user.driver
 
-        if delivery:
-            delivery.status = StatusChoices.FAILED
-            delivery.save()
+            assignment = DriverAssignment.objects.get(
+                driver_id=driver,
+                order_id=order,
+            )
+            assignment.status = AssignmentStatusChoices.REJECTED
+            assignment.is_available = False
+            assignment.save()
             return Response(
                 {"detail": f"The order {order} was rejected."},
                 status=status.HTTP_200_OK,
             )
-        return Response(
-            {"detail": f"Order {order} not found."},
-            status=status.HTTP_404_NOT_FOUND,
-        )
+        except Exception as e:
+            return Response(
+                {"detail": f"{e}"},
+                status=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            )
 
 
 class OrderItemViewSet(ModelViewSet):

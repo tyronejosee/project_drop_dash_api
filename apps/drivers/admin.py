@@ -3,7 +3,7 @@
 from django.contrib import admin
 
 from apps.utilities.admin import BaseAdmin
-from .models import Driver, Resource
+from .models import Driver, DriverAssignment, Resource
 
 
 @admin.register(Driver)
@@ -15,6 +15,15 @@ class DriverAdmin(BaseAdmin):
     list_editable = ["is_available"]
     readonly_fields = ["pk", "created_at", "updated_at"]
     ordering = ["pk"]
+
+
+@admin.register(DriverAssignment)
+class DriverAssignmentAdmin(BaseAdmin):
+    """Admin for DriverAssignment model."""
+
+    search_fields = ["driver_id", "order_id"]
+    list_display = ["driver_id", "order_id", "assigned_at", "status"]
+    readonly_fields = ["pk", "created_at", "updated_at"]
 
 
 @admin.register(Resource)

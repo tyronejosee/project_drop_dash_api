@@ -18,6 +18,13 @@ class StatusChoices(TextChoices):
     ALERT = "alert", "Alert"
 
 
+class AssignmentStatusChoices(TextChoices):
+
+    PENDING = "pending", "Pending"
+    ACCEPTED = "accepted", "Accepted"
+    REJECTED = "rejected", "Rejected"
+
+
 class ResourceTypeChoices(TextChoices):
 
     BACKPACKS = "backpacks", "Backpacks"
