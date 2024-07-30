@@ -23,6 +23,7 @@ from .serializers import (
     OrderItemReadSerializer,
     OrderItemWriteSerializer,
     OrderReportWriteSerializer,
+    OrderRatingWriteSerializer,
 )
 
 
@@ -335,6 +336,28 @@ class OrderViewSet(ListCacheMixin, LogicalDeleteMixin, ModelViewSet):
             {"detail": "The status could not be changed, please try again."},
             status=status.HTTP_400_BAD_REQUEST,
         )
+
+    @action(
+        methods=["post"],
+        detail=True,
+        url_path="rate",
+        permission_classes=[IsClient],
+    )
+    def rate_order(self, request, *args, **kwargs):
+        """
+        Action for rate an order.
+
+        Endpoints:
+        - POST api/v1/orders/{id}/rate/
+        """
+        order = self.get_object()
+        user = request.user
+
+        serializer = OrderRatingWriteSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save(order_id=order, user_id=user)
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 class OrderItemViewSet(ModelViewSet):

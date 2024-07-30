@@ -8,7 +8,7 @@ from apps.restaurants.serializers import (
     RestaurantMinimalSerializer,
     FoodMinimalSerializer,
 )
-from .models import Order, OrderItem, OrderReport
+from .models import Order, OrderItem, OrderReport, OrderRating
 from .services import OrderItemService
 
 
@@ -133,4 +133,15 @@ class OrderReportWriteSerializer(serializers.ModelSerializer):
         fields = [
             "reason",
             "description",
+        ]
+
+
+class OrderRatingWriteSerializer(serializers.ModelSerializer):
+    """Serializer for OrderRating model (Create/update)."""
+
+    class Meta:
+        model = OrderRating
+        fields = [
+            "rating",
+            "comment",
         ]

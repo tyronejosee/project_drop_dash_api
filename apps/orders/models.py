@@ -2,6 +2,7 @@
 
 from django.db import models
 from django.contrib.auth import get_user_model
+from django.core.validators import MaxValueValidator, MinValueValidator
 from simple_history.models import HistoricalRecords
 
 from apps.utilities.validators import validate_phone
@@ -119,7 +120,10 @@ class OrderRating(BaseModel):
         related_name="order_ratings",
     )
     rating = models.PositiveIntegerField(
-        choices=[(i, str(i)) for i in range(1, 6)],
+        validators=[
+            MinValueValidator(1),
+            MaxValueValidator(5),
+        ]
     )
     comment = models.TextField(blank=True)
 
