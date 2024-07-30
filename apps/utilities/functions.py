@@ -11,7 +11,7 @@ except ValueError:
 
 
 def encrypt_field(field):
-    """Pending."""
+    """Encrypts a given field using the Fernet symmetric encryption."""
     try:
         field_bytes = field.encode("utf-8")
         encrypted_field = f.encrypt(field_bytes)
@@ -21,7 +21,7 @@ def encrypt_field(field):
 
 
 def decrypt_field(encrypted_field):
-    """Pending."""
+    """Decrypts an encrypted field using the Fernet symmetric encryption."""
     try:
         encrypted_bytes = encrypted_field.encode("utf-8")
         field_bytes = f.decrypt(encrypted_bytes)

@@ -30,6 +30,8 @@ class DriverReadSerializer(ReadOnlyFieldsMixin, serializers.ModelSerializer):
             "state_id",
             "country_id",
             "status",
+            "updated_at",
+            "created_at",
         ]
 
     def to_representation(self, instance):
@@ -60,6 +62,27 @@ class DriverWriteSerializer(serializers.ModelSerializer):
             "state_id",
             "country_id",
             "vehicle_type",
+        ]
+
+
+class DriverMinimalSerializer(ReadOnlyFieldsMixin, serializers.ModelSerializer):
+    """Serializer for Driver model (Minimal)"""
+
+    user_id = serializers.StringRelatedField()
+    city_id = serializers.StringRelatedField()
+    state_id = serializers.StringRelatedField()
+    country_id = serializers.StringRelatedField()
+    status = serializers.CharField(source="get_status_display")
+
+    class Meta:
+        model = Driver
+        fields = [
+            "id",
+            "user_id",
+            "city_id",
+            "state_id",
+            "country_id",
+            "status",
         ]
 
 

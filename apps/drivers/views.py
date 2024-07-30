@@ -85,6 +85,7 @@ class DriverProfileView(APIView):
 class DriverCreateView(APIView):
     """
     View to create a driver profile.
+    NOTE: Refactor this
 
     Endpoints:
     - POST api/v1/drivers/

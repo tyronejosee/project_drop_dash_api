@@ -37,8 +37,8 @@ urlpatterns = [
     path("", include("apps.home.routers")),
     path("", include("apps.jobs.routers")),
     path("", include("apps.orders.routers")),
+    path("", include("apps.drivers.routers")),
     # Apps urls
-    path("", include("apps.drivers.urls")),
     path("", include("apps.users.urls")),
     # ! TODO: Remove urls
     # path("", include("apps.orders.urls")),
