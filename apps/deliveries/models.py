@@ -8,7 +8,7 @@ from apps.utilities.models import BaseModel
 from apps.utilities.paths import signature_path
 from apps.orders.models import Order
 from apps.drivers.models import Driver
-from .managers import DeliveryManager
+from .managers import DeliveryManager, FailedDeliveryManager
 from .choices import StatusChoices
 
 User = get_user_model()
@@ -59,7 +59,26 @@ class Delivery(BaseModel):
     def __str__(self):
         return f"Delivery for {self.order_id} - {self.status}"
 
-    def save(self, *args, **kwargs):
-        if self.status == StatusChoices.DELIVERED:
-            self.is_completed = True
-        super().save(*args, **kwargs)
+
+class FailedDelivery(BaseModel):
+    """Model definition for FailedDelivery."""
+
+    order_id = models.OneToOneField(Order, on_delete=models.CASCADE)
+    driver_id = models.ForeignKey(Driver, on_delete=models.SET_NULL, null=True)
+    reason = models.CharField(max_length=255)
+    failed_at = models.DateTimeField(blank=True, null=True)
+
+    objects = FailedDeliveryManager()
+    history = HistoricalRecords()
+
+    class Meta:
+        ordering = ["pk"]
+        verbose_name = "failed delivery"
+        verbose_name_plural = "failed deliveries"
+        indexes = [
+            models.Index(fields=["order_id"]),
+            models.Index(fields=["driver_id"]),
+        ]
+
+    def __str__(self):
+        return f"Failed Delivery: {self.order_id}"

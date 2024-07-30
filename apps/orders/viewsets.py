@@ -12,7 +12,8 @@ from apps.users.permissions import IsOwner, IsClient, IsDriver, IsDispatcher
 from apps.utilities.mixins import ListCacheMixin, LogicalDeleteMixin
 from apps.drivers.models import Driver, DriverAssignment
 from apps.drivers.choices import AssignmentStatusChoices
-from apps.deliveries.models import Delivery
+from apps.deliveries.models import Delivery, FailedDelivery
+from apps.deliveries.serializers import FailedDeliverySerializer, SignatureSerializer
 from apps.deliveries.choices import StatusChoices
 from .models import Order, OrderItem, OrderReport
 from .serializers import (
@@ -70,7 +71,7 @@ class OrderViewSet(ListCacheMixin, LogicalDeleteMixin, ModelViewSet):
         Action report a specific order by ID.
 
         Endpoints:
-        - GET api/v1/orders/{id}/report/
+        - POST api/v1/orders/{id}/report/
         """
         order = self.get_object()
         serializer = OrderReportWriteSerializer(data=request.data)
@@ -100,7 +101,7 @@ class OrderViewSet(ListCacheMixin, LogicalDeleteMixin, ModelViewSet):
         Pending.
 
         Endpoints:
-        - POST api/v1/orders/{id}/asign_driver/
+        - PATCH api/v1/orders/{id}/asign_driver/
         """
         order = self.get_object()
         available_drivers = Driver.objects.get_available().filter(
@@ -254,34 +255,81 @@ class OrderViewSet(ListCacheMixin, LogicalDeleteMixin, ModelViewSet):
         Action to mark a delivery status to delivered.
 
         Endpoints:
-        - PATCH api/v1/orders/{id}/delivered/
+        - POST api/v1/orders/{id}/delivered/
         """
         order = self.get_object()
         driver = request.user.driver
-        signature = request.data.get("signature")
 
-        # The driver is required to submit the user's signature to change the status.
-        if not signature:
-            return Response(
-                {"detail": "Signature is required to mark the delivery as delivered."},
-                status=status.HTTP_400_BAD_REQUEST,
+        serializer = SignatureSerializer(data=request.data)
+        if serializer.is_valid():
+            signature = serializer.validated_data["signature"]
+
+            delivery = Delivery.objects.get(
+                order_id=order,
+                driver_id=driver,
             )
+
+            if delivery.status == StatusChoices.PICKED_UP:
+                # TODO: Add verification code
+                delivery.signature = signature
+                delivery.status = StatusChoices.DELIVERED
+                delivery.delivered_at = timezone.now()
+                delivery.is_completed = True
+                delivery.save()
+
+                return Response(
+                    {"detail": "Order successfully delivered."},
+                    status=status.HTTP_200_OK,
+                )
+            return Response(
+                {"detail": "The status could not be changed, please try again."},
+                status=status.HTTP_409_CONFLICT,
+            )
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    @action(
+        methods=["post"],
+        detail=True,
+        url_path="failed",
+        permission_classes=[IsDriver],
+    )
+    def failed_order(self, request, *args, **kwargs):
+        """
+        Action to mark a delivery status to failed.
+
+        Endpoints:
+        - POST api/v1/orders/{id}/failed/
+        """
+        order = self.get_object()
+        driver = request.user.driver
 
         delivery = Delivery.objects.get(
             order_id=order,
             driver_id=driver,
         )
 
-        if delivery.status == StatusChoices.PICKED_UP:
-            # TODO: Add verification code
-            delivery.signature = signature
-            delivery.status = StatusChoices.DELIVERED
-            delivery.delivered_at = timezone.now()
-            delivery.is_completed = True
-            delivery.save()
+        if delivery.status in [StatusChoices.ASSIGNED, StatusChoices.PICKED_UP]:
+            serializer = FailedDeliverySerializer(data=request.data)
+            if serializer.is_valid():
+                reason = serializer.validated_data["reason"]
+                # Record failed delivery
+                FailedDelivery.objects.create(
+                    order_id=order,
+                    driver_id=driver,
+                    reason=reason,
+                    failed_at=timezone.now(),
+                )  # ! TODO: Add services layer
+
+                delivery.status = StatusChoices.FAILED
+                delivery.save()
+                # TODO: Add notifications
+                return Response(
+                    {"detail": "Failed delivery recorded successfully."},
+                    status=status.HTTP_200_OK,
+                )
             return Response(
-                {"detail": "Order successfully delivered."},
-                status=status.HTTP_200_OK,
+                serializer.errors,
+                status=status.HTTP_400_BAD_REQUEST,
             )
         return Response(
             {"detail": "The status could not be changed, please try again."},
