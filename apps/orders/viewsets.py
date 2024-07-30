@@ -60,10 +60,10 @@ class OrderViewSet(ListCacheMixin, LogicalDeleteMixin, ModelViewSet):
         serializer.save(user_id=self.request.user)
 
     @action(
-        detail=True,
         methods=["post"],
-        permission_classes=[IsClient],
+        detail=True,
         url_path="report",
+        permission_classes=[IsClient],
     )
     def report_order(self, request, *args, **kwargs):
         """
@@ -90,10 +90,10 @@ class OrderViewSet(ListCacheMixin, LogicalDeleteMixin, ModelViewSet):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     @action(
-        detail=True,
         methods=["patch"],
-        permission_classes=[IsDispatcher],
+        detail=True,
         url_path="asign_driver",
+        permission_classes=[IsDispatcher],
     )
     def assign_driver(self, request, *args, **kwargs):
         """
@@ -123,10 +123,10 @@ class OrderViewSet(ListCacheMixin, LogicalDeleteMixin, ModelViewSet):
         )
 
     @action(
-        detail=True,
-        permission_classes=[IsDriver],
         methods=["patch"],
+        detail=True,
         url_path="accept",
+        permission_classes=[IsDriver],
     )
     def accept_order(self, request, *args, **kwargs):
         """
@@ -171,10 +171,10 @@ class OrderViewSet(ListCacheMixin, LogicalDeleteMixin, ModelViewSet):
             )
 
     @action(
+        methods=["patch"],
         detail=True,
-        methods=["post"],
-        permission_classes=[IsDriver],
         url_path="reject",
+        permission_classes=[IsDriver],
     )
     def reject_order(self, request, *args, **kwargs):
         """
@@ -205,10 +205,10 @@ class OrderViewSet(ListCacheMixin, LogicalDeleteMixin, ModelViewSet):
             )
 
     @action(
-        detail=True,
         methods=["patch"],
-        permission_classes=[IsDriver],
+        detail=True,
         url_path="picked_up",
+        permission_classes=[IsDriver],
     )
     def picked_up_order(self, request, *args, **kwargs):
         """
@@ -240,6 +240,51 @@ class OrderViewSet(ListCacheMixin, LogicalDeleteMixin, ModelViewSet):
             )
         return Response(
             {"detail": "Delivery with status pending cannot be marked."},
+            status=status.HTTP_400_BAD_REQUEST,
+        )
+
+    @action(
+        methods=["post"],
+        detail=True,
+        url_path="delivered",
+        permission_classes=[IsDriver],
+    )
+    def delivered_order(self, request, *args, **kwargs):
+        """
+        Action to mark a delivery status to delivered.
+
+        Endpoints:
+        - PATCH api/v1/orders/{id}/delivered/
+        """
+        order = self.get_object()
+        driver = request.user.driver
+        signature = request.data.get("signature")
+
+        # The driver is required to submit the user's signature to change the status.
+        if not signature:
+            return Response(
+                {"detail": "Signature is required to mark the delivery as delivered."},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+        delivery = Delivery.objects.get(
+            order_id=order,
+            driver_id=driver,
+        )
+
+        if delivery.status == StatusChoices.PICKED_UP:
+            # TODO: Add verification code
+            delivery.signature = signature
+            delivery.status = StatusChoices.DELIVERED
+            delivery.delivered_at = timezone.now()
+            delivery.is_completed = True
+            delivery.save()
+            return Response(
+                {"detail": "Order successfully delivered."},
+                status=status.HTTP_200_OK,
+            )
+        return Response(
+            {"detail": "The status could not be changed, please try again."},
             status=status.HTTP_400_BAD_REQUEST,
         )
 
