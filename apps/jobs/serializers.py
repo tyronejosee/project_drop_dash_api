@@ -52,6 +52,7 @@ class WorkerReadSerializer(ReadOnlyFieldsMixin, serializers.ModelSerializer):
     city_id = serializers.StringRelatedField()
     state_id = serializers.StringRelatedField()
     country_id = serializers.StringRelatedField()
+    status = serializers.CharField(source="get_status_display")
     contract_type = serializers.CharField(source="get_contract_type_display")
 
     class Meta:
@@ -68,8 +69,10 @@ class WorkerReadSerializer(ReadOnlyFieldsMixin, serializers.ModelSerializer):
             "hired_date",
             "termination_date",
             "hourly_rate",
-            "contract_type",
+            "status",
             "contract_file",
+            "is_active",
+            "is_full_time",
             "created_at",
             "updated_at",
         ]
@@ -91,8 +94,11 @@ class WorkerWriteSerializer(serializers.ModelSerializer):
             "hired_date",
             "termination_date",
             "hourly_rate",
+            "status",
             "contract_type",
             "contract_file",
+            "is_active",
+            "is_full_time",
         ]
 
 
@@ -101,6 +107,7 @@ class WorkerMinimalSerializer(ReadOnlyFieldsMixin, serializers.ModelSerializer):
 
     user_id = serializers.StringRelatedField()
     position_id = serializers.StringRelatedField()
+    status = serializers.CharField(source="get_status_display")
     contract_type = serializers.CharField(source="get_contract_type_display")
 
     class Meta:
@@ -109,7 +116,9 @@ class WorkerMinimalSerializer(ReadOnlyFieldsMixin, serializers.ModelSerializer):
             "id",
             "user_id",
             "position_id",
+            "status",
             "contract_type",
+            "is_active",
         ]
 
 

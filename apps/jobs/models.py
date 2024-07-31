@@ -6,7 +6,7 @@ from django.db import models
 from apps.utilities.models import BaseModel
 from apps.locations.models import Country, State, City
 from .managers import PositionManager, WorkerManager, ApplicantManager
-from .choices import StatusChoices, ContractTypeChoices
+from .choices import StatusChoices, ContractTypeChoices, WorkerStatusChoices
 
 User = settings.AUTH_USER_MODEL
 
@@ -46,10 +46,23 @@ class Worker(BaseModel):
         choices=ContractTypeChoices.choices,
         default=ContractTypeChoices.FIXED_TERM,
     )
+    status = models.CharField(
+        max_length=10,
+        choices=WorkerStatusChoices.choices,
+        default=WorkerStatusChoices.ACTIVE,
+    )
     contract_file = models.FileField(
         upload_to="jobs/contracts/",
         null=True,
         blank=True,
+    )
+    is_active = models.BooleanField(
+        default=True,
+        help_text="Indicates if the worker is currently active.",
+    )
+    is_full_time = models.BooleanField(
+        default=False,
+        help_text="Indicates if the worker is employed full-time.",
     )
 
     objects = WorkerManager()
@@ -58,6 +71,10 @@ class Worker(BaseModel):
         ordering = ["pk"]
         verbose_name = "worker"
         verbose_name_plural = "workers"
+        indexes = [
+            models.Index(fields=["is_active"]),
+            models.Index(fields=["is_full_time"]),
+        ]
 
     def __str__(self):
         return str(self.user_id)

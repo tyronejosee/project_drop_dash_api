@@ -21,3 +21,11 @@ class ContractTypeChoices(TextChoices):
     ART_AND_ENTERTAINMENT = "art_and_entertainment", "Art and Entertainment Contract"
     FEE_BASED = "fee_based", "Fee-based Contract"
     INDEFINITE = "indefinite", "Indefinite Contract"
+
+
+class WorkerStatusChoices(TextChoices):
+
+    ACTIVE = "active", "Active"
+    INACTIVE = "inactive", "Inactive"
+    TERMINATED = "terminated", "Terminated"
+    ON_LEAVE = "on_leave", "On Leave"

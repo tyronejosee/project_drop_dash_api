@@ -2,10 +2,14 @@
 
 from rest_framework.viewsets import ModelViewSet
 from rest_framework.permissions import AllowAny
+from rest_framework.decorators import action
+from rest_framework.response import Response
+from rest_framework import status
 
 from apps.users.permissions import IsHumanResources
 from apps.utilities.mixins import ListCacheMixin, LogicalDeleteMixin
 from .models import Position, Worker, Applicant
+from .services import WorkerService
 from .serializers import (
     PositionReadSerializer,
     PositionWriteSerializer,
@@ -74,6 +78,7 @@ class WorkerViewSet(ListCacheMixin, LogicalDeleteMixin, ModelViewSet):
     filterset_class = WorkerFilter
 
     def get_queryset(self):
+        # ! TODO: Perfom queries
         return Worker.objects.get_available()
 
     def get_serializer_class(self):
@@ -82,6 +87,26 @@ class WorkerViewSet(ListCacheMixin, LogicalDeleteMixin, ModelViewSet):
         elif self.action == "retrieve":
             return WorkerReadSerializer
         return super().get_serializer_class()
+
+    @action(
+        methods=["patch"],
+        detail=True,
+        url_path="terminate",
+        permission_classes=[IsHumanResources],
+    )
+    def terminate_contract(self, request, *args, **kwargs):
+        """
+        Action changes the contract status of a worker.
+
+        Endpoints:
+        - PATCH api/v1/drivers/{id}/verify/
+        """
+        worker = self.get_object()
+        WorkerService.terminate_worker(worker)
+        return Response(
+            {"detail": "Contract terminated, worker disengaged."},
+            status=status.HTTP_200_OK,
+        )
 
 
 class ApplicantViewSet(ListCacheMixin, LogicalDeleteMixin, ModelViewSet):

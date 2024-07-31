@@ -4,7 +4,7 @@ from django_filters import rest_framework as filters
 
 from apps.utilities.filters import BaseFilter
 from .models import Worker, Applicant
-from .choices import ContractTypeChoices, StatusChoices
+from .choices import ContractTypeChoices, WorkerStatusChoices, StatusChoices
 
 
 class WorkerFilter(BaseFilter):
@@ -35,6 +35,11 @@ class WorkerFilter(BaseFilter):
         lookup_expr="icontains",
         label="Filter by position (position name), ex `/?position=Data Analyst`",
     )
+    status = filters.ChoiceFilter(
+        field_name="status",
+        choices=WorkerStatusChoices.choices,
+        label="Filter by status, ex `/?status=inactive`",
+    )
     contract_type = filters.ChoiceFilter(
         field_name="contract_type",
         choices=ContractTypeChoices.choices,
@@ -49,6 +54,7 @@ class WorkerFilter(BaseFilter):
             "state",
             "country",
             "position",
+            "status",
             "contract_type",
         ]
 

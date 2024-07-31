@@ -165,22 +165,3 @@ class DriverViewSet(ListCacheMixin, LogicalDeleteMixin, ModelViewSet):
                 {"detail": str(e)},
                 status=status.HTTP_500_INTERNAL_SERVER_ERROR,
             )
-
-        # if all(
-        #     [
-        #         driver.driver_license,
-        #         driver.identification_document,
-        #         driver.social_security_certificate,
-        #         driver.criminal_record_certificate,
-        #     ]
-        # ):
-        #     driver.is_verified = True
-        #     driver.save()
-        #     return Response(
-        #         {"detail": "Driver verified successfully."},
-        #         status=status.HTTP_200_OK,
-        #     )
-        # return Response(
-        #     {"detail": ""},
-        #     status=status.HTTP_400_BAD_REQUEST,
-        # )
