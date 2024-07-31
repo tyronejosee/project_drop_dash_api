@@ -8,14 +8,13 @@ from rest_framework.decorators import action
 from rest_framework.response import Response
 from rest_framework import status
 
-from apps.utilities.functions import encrypt_field
 from apps.utilities.mixins import ListCacheMixin, LogicalDeleteMixin
 from apps.users.permissions import IsSupport, IsClient, IsDriver
-from apps.users.choices import RoleChoices
 from apps.orders.models import Order
 from apps.orders.serializers import OrderMinimalSerializer
 from apps.deliveries.models import Delivery
 from .models import Driver
+from .services import DriverService
 from .serializers import (
     DriverReadSerializer,
     DriverWriteSerializer,
@@ -41,33 +40,10 @@ class DriverViewSet(ListCacheMixin, LogicalDeleteMixin, ModelViewSet):
     search_fields = ["user_id"]
     # filterset_class = DriverFilter
 
-    def create(self, request, *args, **kwargs):
-        # Check if the user already has a driver profile
-        if Driver.objects.filter(user_id=request.user).exists():
-            return Response(
-                {"detail": "This user already has a driver profile."},
-                status=status.HTTP_400_BAD_REQUEST,
-            )
-
-        serializer = DriverWriteSerializer(data=request.data)
-        if serializer.is_valid():
-            # Encrypt specific fields after they have been validated
-            validated_data = serializer.validated_data
-            validated_data["phone"] = encrypt_field(validated_data["phone"])
-            validated_data["address"] = encrypt_field(validated_data["address"])
-            serializer.save(user_id=request.user)
-
-            request.user.role = RoleChoices.DRIVER  # Update role
-            request.user.save()
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
     def get_queryset(self):
         if self.action == "list":
-            Driver.objects.get_available().select_related(
-                "user_id", "city_id", "state_id", "country_id"
-            ).only("id", "user_id", "city_id", "state_id", "country_id", "status")
-        return Driver.objects.get_available()
+            Driver.objects.get_list()
+        return Driver.objects.get_detail()
 
     def get_serializer_class(self):
         if self.action == "list":
@@ -80,6 +56,9 @@ class DriverViewSet(ListCacheMixin, LogicalDeleteMixin, ModelViewSet):
         if self.action in ["create"]:
             return [IsClient()]
         return super().get_permissions()
+
+    def create(self, request, *args, **kwargs):
+        return DriverService.create_driver(request.user, request.data)
 
     @action(
         detail=True,
@@ -122,9 +101,8 @@ class DriverViewSet(ListCacheMixin, LogicalDeleteMixin, ModelViewSet):
                 status=status.HTTP_403_FORBIDDEN,
             )
 
-        driver.is_active = not driver.is_active
-        driver.save()
-        message = "ONLINE" if driver.is_active else "OFFLINE"
+        is_active = DriverService.toggle_availability(driver)
+        message = "ONLINE" if is_active else "OFFLINE"
         return Response(
             {"detail": f"Status driver {message}"},
             status=status.HTTP_200_OK,

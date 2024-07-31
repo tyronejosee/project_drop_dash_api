@@ -6,7 +6,6 @@ from apps.utilities.mixins import ReadOnlyFieldsMixin
 from apps.utilities.functions import decrypt_field
 from apps.utilities.validators import validate_phone, validate_birth_date
 from .models import Driver, Resource
-from .choices import StatusChoices
 
 
 class DriverReadSerializer(ReadOnlyFieldsMixin, serializers.ModelSerializer):
@@ -16,20 +15,24 @@ class DriverReadSerializer(ReadOnlyFieldsMixin, serializers.ModelSerializer):
     city_id = serializers.StringRelatedField()
     state_id = serializers.StringRelatedField()
     country_id = serializers.StringRelatedField()
-    status = serializers.ChoiceField(choices=StatusChoices.choices)
+    vehicle_type = serializers.CharField(source="get_vehicle_type_display")
+    status = serializers.CharField(source="get_status_display")
 
     class Meta:
         model = Driver
         fields = [
             "id",
             "user_id",
-            "address",
             "phone",
             "birth_date",
+            "address",
             "city_id",
             "state_id",
             "country_id",
+            "vehicle_type",
+            "is_verified",
             "status",
+            "is_active",
             "updated_at",
             "created_at",
         ]
