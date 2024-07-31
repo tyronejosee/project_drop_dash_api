@@ -73,6 +73,12 @@ class Driver(BaseModel):
     def __str__(self):
         return str(self.user_id.username)
 
+    def clean(self):
+        super().clean()
+        from .services import DriverService
+
+        DriverService.validate_driver_license(self)
+
 
 class DriverAssignment(BaseModel):
     """Model definition for DriverAssignment."""

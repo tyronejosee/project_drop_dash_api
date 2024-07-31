@@ -8,12 +8,21 @@ class OrderService:
     Service class for handling Order related operations.
     """
 
+    # ! TODO: Add tests
+
     @staticmethod
-    def set_transaction(order):
-        """Set the transaction ID based on Order IDs."""
-        # if not order.transaction:
-        order.transaction = f"trans-{order.pk}"
-        return order
+    def generate_transaction_field(order):
+        """Generate the transaction ID based on Order IDs."""
+        if not order.transaction:
+            order.transaction = f"trans-{order.pk}"
+
+    @staticmethod
+    def validate_order(order):
+        from .models import OrderItem
+
+        if OrderItem.objects.filter(order_id=order.id).exists():
+            order.is_valid = True
+            order.save(update_fields=["is_valid"])
 
 
 class OrderItemService:

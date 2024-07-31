@@ -11,7 +11,8 @@ from apps.restaurants.models import Restaurant
 from apps.restaurants.models import Food
 from apps.locations.models import Country, State, City
 from apps.payments.choices import PaymentMethodChoices
-from .services import OrderService, OrderItemService
+
+# from .services import OrderService, OrderItemService
 from .managers import OrderManager, OrderItemManager
 from .choices import OrderStatusChoices, ReportStatusChoices
 
@@ -54,6 +55,7 @@ class Order(BaseModel):
         choices=PaymentMethodChoices.choices,
     )
     is_payment = models.BooleanField(default=False)
+    is_valid = models.BooleanField(default=False)
 
     objects = OrderManager()
     history = HistoricalRecords()
@@ -62,12 +64,19 @@ class Order(BaseModel):
         ordering = ["pk"]
         verbose_name = "order"
         verbose_name_plural = "orders"
+        indexes = [
+            # Composite indexes
+            models.Index(fields=["is_payment", "is_valid"]),
+        ]
 
     def __str__(self):
         return str(f"{self.shipping_name} - {self.transaction}")
 
     def save(self, *args, **kwargs):
-        OrderService.set_transaction(self)
+        from .services import OrderService
+
+        OrderService.generate_transaction_field(self)
+        OrderService.validate_order(self)
         super().save(*args, **kwargs)
 
 
@@ -102,6 +111,8 @@ class OrderItem(BaseModel):
         return f"{self.order_id} - {self.food_id}"
 
     def save(self, *args, **kwargs):
+        from .services import OrderItemService
+
         OrderItemService.set_price(self)
         OrderItemService.set_subtotal(self)
         super(OrderItem, self).save(*args, **kwargs)

@@ -14,7 +14,7 @@ class OrderAdmin(BaseAdmin):
     list_display = ["transaction", "is_available", "created_at", "status"]
     list_filter = ["status"]
     list_editable = ["is_available"]
-    readonly_fields = ["pk", "created_at", "updated_at"]
+    readonly_fields = ["pk", "transaction", "created_at", "updated_at"]
     ordering = ["created_at"]
 
 
