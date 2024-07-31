@@ -142,3 +142,45 @@ class DriverViewSet(ListCacheMixin, LogicalDeleteMixin, ModelViewSet):
             )
         serializer = OrderMinimalSerializer(orders, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
+
+    @action(
+        methods=["patch"],
+        detail=True,
+        url_path="verify",
+        permission_classes=[IsSupport],
+    )
+    def verify_driver(self, request, *args, **kwargs):
+        """
+        Action to verify a newly registered driver.
+
+        Endpoints:
+        - PATCH api/v1/drivers/{id}/verify/
+        """
+        driver = self.get_object()
+
+        try:
+            return DriverService.verify_driver(driver)
+        except Exception as e:
+            return Response(
+                {"detail": str(e)},
+                status=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            )
+
+        # if all(
+        #     [
+        #         driver.driver_license,
+        #         driver.identification_document,
+        #         driver.social_security_certificate,
+        #         driver.criminal_record_certificate,
+        #     ]
+        # ):
+        #     driver.is_verified = True
+        #     driver.save()
+        #     return Response(
+        #         {"detail": "Driver verified successfully."},
+        #         status=status.HTTP_200_OK,
+        #     )
+        # return Response(
+        #     {"detail": ""},
+        #     status=status.HTTP_400_BAD_REQUEST,
+        # )

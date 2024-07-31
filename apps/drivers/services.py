@@ -43,6 +43,37 @@ class DriverService:
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     @staticmethod
+    def verify_driver(driver):
+        """
+        Verifies the driver if all required documents have been submitted.
+        """
+        # TODO: Consider the possibility of separating the HTTP responses further
+        if driver.is_verified:
+            return Response(
+                {"detail": "The driver has already been verified."},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+        if all(
+            [
+                driver.driver_license,
+                driver.identification_document,
+                driver.social_security_certificate,
+                driver.criminal_record_certificate,
+            ]
+        ):
+            driver.is_verified = True
+            driver.save()
+            return Response(
+                {"detail": "Driver verified successfully."},
+                status=status.HTTP_200_OK,
+            )
+        return Response(
+            {"detail": "All required documents must be submitted for verification."},
+            status=status.HTTP_403_FORBIDDEN,
+        )
+
+    @staticmethod
     def toggle_availability(driver):
         """
         Toggle the availability status of a driver.
