@@ -9,9 +9,12 @@ from rest_framework.response import Response
 from rest_framework import status
 
 from apps.utilities.functions import encrypt_field
+from apps.utilities.mixins import ListCacheMixin, LogicalDeleteMixin
 from apps.users.permissions import IsSupport, IsClient, IsDriver
 from apps.users.choices import RoleChoices
-from apps.utilities.mixins import ListCacheMixin, LogicalDeleteMixin
+from apps.orders.models import Order
+from apps.orders.serializers import OrderMinimalSerializer
+from apps.deliveries.models import Delivery
 from .models import Driver
 from .serializers import (
     DriverReadSerializer,
@@ -86,9 +89,9 @@ class DriverViewSet(ListCacheMixin, LogicalDeleteMixin, ModelViewSet):
     )
     @method_decorator(cache_page(60 * 60 * 2))
     @method_decorator(vary_on_headers("User-Agent"))
-    def earnings(self, request, *args, **kwargs):
+    def get_earnings(self, request, *args, **kwargs):
         """
-        Pending.
+        Action returns a list of earnings for a driver.
 
         Endpoints:
         - GET api/v1/driver/{id}/earnings/
@@ -103,9 +106,9 @@ class DriverViewSet(ListCacheMixin, LogicalDeleteMixin, ModelViewSet):
         permission_classes=[IsDriver],
         url_path="availability",
     )
-    def toggle_active(self, request, *args, **kwargs):
+    def toggle_availability(self, request, *args, **kwargs):
         """
-        Action for Toggle is_active field of a driver.
+        Action changes the availability status of a driver.
 
         Endpoints:
         - GET api/v1/driver/{id}/availability/
@@ -126,3 +129,38 @@ class DriverViewSet(ListCacheMixin, LogicalDeleteMixin, ModelViewSet):
             {"detail": f"Status driver {message}"},
             status=status.HTTP_200_OK,
         )
+
+    @action(
+        detail=True,
+        methods=["get"],
+        permission_classes=[IsDriver],
+        url_path="orders",
+    )
+    @method_decorator(cache_page(60 * 60 * 2))
+    @method_decorator(vary_on_headers("User-Agent"))
+    def get_orders(self, request, *args, **kwargs):
+        """
+        Action returns a list of orders for a driver.
+
+        Endpoints:
+        - GET api/v1/driver/{id}/orders/
+        """
+        driver = self.get_object()
+
+        relations = Delivery.objects.filter(driver_id=driver)
+        if not relations.exists():
+            return Response(
+                {"detail": "No orders found for this driver."},
+                status=status.HTTP_404_NOT_FOUND,
+            )
+
+        order_ids = relations.values_list("order_id", flat=True)
+        orders = Order.objects.filter(id__in=order_ids)
+
+        if not orders.exists():
+            return Response(
+                {"detail": "No orders found."},
+                status=status.HTTP_404_NOT_FOUND,
+            )
+        serializer = OrderMinimalSerializer(orders, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
