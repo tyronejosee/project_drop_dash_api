@@ -53,7 +53,10 @@ class Delivery(BaseModel):
             models.Index(fields=["order_id", "status"]),
         ]
         constraints = [
-            models.UniqueConstraint(fields=["order_id"], name="unique_order_delivery"),
+            models.UniqueConstraint(
+                fields=["order_id"],
+                name="unique_order_delivery",
+            ),
         ]
 
     def __str__(self):

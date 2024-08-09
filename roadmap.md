@@ -7,13 +7,12 @@
 - [x] `PATCH /orders/{id}` Actualizar una orden (IsClient)
 - [ ] `PATCH /orders/{id}/cancel` Cancelar una orden (IsClient)
 - [ ] `GET /orders/available` Obtener lista de pedidos disponibles para aceptar. (IsDriver)
-- [ ] `PATCH /orders/{id}/details` Obtener detalles de un pedido (ubicaciones de recogida y entrega) (IsDriver).
 - [ ] `POST /orders/{id}/accept` Aceptar un pedido específico (IsDriver).
 - [ ] `POST /orders/{id}/reject` Rechazar un pedido específico (IsDriver).
-- [ ] `PATCH /orders/{id}/pickup` Marcar pedido como recogido (IsDriver).
-- [ ] `PATCH /orders/{id}/deliver` Marcar pedido como entregado (IsDriver).
+- [x] `PATCH /orders/{id}/pickup` Marcar pedido como recogido (IsDriver).
+- [x] `PATCH /orders/{id}/deliver` Marcar pedido como entregado (IsDriver).
 - [ ] `POST /orders/{id}/rate` Proporcionar calificaciones y feedback sobre un pedido (IsClient).
-- [ ] `POST /orders/{id}/report` Reportar un problema con un pedido (IsClient).
+- [x] `POST /orders/{id}/report` Reportar un problema con un pedido (IsClient).
 
 ## Drivers [OK]
 
@@ -53,10 +52,6 @@ Pending implementation
 - [x] `PUT /percentage-coupons/{id}/`
 - [x] `PATCH /percentage-coupons/{id}/`
 - [x] `DELETE /percentage-coupons/{id}/`
-
-## Deliveries
-
-Pending implementation
 
 ## Restaurants [OK]
 
@@ -153,7 +148,5 @@ TODO: Agregar reviews a restaurants y posts, limitar modelo de Review
 ## Logica de Negocios
 
 - [ ] El conductor tendrá un total de 50 puntos si no hace las entregas asignadas se ira descontando este porcentaje, si baja hasta 25 puntos que cambie el estado a ALERT, si baja mas de 10 se elimina la cuenta y se desvincula al driver
-- [ ] Al actualizar el estado de una entrega, se podría validar que solo se pueda cambiar a estados específicos y que la fecha de entrega no haya pasado.
-- [ ] Cuando se crea una compra, se crea un registro en el modelo Order y se establece el estado de pago como pendiente (payment_status=False).
 - [ ] Una vez que el usuario realiza el pago, el estado de pago de la compra se actualiza a pagado (payment_status=True). Este paso puede realizarse a través de un sistema de pagos en línea o algún otro método de confirmación de pago.
-- [ ] Cuando el pago se confirma, se activa la entrega asociada a la compra. Esto podría implicar la creación de un registro en el modelo Delivery y la asignación de un conductor para la entrega.
+- [x] Cuando el pago se confirma, se activa la entrega asociada a la compra. Esto podría implicar la creación de un registro en el modelo Delivery y la asignación de un conductor para la entrega.

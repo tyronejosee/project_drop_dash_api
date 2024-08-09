@@ -24,7 +24,9 @@ class TagWriteSerializer(ModelSerializer):
 
     class Meta:
         model = Tag
-        fields = ["name"]
+        fields = [
+            "name",
+        ]
 
 
 class PostReadSerializer(ReadOnlyFieldsMixin, ModelSerializer):
