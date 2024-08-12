@@ -1,6 +1,7 @@
 """ViewSets for Orders App."""
 
 import random
+from django.db import IntegrityError
 from django.shortcuts import get_object_or_404
 from django.utils import timezone
 from rest_framework.viewsets import ModelViewSet
@@ -81,7 +82,7 @@ class OrderViewSet(ListCacheMixin, LogicalDeleteMixin, ModelViewSet):
                 order_id=order, user_id=request.user
             ).exists():
                 return Response(
-                    {"detail": "You have already reported this order."},
+                    {"error": "You have already reported this order."},
                     status=status.HTTP_409_CONFLICT,
                 )
             serializer.save(order_id=order, user_id=request.user)
@@ -112,7 +113,7 @@ class OrderViewSet(ListCacheMixin, LogicalDeleteMixin, ModelViewSet):
 
         if not available_drivers.exists():
             return Response(
-                {"detail": "There are no drivers available for assignment."},
+                {"error": "There are no drivers available for assignment."},
                 status=status.HTTP_400_BAD_REQUEST,
             )
 
@@ -163,12 +164,12 @@ class OrderViewSet(ListCacheMixin, LogicalDeleteMixin, ModelViewSet):
             )
         except DriverAssignment.DoesNotExist:
             return Response(
-                {"detail": "No pending assignment found for this driver."},
+                {"error": "No pending assignment found for this driver."},
                 status=status.HTTP_400_BAD_REQUEST,
             )
         except Exception as e:
             return Response(
-                {"detail": f"{e}"},
+                {"error": f"{e}"},
                 status=status.HTTP_500_INTERNAL_SERVER_ERROR,
             )
 
@@ -202,7 +203,7 @@ class OrderViewSet(ListCacheMixin, LogicalDeleteMixin, ModelViewSet):
             )
         except Exception as e:
             return Response(
-                {"detail": f"{e}"},
+                {"error": f"{e}"},
                 status=status.HTTP_500_INTERNAL_SERVER_ERROR,
             )
 
@@ -237,11 +238,11 @@ class OrderViewSet(ListCacheMixin, LogicalDeleteMixin, ModelViewSet):
             )
         elif delivery.status == StatusChoices.PICKED_UP:
             return Response(
-                {"detail": "Delivery has already been marked as 'Picked Up'."},
+                {"error": "Delivery has already been marked as 'Picked Up'."},
                 status=status.HTTP_409_CONFLICT,
             )
         return Response(
-            {"detail": "Delivery with status pending cannot be marked."},
+            {"error": "Delivery with status pending cannot be marked."},
             status=status.HTTP_400_BAD_REQUEST,
         )
 
@@ -283,7 +284,7 @@ class OrderViewSet(ListCacheMixin, LogicalDeleteMixin, ModelViewSet):
                     status=status.HTTP_200_OK,
                 )
             return Response(
-                {"detail": "The status could not be changed, please try again."},
+                {"error": "The status could not be changed, please try again."},
                 status=status.HTTP_409_CONFLICT,
             )
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
@@ -333,7 +334,7 @@ class OrderViewSet(ListCacheMixin, LogicalDeleteMixin, ModelViewSet):
                 status=status.HTTP_400_BAD_REQUEST,
             )
         return Response(
-            {"detail": "The status could not be changed, please try again."},
+            {"error": "The status could not be changed, please try again."},
             status=status.HTTP_400_BAD_REQUEST,
         )
 
@@ -392,3 +393,12 @@ class OrderItemViewSet(ModelViewSet):
     def perform_create(self, serializer):
         order = get_object_or_404(Order, user_id=self.request.user)
         serializer.save(order_id=order)
+
+    def create(self, request, *args, **kwargs):
+        try:
+            return super().create(request, *args, **kwargs)
+        except IntegrityError:
+            return Response(
+                {"error": "The combination of order and food already exists."},
+                status=status.HTTP_400_BAD_REQUEST,
+            )

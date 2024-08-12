@@ -5,10 +5,8 @@ from rest_framework import serializers
 
 class OrderService:
     """
-    Service class for handling Order related operations.
+    Service class for Order model.
     """
-
-    # ! TODO: Add tests
 
     @staticmethod
     def generate_transaction_field(order):
@@ -17,17 +15,29 @@ class OrderService:
             order.transaction = f"trans-{order.pk}"
 
     @staticmethod
+    def calculate_amount(order):
+        """Calculate the total amount of the order based on quantity * price."""
+        from .models import OrderItem
+
+        order_items = OrderItem.objects.filter(order_id=order.id)
+        total = sum(item.price * item.quantity for item in order_items)
+        order.amount = total
+        return order
+
+    @staticmethod
     def validate_order(order):
+        """Validate the order by checking if it has associated order items."""
         from .models import OrderItem
 
         if OrderItem.objects.filter(order_id=order.id).exists():
             order.is_valid = True
-            order.save(update_fields=["is_valid"])
+        else:
+            order.is_valid = False
 
 
 class OrderItemService:
     """
-    Service class for handling OrderItem related operations.
+    Service class for OrderItem model.
     """
 
     @staticmethod
@@ -37,12 +47,6 @@ class OrderItemService:
             order_item.price = order_item.food_id.sale_price
         else:
             order_item.price = order_item.food_id.price
-        return order_item
-
-    @staticmethod
-    def set_subtotal(order_item):
-        """Set and calculate the subtotal for the OrderItem."""
-        order_item.subtotal = order_item.price * order_item.quantity
         return order_item
 
     @staticmethod

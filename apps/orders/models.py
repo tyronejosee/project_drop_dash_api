@@ -29,8 +29,6 @@ class Order(BaseModel):
         unique=True,
         validators=[validate_phone],
     )
-    shipping_time = models.CharField(max_length=255)
-    shipping_price = models.DecimalField(max_digits=5, decimal_places=2)
     transaction = models.CharField(max_length=255, unique=True, editable=False)
     address_1 = models.CharField(max_length=255)
     address_2 = models.CharField(max_length=255, blank=True)
@@ -44,7 +42,9 @@ class Order(BaseModel):
         max_digits=10,
         decimal_places=2,
         blank=True,
-    )  # TODO: Add service method for subtotal orderitem
+        editable=False,
+        default=0,
+    )
     status = models.CharField(
         max_length=50,
         choices=OrderStatusChoices.choices,
@@ -76,6 +76,7 @@ class Order(BaseModel):
         from .services import OrderService
 
         OrderService.generate_transaction_field(self)
+        OrderService.calculate_amount(self)
         OrderService.validate_order(self)
         super().save(*args, **kwargs)
 
@@ -91,13 +92,7 @@ class OrderItem(BaseModel):
         decimal_places=2,
         blank=True,
         editable=False,
-    )
-    subtotal = models.DecimalField(
-        max_digits=10,
-        decimal_places=2,
-        blank=True,
-        editable=False,
-        default=0,
+        help_text="The reference unit price of the product.",
     )
 
     objects = OrderItemManager()
@@ -106,6 +101,11 @@ class OrderItem(BaseModel):
         ordering = ["pk"]
         verbose_name = "order item"
         verbose_name_plural = "order items"
+        constraints = [
+            models.UniqueConstraint(
+                fields=["order_id", "food_id"], name="unique_order_food"
+            )
+        ]
 
     def __str__(self):
         return f"{self.order_id} - {self.food_id}"
@@ -114,7 +114,6 @@ class OrderItem(BaseModel):
         from .services import OrderItemService
 
         OrderItemService.set_price(self)
-        OrderItemService.set_subtotal(self)
         super(OrderItem, self).save(*args, **kwargs)
 
 

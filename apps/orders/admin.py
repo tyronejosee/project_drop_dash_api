@@ -14,7 +14,7 @@ class OrderAdmin(BaseAdmin):
     list_display = ["transaction", "is_available", "created_at", "status"]
     list_filter = ["status"]
     list_editable = ["is_available"]
-    readonly_fields = ["pk", "transaction", "created_at", "updated_at"]
+    readonly_fields = ["pk", "transaction", "amount", "created_at", "updated_at"]
     ordering = ["created_at"]
 
 
@@ -25,7 +25,7 @@ class OrderItemAdmin(BaseAdmin):
     search_fields = ["order_id", "food_id"]
     list_display = ["order_id", "food_id", "created_at", "is_available"]
     list_editable = ["is_available"]
-    readonly_fields = ["pk", "price", "subtotal", "created_at", "updated_at"]
+    readonly_fields = ["pk", "price", "created_at", "updated_at"]
     ordering = ["created_at"]
 
 

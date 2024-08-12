@@ -30,8 +30,6 @@ class OrderReadSerializer(ReadOnlyFieldsMixin, serializers.ModelSerializer):
             "user_id",
             "shipping_name",
             "shipping_phone",
-            "shipping_time",
-            "shipping_price",
             "transaction",
             "address_1",
             "address_2",
@@ -57,8 +55,6 @@ class OrderWriteSerializer(serializers.ModelSerializer):
         fields = [
             "shipping_name",
             "shipping_phone",
-            "shipping_time",
-            "shipping_price",
             "address_1",
             "address_2",
             "city_id",
@@ -67,7 +63,6 @@ class OrderWriteSerializer(serializers.ModelSerializer):
             "note",
             "zip_code",
             "restaurant_id",
-            # "amount",
             # "status",
             "payment_method",
         ]
@@ -105,7 +100,7 @@ class OrderItemReadSerializer(ReadOnlyFieldsMixin, serializers.ModelSerializer):
             "food_id",
             "quantity",
             "price",
-            "subtotal",
+            # "subtotal",
             "updated_at",
             "created_at",
         ]
