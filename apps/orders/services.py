@@ -5,7 +5,7 @@ from rest_framework import serializers
 
 class OrderService:
     """
-    Service class for Order model.
+    Service for Order model.
     """
 
     @staticmethod
@@ -37,7 +37,7 @@ class OrderService:
 
 class OrderItemService:
     """
-    Service class for OrderItem model.
+    Service for OrderItem model.
     """
 
     @staticmethod

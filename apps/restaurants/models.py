@@ -91,9 +91,18 @@ class Food(BaseModel):
 
     name = models.CharField(max_length=255)
     description = models.TextField(blank=True)
-    price = models.DecimalField(max_digits=10, decimal_places=2)
+    price = models.DecimalField(
+        max_digits=10,
+        decimal_places=2,
+        help_text="base price of the product, excluding taxes and surcharges.",
+    )
     sale_price = models.DecimalField(
-        max_digits=10, decimal_places=2, blank=True, null=True
+        max_digits=10,
+        decimal_places=2,
+        default=0.0,
+        blank=True,
+        editable=False,
+        help_text="Total price plus taxes.",
     )
     image = models.ImageField(
         upload_to=image_path,
@@ -128,3 +137,9 @@ class Food(BaseModel):
 
     def __str__(self):
         return str(self.name)
+
+    def save(self, *args, **kwargs):
+        from .services import FoodService
+
+        FoodService.calculate_sale_price_with_tax(self)
+        super().save(*args, **kwargs)

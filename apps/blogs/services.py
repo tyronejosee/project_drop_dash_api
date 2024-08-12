@@ -7,7 +7,7 @@ from .choices import PriorityChoices
 
 class PostService:
     """
-    Service class for handling Post related operations.
+    Service for Post model.
     """
 
     @staticmethod
