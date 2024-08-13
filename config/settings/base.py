@@ -14,6 +14,7 @@ environ.Env.read_env(".env.dev")
 
 
 SALES_TAX_RATE = 0.10
+DRIVER_TAX_RATE = 0.02
 
 
 BASE_APPS = [

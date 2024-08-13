@@ -1,12 +1,15 @@
 """Services for Drivers App."""
 
+from decimal import Decimal
+from django.conf import settings
 from django.core.exceptions import ValidationError
 from rest_framework.response import Response
 from rest_framework import status
 
 from apps.utilities.functions import encrypt_field
 from apps.users.choices import RoleChoices
-from .choices import VehicleChoices
+from apps.deliveries.models import Delivery
+from .choices import VehicleChoices, StatusChoices
 from .serializers import DriverWriteSerializer
 
 
@@ -75,6 +78,30 @@ class DriverService:
             {"detail": "All required documents must be submitted for verification."},
             status=status.HTTP_403_FORBIDDEN,
         )
+
+    @staticmethod
+    def calculate_earnings(driver):
+        """
+        Calculate total earnings for a given driver.
+        """
+        deliveries = Delivery.objects.filter(driver_id=driver)
+        total_earnings = sum(
+            delivery.order_id.amount * Decimal(settings.DRIVER_TAX_RATE)
+            for delivery in deliveries
+        )
+
+        # Add extra percentage based on the driver's status
+        extra_percentage = Decimal(0)
+        if driver.status == StatusChoices.BRONCE:
+            extra_percentage = Decimal(0)  # 0%
+        elif driver.status == StatusChoices.SILVER:
+            extra_percentage = Decimal(0.25)  # 25%
+        elif driver.status == StatusChoices.DIAMOND:
+            extra_percentage = Decimal(0.50)  # 50%
+        # If it is marked as ALERT, it loses all benefits.
+
+        total_earnings += total_earnings * extra_percentage
+        return round(total_earnings, 2)  # Round to 2 decimal places
 
     @staticmethod
     def toggle_availability(driver):

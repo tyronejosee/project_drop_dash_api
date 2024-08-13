@@ -66,8 +66,6 @@ class DriverViewSet(ListCacheMixin, LogicalDeleteMixin, ModelViewSet):
         permission_classes=[IsDriver],
         url_path="earnings",
     )
-    @method_decorator(cache_page(60 * 60 * 2))
-    @method_decorator(vary_on_headers("User-Agent"))
     def get_earnings(self, request, *args, **kwargs):
         """
         Action returns a list of earnings for a driver.
@@ -75,9 +73,20 @@ class DriverViewSet(ListCacheMixin, LogicalDeleteMixin, ModelViewSet):
         Endpoints:
         - GET api/v1/driver/{id}/earnings/
         """
-        pass
+        try:
+            driver = self.get_object()
+            total_earnings = DriverService.calculate_earnings(driver)
 
-    # ! TODO: Pending implementation
+            data = {
+                "driver_name": driver.user_id.username,
+                "total_earnings": total_earnings,
+            }
+            return Response(data, status=status.HTTP_200_OK)
+        except Driver.DoesNotExist:
+            return Response(
+                {"error": "Driver not found."},
+                status=status.HTTP_404_NOT_FOUND,
+            )
 
     @action(
         detail=True,
