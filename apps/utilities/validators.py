@@ -35,11 +35,10 @@ def validate_birth_date(value):
         )
 
 
-# ! TODO: Refactor to class-based validator
-
-
 def validate_food_image(image):
-    """Validate that the uploaded image for a food item meets the required dimensions."""
+    """
+    Validate that the uploaded image for a food item meets the required dimensions.
+    """
     max_width = 600
     max_height = 600
     img = Image.open(image)
@@ -54,7 +53,9 @@ def validate_food_image(image):
 
 @deconstructible
 class FileSizeValidator:
-    """Pending."""
+    """
+    Validator to check that a file's size does not exceed a specified limit.
+    """
 
     message = "File size must be under %(limit)s. Current size is %(size)s."
     code = "invalid_size"
@@ -89,7 +90,9 @@ class FileSizeValidator:
 
 @deconstructible
 class ImageSizeValidator:
-    """Validator to ensure the image does not exceed a specified size."""
+    """
+    Validator to ensure the image does not exceed a specified size.
+    """
 
     message = "The image must have a maximum size of %(max_width)sx%(max_height)spx"
     code = "invalid_max_size"
@@ -115,7 +118,9 @@ class ImageSizeValidator:
 
 
 class DateRangeValidator(BaseValidator):
-    """Validator that checks if the date is within a range of days."""
+    """
+    Validator that checks if the date is within a range of days.
+    """
 
     message = "Date must be within {days} days from the current date."
     code = "invalid_date_range"

@@ -10,8 +10,8 @@ from apps.users.models import User
 from apps.users.serializers import UserHistorySerializer
 from apps.reviews.models import Review
 from apps.reviews.serializers import ReviewReadSerializer
-from apps.orders.models import Order
-from apps.orders.serializers import OrderReadSerializer
+from apps.orders.models import Order, OrderReport
+from apps.orders.serializers import OrderReadSerializer, OrderReportReadSerializer
 
 
 class UserReviewsView(ListAPIView):
@@ -44,6 +44,21 @@ class UserOrdersView(ListAPIView):
 
     def get_queryset(self):
         return Order.objects.filter(user_id=self.request.user)
+
+
+class UserOrderReportsView(ListAPIView):
+    """
+    View to list all order reports of a user.
+
+    Endpoints:
+    - GET api/v1/accounts/order_reports/
+    """
+
+    permission_class = [IsClient]
+    serializer_class = OrderReportReadSerializer
+
+    def get_queryset(self):
+        return OrderReport.objects.get_by_user(self.request.user)
 
 
 class UserHistoryView(APIView):

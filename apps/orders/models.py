@@ -11,9 +11,7 @@ from apps.restaurants.models import Restaurant
 from apps.restaurants.models import Food
 from apps.locations.models import Country, State, City
 from apps.payments.choices import PaymentMethodChoices
-
-# from .services import OrderService, OrderItemService
-from .managers import OrderManager, OrderItemManager
+from .managers import OrderManager, OrderItemManager, OrderReportManager
 from .choices import OrderStatusChoices, ReportStatusChoices
 
 User = get_user_model()
@@ -177,6 +175,8 @@ class OrderReport(BaseModel):
         default=ReportStatusChoices.PENDING,
     )
     is_resolved = models.BooleanField(default=False)
+
+    objects = OrderReportManager()
 
     class Meta:
         ordering = ["-created_at"]

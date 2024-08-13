@@ -2,7 +2,12 @@
 
 from django.urls import path, include
 
-from .views import UserReviewsView, UserOrdersView, UserHistoryView
+from .views import (
+    UserReviewsView,
+    UserOrdersView,
+    UserOrderReportsView,
+    UserHistoryView,
+)
 
 
 urlpatterns = [
@@ -26,6 +31,10 @@ urlpatterns = [
     path(
         "api/v1/accounts/orders/",
         UserOrdersView.as_view(),
+    ),
+    path(
+        "api/v1/accounts/order_reports/",
+        UserOrderReportsView.as_view(),
     ),
     path(
         "api/v1/accounts/<str:pk>/history/",

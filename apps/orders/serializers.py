@@ -118,6 +118,18 @@ class OrderItemWriteSerializer(serializers.ModelSerializer):
         return OrderItemService.validate_quantity(value)
 
 
+class OrderReportReadSerializer(ReadOnlyFieldsMixin, serializers.ModelSerializer):
+    """Serializer for OrderReport model (List/retrieve)."""
+
+    class Meta:
+        model = OrderReport
+        fields = [
+            "order_id",
+            "reason",
+            "description",
+        ]
+
+
 class OrderReportWriteSerializer(serializers.ModelSerializer):
     """Serializer for OrderReport model (Create/update)."""
 

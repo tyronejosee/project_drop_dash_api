@@ -44,3 +44,14 @@ class OrderManager(BaseManager):
 
 class OrderItemManager(BaseManager):
     """Manager for OrderItem Model."""
+
+
+class OrderReportManager(BaseManager):
+    """Manager for OrderReport Model."""
+
+    def get_by_user(self, user):
+        return (
+            self.get_available()
+            .filter(user_id=user)
+            .select_related("user_id", "order_id")
+        )
