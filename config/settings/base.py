@@ -29,6 +29,7 @@ BASE_APPS = [
 PROJECT_APPS = [
     "apps.restaurants",
     "apps.drivers",
+    "apps.finances",
     "apps.home",
     "apps.reviews",
     "apps.users",

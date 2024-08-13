@@ -84,6 +84,7 @@ class DriverService:
         """
         Calculate total earnings for a given driver.
         """
+        # TODO: Add filter by day or date range
         deliveries = Delivery.objects.filter(driver_id=driver)
         total_earnings = sum(
             delivery.order_id.amount * Decimal(settings.DRIVER_TAX_RATE)
@@ -98,7 +99,7 @@ class DriverService:
             extra_percentage = Decimal(0.25)  # 25%
         elif driver.status == StatusChoices.DIAMOND:
             extra_percentage = Decimal(0.50)  # 50%
-        # If it is marked as ALERT, it loses all benefits.
+        # If it is marked as ALERT, it loses all benefits
 
         total_earnings += total_earnings * extra_percentage
         return round(total_earnings, 2)  # Round to 2 decimal places
