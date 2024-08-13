@@ -1,6 +1,8 @@
 """Services for Orders App."""
 
 from rest_framework import serializers
+from rest_framework import status
+from rest_framework.exceptions import ValidationError
 
 
 class OrderService:
@@ -42,12 +44,21 @@ class OrderItemService:
 
     @staticmethod
     def set_price(order_item):
-        """Set the price based on the Food's sale price or regular price."""
-        if order_item.food_id.sale_price:
-            order_item.price = order_item.food_id.sale_price
-        else:
-            order_item.price = order_item.food_id.price
-        return order_item
+        """Set the price based on the Food's sale price."""
+        try:
+            if order_item.food_id.sale_price:
+                order_item.price = order_item.food_id.sale_price
+            else:
+                raise ValidationError(
+                    {"detail": "Sale price are not defined for food item."},
+                    code=status.HTTP_400_BAD_REQUEST,
+                )
+            return order_item
+        except Exception as e:
+            raise ValidationError(
+                {"error": f"{e}"},
+                code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            )
 
     @staticmethod
     def validate_quantity(quantity):

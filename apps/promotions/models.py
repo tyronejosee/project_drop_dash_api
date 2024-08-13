@@ -92,7 +92,7 @@ class FixedCoupon(CouponBase):
 
 
 class PercentageCoupon(CouponBase):
-    """Model definition for PercentageCoupon (Entity)."""
+    """Model definition for PercentageCoupon."""
 
     discount_percentage = models.IntegerField(
         validators=[MinValueValidator(5), MaxValueValidator(25)]

@@ -159,7 +159,6 @@ Table Order {
   state FK
   country FK
   note text
-  zip_code varchar
   restaurant FK
   amount decimal
   status bool
