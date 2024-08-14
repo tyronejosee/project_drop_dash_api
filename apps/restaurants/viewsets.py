@@ -8,7 +8,6 @@ from django.shortcuts import get_object_or_404
 from rest_framework.viewsets import ModelViewSet
 from rest_framework.decorators import action
 from rest_framework.permissions import AllowAny
-from rest_framework.exceptions import PermissionDenied
 from rest_framework.response import Response
 from rest_framework import status
 
@@ -18,7 +17,7 @@ from apps.orders.models import Order
 from apps.orders.serializers import OrderReadSerializer
 from apps.reviews.models import Review
 from apps.reviews.serializers import ReviewReadSerializer, ReviewWriteSerializer
-from .models import Restaurant, Category
+from .models import Restaurant, Category, Food
 from .serializers import (
     RestaurantReadSerializer,
     RestaurantWriteSerializer,
@@ -26,6 +25,9 @@ from .serializers import (
     CategoryReadSerializer,
     CategoryWriteSerializer,
     CategoryMinimalSerializer,
+    FoodReadSerializer,
+    FoodWriteSerializer,
+    FoodMinimalSerializer,
 )
 from .filters import RestaurantFilter
 
@@ -158,10 +160,13 @@ class CategoryViewSet(ModelViewSet):
 
         # Verify if the request user is the owner of the restaurant
         if restaurant.user_id != self.request.user:
-            raise PermissionDenied(
-                "You do not have permission to add categories to this restaurant."
+            return Response(
+                {
+                    "error": "You do not have permission to add categories to this restaurant."
+                },
+                status=status.HTTP_403_FORBIDDEN,
             )
-        return super().create(self, request, *args, **kwargs)
+        return super().create(request, *args, **kwargs)
 
     def perform_create(self, serializer):
         restaurant_id = self.kwargs["restaurant_pk"]
@@ -175,7 +180,7 @@ class CategoryViewSet(ModelViewSet):
         # Verify if the request user is the owner of the restaurant
         if restaurant.user_id != request.user:
             return Response(
-                {"detail": "You do not have permission to update this category."},
+                {"error": "You do not have permission to update this category."},
                 status=status.HTTP_403_FORBIDDEN,
             )
         return super().update(request, *args, **kwargs)
@@ -187,7 +192,97 @@ class CategoryViewSet(ModelViewSet):
         # Verify if the request user is the owner of the restaurant
         if restaurant.user_id != request.user:
             return Response(
-                {"detail": "You do not have permission to delete this category."},
+                {"error": "You do not have permission to delete this category."},
+                status=status.HTTP_403_FORBIDDEN,
+            )
+        return super().destroy(request, *args, **kwargs)
+
+
+class FoodViewSet(ModelViewSet):
+    """
+    ViewSet for Food model.
+
+    Endpoints:
+    - GET /api/v1/restaurants/{id}/foods/
+    - POST /api/v1/restaurants/{id}/foods/
+    - GET /api/v1/restaurants/{id}/foods/{id}/
+    - PUT /api/v1/restaurants/{id}/foods/{id}/
+    - PATCH /api/v1/restaurants/{id}/foods/{id}/
+    - DELETE /api/v1/restaurants/{id}/foods/{id}/
+    """
+
+    permission_classes = [IsPartner]
+    serializer_class = FoodWriteSerializer
+    search_fields = ["name"]
+    # Filterset_class = FoodFilter
+
+    def get_queryset(self):
+        if self.action == "list":
+            return Food.objects.filter(restaurant_id=self.kwargs["restaurant_pk"]).only(
+                "id",
+                "name",
+                "price",
+                "sale_price",
+                "image",
+                "category_id",
+                "created_at",
+                "updated_at",
+            )
+        return Food.objects.filter(
+            restaurant_id=self.kwargs["restaurant_pk"]
+        ).select_related("restaurant_id", "category_id")
+
+    def get_serializer_class(self):
+        if self.action == "list":
+            return FoodMinimalSerializer
+        elif self.action == "retrieve":
+            return FoodReadSerializer
+        return super().get_serializer_class()
+
+    def get_permissions(self):
+        if self.action in ["list", "retrieve"]:
+            return [AllowAny()]
+        return super().get_permissions()
+
+    def create(self, request, *args, **kwargs):
+        restaurant_id = self.kwargs["restaurant_pk"]
+        restaurant = get_object_or_404(Restaurant, pk=restaurant_id)
+
+        # Verify if the request user is the owner of the restaurant
+        if restaurant.user_id != self.request.user:
+            return Response(
+                {
+                    "error": "You do not have permission to add foods to this restaurant."
+                },
+                status=status.HTTP_403_FORBIDDEN,
+            )
+        return super().create(request, *args, **kwargs)
+
+    def perform_create(self, serializer):
+        restaurant_id = self.kwargs["restaurant_pk"]
+        restaurant = get_object_or_404(Restaurant, pk=restaurant_id)
+        serializer.save(restaurant_id=restaurant)
+
+    def update(self, request, *args, **kwargs):
+        restaurant_id = self.kwargs["restaurant_pk"]
+        restaurant = get_object_or_404(Restaurant, pk=restaurant_id)
+
+        # Verify if the request user is the owner of the restaurant
+        if restaurant.user_id != request.user:
+            return Response(
+                {"error": "You do not have permission to update this food."},
+                status=status.HTTP_403_FORBIDDEN,
+            )
+        return super().update(request, *args, **kwargs)
+
+    def destroy(self, request, *args, **kwargs):
+        restaurant_id = self.kwargs["restaurant_pk"]
+        restaurant = get_object_or_404(Restaurant, pk=restaurant_id)
+
+        # Verify if the request user is the owner of the restaurant
+        if restaurant.user_id != request.user:
+            return Response(
+                {"error": "You do not have permission to delete this food."},
                 status=status.HTTP_403_FORBIDDEN,
             )
         return super().destroy(request, *args, **kwargs)

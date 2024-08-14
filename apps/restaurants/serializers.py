@@ -125,20 +125,18 @@ class CategoryMinimalSerializer(ReadOnlyFieldsMixin, serializers.ModelSerializer
 class FoodReadSerializer(ReadOnlyFieldsMixin, serializers.ModelSerializer):
     """Serializer for Food model (List/retrieve)."""
 
-    category = serializers.StringRelatedField()
+    category_id = serializers.StringRelatedField()
 
     class Meta:
         model = Food
         fields = [
             "id",
             "name",
+            "description",
             "price",
             "sale_price",
             "image",
-            "category",
-            "is_vegetarian",
-            "is_gluten_free",
-            "is_spicy",
+            "category_id",
             "is_featured",
             "created_at",
             "updated_at",
@@ -159,13 +157,10 @@ class FoodWriteSerializer(serializers.ModelSerializer):
             "name",
             "price",
             "image",
-            "category",
-            "is_vegetarian",
-            "is_gluten_free",
-            "is_spicy",
+            "category_id",
             "is_featured",
         ]
-        extra_kwargs = {"category": {"required": True}}
+        extra_kwargs = {"category_id": {"required": True}}
 
 
 class FoodMinimalSerializer(ReadOnlyFieldsMixin, serializers.ModelSerializer):
@@ -176,4 +171,10 @@ class FoodMinimalSerializer(ReadOnlyFieldsMixin, serializers.ModelSerializer):
         fields = [
             "id",
             "name",
+            "price",
+            "sale_price",
+            "image",
+            "category_id",
+            "created_at",
+            "updated_at",
         ]
