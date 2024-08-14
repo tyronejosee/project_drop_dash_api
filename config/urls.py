@@ -40,9 +40,6 @@ urlpatterns = [
     path("", include("apps.promotions.routers")),
     path("", include("apps.restaurants.routers")),
     path("", include("apps.users.urls")),
-    # ! TODO: Remove urls
-    # path("", include("apps.orders.urls")),
-    # path("", include("apps.restaurants.urls")),
 ]
 
 
