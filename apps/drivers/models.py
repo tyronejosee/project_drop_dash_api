@@ -49,12 +49,12 @@ class Driver(BaseModel):
     state_id = models.ForeignKey(State, on_delete=models.PROTECT)
     country_id = models.ForeignKey(Country, on_delete=models.PROTECT)
     vehicle_type = models.CharField(max_length=15, choices=VehicleChoices.choices)
-    is_verified = models.BooleanField(default=False)
     status = models.CharField(
         max_length=10,
         choices=StatusChoices.choices,
         default=StatusChoices.BRONCE,
     )
+    is_verified = models.BooleanField(default=False)
     is_active = models.BooleanField(
         default=False,
         help_text="Indicates if the driver is active to receive orders.",

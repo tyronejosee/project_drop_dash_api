@@ -122,9 +122,6 @@ class Food(BaseModel):
         on_delete=models.PROTECT,
         null=True,
     )
-    is_vegetarian = models.BooleanField(default=False)
-    is_gluten_free = models.BooleanField(default=False)
-    is_spicy = models.BooleanField(default=False)
     is_featured = models.BooleanField(default=False)
 
     objects = FoodManager()

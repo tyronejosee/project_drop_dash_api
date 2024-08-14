@@ -1,10 +1,12 @@
 // Drop Dash - Database Structure
 
+// ! TODO: Add Finances models
+
 // Utilities App
 
 Table Base {
   id uuid [pk]
-  available bool
+  is_available bool
   updated_at datetime
   created_at datetime
 }
@@ -20,6 +22,7 @@ Table User {
   last_name varchar
   date_birth date
   points int
+  role varchar
   is_active bool
   is_staff bool
   created_at date
@@ -33,10 +36,10 @@ Table Review {
   content_type FK
   object_id uuid
   content_object GFG
-  user FK
+  user_id FK
   rating int
   comment text
-  available base
+  is_available base
   updated_at base
   created_at base
 }
@@ -45,17 +48,17 @@ Table Review {
 
 Table Restaurant {
   id uuid [pk]
-  user FK
+  user_id FK
   name varchar
   slug slug
   image image
   banner image
   description text
-  specialty choices
+  specialty varchar
   address varchar
-  city FK
-  state FK
-  country FK
+  city_id FK
+  state_id FK
+  country_id FK
   opening_time datetime
   closing_time datetime
   phone varchar
@@ -67,7 +70,7 @@ Table Restaurant {
   legal_rep_email file
   legal_rep_identity_document file
   legal_rep_power_of_attorney file
-  available base
+  is_available base
   updated_at base
   created_at base
 }
@@ -75,8 +78,8 @@ Table Restaurant {
 Table Category {
   id uuid [pk]
   name varchar
-  restaurant FK
-  available base
+  restaurant_id FK
+  is_available base
   updated_at base
   created_at base
 }
@@ -88,13 +91,10 @@ Table Food {
   price decimal
   sale_price decimal
   image image
-  restaurant FK
-  category FK
-  is_vegetarian bool
-  is_gluten_free bool
-  is_spicy bool
+  restaurant_id FK
+  category_id FK
   is_featured bool
-  available base
+  is_available base
   updated_at base
   created_at base
 }
@@ -103,14 +103,14 @@ Table Food {
 
 Table Promotion {
   id uuid [pk]
-  creator FK
+  creator_id FK
   name varchar
   conditions text
   start_date date
   end_date date
   is_active bool
   image image
-  available base
+  is_available base
   updated_at base
   created_at base
 }
@@ -124,7 +124,7 @@ Table FixedCoupon {
   end_date date
   quantity int
   is_active bool
-  available base
+  is_available base
   updated_at base
   created_at base
 }
@@ -138,7 +138,7 @@ Table PercentageCoupon {
   end_date date
   quantity int
   is_active bool
-  available base
+  is_available base
   updated_at base
   created_at base
 }
@@ -147,35 +147,34 @@ Table PercentageCoupon {
 
 Table Order {
   id uuid [pk]
-  user FK
+  user_id FK
   shipping_name varchar
   shipping_phone varchar
-  shipping_time varchar
-  shipping_price decimal
   transaction varchar
   address_1 varchar
   address_2 varchar
-  city FK
-  state FK
-  country FK
+  city_id FK
+  state_id FK
+  country_id FK
   note text
-  restaurant FK
+  restaurant_id FK
   amount decimal
   status bool
-  payment_method choices
-  available base
+  payment_method varchar
+  is_payment bool
+  is_valid bool
+  is_available base
   updated_at base
   created_at base
 }
 
 Table OrderItem {
   id uuid [pk]
-  order FK
-  food FK
-  price decimal
-  subtotal decimal
+  order_id FK
+  food_id FK
   quantity int
-  available base
+  price decimal
+  is_available base
   updated_at base
   created_at base
 }
@@ -185,7 +184,7 @@ Table OrderItem {
 Table Country {
   id uuid [pk]
   name varchar
-  available base
+  is_available base
   updated_at base
   created_at base
 }
@@ -193,8 +192,8 @@ Table Country {
 Table State {
   id uuid [pk]
   name varchar
-  country FK
-  available base
+  country_id FK
+  is_available base
   updated_at base
   created_at base
 }
@@ -202,8 +201,8 @@ Table State {
 Table City {
   id uuid [pk]
   name varchar
-  state FK
-  available base
+  state_id FK
+  is_available base
   updated_at base
   created_at base
 }
@@ -212,41 +211,105 @@ Table City {
 
 Table Driver {
   id uuid [pk]
-  user FK
+  user_id FK
   phone varchar
   birth_date varchar
   driver_license file
   identification_document file
   social_security_certificate file
+  criminal_record_certificate file
   address varchar
-  city FK
-  state FK
-  country FK
-  is_verified bool
+  city_id FK
+  state_id FK
+  country_id FK
+  vehicle_type varchar
   status bool
-  available base
+  is_verified bool
+  is_available base
+  updated_at base
+  created_at base
+}
+
+Table DriverAssignment {
+  id uuid [pk]
+  driver_id FK
+  order_id FK
+  assigned_at datetime
+  status varchar
+  is_available base
   updated_at base
   created_at base
 }
 
 Table Resource {
   id uuid [pk]
-  driver FK
-  resource_type choices
+  driver_id FK
+  resource_type varchar
   note text
-  status choices
-  available base
+  status varchar
+  is_available base
   updated_at base
   created_at base
 }
-
 
 // Deliveries App
 
 Table Delivery {
   id uuid [pk]
-  // TODO: Add fields
-  available base
+  order_id FK
+  driver_id FK
+  signature image
+  status varchar
+  picked_up_at datetime
+  delivered_at datetime
+  is_completed bool
+  is_available base
+  updated_at base
+  created_at base
+}
+
+Table FailedDelivery {
+  id uuid [pk]
+  order_id FK
+  driver_id FK
+  reason text
+  failed_at datetime
+  is_available base
+  updated_at base
+  created_at base
+}
+
+// Home App
+
+Table Company {
+  id uuid [pk]
+  name varchar
+  logo file
+  description text
+  rights varchar
+  email url
+  facebook url
+  twitter url
+  instagram url
+  github url
+  is_available base
+  updated_at base
+  created_at base
+}
+
+Table Page {
+  id uuid [pk]
+  name varchar
+  content text
+  is_available base
+  updated_at base
+  created_at base
+}
+
+Table Keyword {
+  id uuid [pk]
+  word varchar
+  is_available base
   updated_at base
   created_at base
 }
@@ -257,41 +320,42 @@ Table Position {
   id uuid [pk]
   position varchar
   description text
-  available base
+  is_available base
   updated_at base
   created_at base
 }
 
 Table Worker {
   id uuid [pk]
-  user FK
+  user_id FK
   phone_number varchar
   address varchar
-  city FK
-  state FK
-  country FK
-  position FK
+  city_id FK
+  state_id FK
+  country_id FK
+  position_id FK
   hired_date date
   termination_date date
   hourly_rate decimal
-  contract_type choices
+  contract_type varchar
+  status varchar
   contract_file file
-  available base
+  is_available base
   updated_at base
   created_at base
 }
 
 Table Applicant {
   id uuid [pk]
-  user FK
+  user_id FK
   phone_number varchar
   email email
-  applied_for FK
+  position_id FK
   cv file
   message text
   submitted_at datetime
-  status choices
-  available base
+  status varchar
+  is_available base
   updated_at base
   created_at base
 }
@@ -302,7 +366,7 @@ Table Tag {
   id uuid [pk]
   name varchar
   slug slug
-  available base
+  is_available base
   updated_at base
   created_at base
 }
@@ -313,22 +377,22 @@ Table Post {
   slug slug
   content text
   tags M2M
-  author FK
+  author_id FK
   points int
   is_featured bool
-  available base
+  is_available base
   updated_at base
   created_at base
 }
 
 Table PostReport {
   id uuid [pk]
-  user FK
-  post FK
+  user_id FK
+  post_id FK
   reason text
-  priority choices
+  priority varchar
   status bool
-  available base
+  is_available base
   updated_at base
   created_at base
 }
@@ -336,45 +400,54 @@ Table PostReport {
 // Relations
 
 Ref: Review.content_type < Restaurant.id
-Ref: Review.user < User.id
+Ref: Review.user_id < User.id
 
-Ref: Restaurant.user < User.id
-Ref: Restaurant.city < City.id
-Ref: Restaurant.state < State.id
-Ref: Restaurant.country < Country.id
-Ref: Category.restaurant < Restaurant.id
-Ref: Food.restaurant < Restaurant.id
-Ref: Food.category < Category.id
+Ref: Restaurant.user_id < User.id
+Ref: Restaurant.city_id < City.id
+Ref: Restaurant.state_id < State.id
+Ref: Restaurant.country_id < Country.id
+Ref: Category.restaurant_id < Restaurant.id
+Ref: Food.restaurant_id < Restaurant.id
+Ref: Food.category_id < Category.id
 
-Ref: Promotion.creator < User.id
+Ref: Promotion.creator_id < User.id
 
-Ref: Order.user < User.id
-Ref: Order.city < City.id
-Ref: Order.state < State.id
-Ref: Order.country < Country.id
-Ref: Order.restaurant < Restaurant.id
-Ref: OrderItem.order < Order.id
-Ref: OrderItem.food < Food.id
+Ref: Order.user_id < User.id
+Ref: Order.city_id < City.id
+Ref: Order.state_id < State.id
+Ref: Order.country_id < Country.id
+Ref: Order.restaurant_id < Restaurant.id
+Ref: OrderItem.order_id < Order.id
+Ref: OrderItem.food_id < Food.id
 
-Ref: State.country < Country.id
-Ref: City.state < State.id
+Ref: State.country_id < Country.id
+Ref: City.state_id < State.id
 
-Ref: Driver.user < User.id
-Ref: Driver.city < City.id
-Ref: Driver.state < State.id
-Ref: Driver.country < Country.id
+Ref: Driver.user_id < User.id
+Ref: Driver.city_id < City.id
+Ref: Driver.state_id < State.id
+Ref: Driver.country_id < Country.id
 
-Ref: Resource.driver < Driver.id
+Ref: DriverAssignment.driver_id < Driver.id
+Ref: DriverAssignment.order_id < Order.id
 
-Ref: Worker.user < User.id
-Ref: Worker.city < City.id
-Ref: Worker.state < State.id
-Ref: Worker.country < Country.id
-Ref: Worker.position < Position.id
-Ref: Applicant.user < User.id
-Ref: Applicant.applied_for < Position.id
+Ref: Resource.driver_id < Driver.id
+
+Ref: Delivery.order_id < Order.id
+Ref: Delivery.driver_id < Driver.id
+
+Ref: FailedDelivery.order_id < Order.id
+Ref: FailedDelivery.driver_id < Driver.id
+
+Ref: Worker.user_id < User.id
+Ref: Worker.city_id < City.id
+Ref: Worker.state_id < State.id
+Ref: Worker.country_id < Country.id
+Ref: Worker.position_id < Position.id
+Ref: Applicant.user_id < User.id
+Ref: Applicant.position_id < Position.id
 
 Ref: Post.tags < Tag.id
-Ref: Post.author < User.id
-Ref: PostReport.user < User.id
-Ref: PostReport.post < Post.id
+Ref: Post.author_id < User.id
+Ref: PostReport.user_id < User.id
+Ref: PostReport.post_id < Post.id

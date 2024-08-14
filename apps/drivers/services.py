@@ -53,7 +53,6 @@ class DriverService:
         """
         Verifies the driver if all required documents have been submitted.
         """
-        # TODO: Consider the possibility of separating the HTTP responses further
         if driver.is_verified:
             return Response(
                 {"detail": "The driver has already been verified."},
