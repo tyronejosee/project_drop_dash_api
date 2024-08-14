@@ -4,9 +4,11 @@ from django.utils.decorators import method_decorator
 from django.views.decorators.cache import cache_page
 from django.views.decorators.vary import vary_on_headers
 from django.contrib.contenttypes.models import ContentType
+from django.shortcuts import get_object_or_404
 from rest_framework.viewsets import ModelViewSet
 from rest_framework.decorators import action
 from rest_framework.permissions import AllowAny
+from rest_framework.exceptions import PermissionDenied
 from rest_framework.response import Response
 from rest_framework import status
 
@@ -21,6 +23,8 @@ from .serializers import (
     RestaurantReadSerializer,
     RestaurantWriteSerializer,
     RestaurantMinimalSerializer,
+    CategoryReadSerializer,
+    CategoryWriteSerializer,
     CategoryMinimalSerializer,
 )
 from .filters import RestaurantFilter
@@ -90,31 +94,6 @@ class RestaurantViewSet(ListCacheMixin, LogicalDeleteMixin, ModelViewSet):
         )
 
     @action(
-        detail=True,
-        methods=["get"],
-        permission_classes=[AllowAny],
-        url_path="categories",
-    )
-    @method_decorator(cache_page(60 * 60 * 2))
-    @method_decorator(vary_on_headers("User-Agent"))
-    def get_categories(self, request, *args, **kwargs):
-        """
-        Action retrieve categories associated with a restaurant.
-
-        Endpoints:
-        - GET api/v1/restaurants/{id}/categories/
-        """
-        restaurant = self.get_object()
-        categories = Category.objects.filter(restaurant_id=restaurant)
-        if categories.exists():
-            serializer = CategoryMinimalSerializer(categories, many=True)
-            return Response(serializer.data)
-        return Response(
-            {"detail": "No categories found for this restaurant."},
-            status=status.HTTP_404_NOT_FOUND,
-        )
-
-    @action(
         detail=False,
         methods=["get"],
         permission_classes=[IsSupport],
@@ -137,6 +116,81 @@ class RestaurantViewSet(ListCacheMixin, LogicalDeleteMixin, ModelViewSet):
             {"detail": "No restaurants found."},
             status=status.HTTP_404_NOT_FOUND,
         )
+
+
+class CategoryViewSet(ModelViewSet):
+    """
+    ViewSet for Category model.
+
+    Endpoints:
+    - GET /api/v1/restaurants/categories/
+    - POST /api/v1/restaurants/categories/
+    - GET /api/v1/restaurants/{id}/categories/{id}/
+    - PUT /api/v1/restaurants/{id}/categories/{id}/
+    - PATCH /api/v1/restaurants/{id}/categories/{id}/
+    - DELETE /api/v1/restaurants/{id}/categories/{id}/
+    """
+
+    permission_classes = [IsPartner]
+    serializer_class = CategoryWriteSerializer
+    search_fields = ["name"]
+
+    def get_queryset(self):
+        if self.action == "list":
+            return Category.objects.filter(
+                restaurant_id=self.kwargs["restaurant_pk"], is_available=True
+            ).values("id", "name")
+        return Category.objects.filter(
+            restaurant_id=self.kwargs["restaurant_pk"],
+            is_available=True,
+        ).select_related("restaurant_id")
+
+    def get_serializer_class(self):
+        if self.action == "list":
+            return CategoryMinimalSerializer
+        elif self.action == "retrieve":
+            return CategoryReadSerializer
+        return super().get_serializer_class()
+
+    def create(self, request, *args, **kwargs):
+        restaurant_id = self.kwargs["restaurant_pk"]
+        restaurant = get_object_or_404(Restaurant, pk=restaurant_id)
+
+        # Verify if the request user is the owner of the restaurant
+        if restaurant.user_id != self.request.user:
+            raise PermissionDenied(
+                "You do not have permission to add categories to this restaurant."
+            )
+        return super().create(self, request, *args, **kwargs)
+
+    def perform_create(self, serializer):
+        restaurant_id = self.kwargs["restaurant_pk"]
+        restaurant = get_object_or_404(Restaurant, pk=restaurant_id)
+        serializer.save(restaurant_id=restaurant)
+
+    def update(self, request, *args, **kwargs):
+        restaurant_id = self.kwargs["restaurant_pk"]
+        restaurant = get_object_or_404(Restaurant, pk=restaurant_id)
+
+        # Verify if the request user is the owner of the restaurant
+        if restaurant.user_id != request.user:
+            return Response(
+                {"detail": "You do not have permission to update this category."},
+                status=status.HTTP_403_FORBIDDEN,
+            )
+        return super().update(request, *args, **kwargs)
+
+    def destroy(self, request, *args, **kwargs):
+        restaurant_id = self.kwargs["restaurant_pk"]
+        restaurant = get_object_or_404(Restaurant, pk=restaurant_id)
+
+        # Verify if the request user is the owner of the restaurant
+        if restaurant.user_id != request.user:
+            return Response(
+                {"detail": "You do not have permission to delete this category."},
+                status=status.HTTP_403_FORBIDDEN,
+            )
+        return super().destroy(request, *args, **kwargs)
 
 
 class RestaurantReviewViewSet(ModelViewSet):
