@@ -19,6 +19,7 @@ from .serializers import (
     DriverReadSerializer,
     DriverWriteSerializer,
     DriverMinimalSerializer,
+    ResourceReadSerializer,
     ResourceWriteSerializer,
 )
 
@@ -86,7 +87,7 @@ class DriverViewSet(ListCacheMixin, LogicalDeleteMixin, ModelViewSet):
     @action(
         detail=True,
         methods=["get"],
-        permission_classes=[IsDriver],
+        permission_classes=[IsDriver, IsOwner],
         url_path="earnings",
     )
     def get_earnings(self, request, *args, **kwargs):
@@ -114,7 +115,7 @@ class DriverViewSet(ListCacheMixin, LogicalDeleteMixin, ModelViewSet):
     @action(
         detail=True,
         methods=["post"],
-        permission_classes=[IsDriver],
+        permission_classes=[IsDriver, IsOwner],
         url_path="request_resources",
     )
     def request_resources(self, request, *args, **kwargs):
@@ -122,7 +123,7 @@ class DriverViewSet(ListCacheMixin, LogicalDeleteMixin, ModelViewSet):
         Action for requesting resources.
 
         Endpoints:
-        - POST api/v1/resources/request/
+        - POST api/v1/drivers/{id}/request_resources/
         """
         driver = self.get_object()
 
@@ -142,6 +143,29 @@ class DriverViewSet(ListCacheMixin, LogicalDeleteMixin, ModelViewSet):
         serializer.save(driver_id=driver)
         return Response(
             {"detail": "Request successful."}, status=status.HTTP_201_CREATED
+        )
+
+    @action(
+        detail=True,
+        methods=["get"],
+        permission_classes=[IsDriver, IsOwner],
+        url_path="resources_history",
+    )
+    def get_resources_history(self, request, *args, **kwargs):
+        """
+        Action retrieve the resource history for a specific driver.
+
+        Endpoints:
+        - POST api/v1/drivers/{id}/resources_history/
+        """
+        driver = self.get_object()
+        resources = Resource.objects.filter(driver_id=driver)
+        if resources.exists():
+            serializer = ResourceReadSerializer(resources, many=True)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        return Response(
+            {"error": "Resources not found."},
+            status=status.HTTP_404_NOT_FOUND,
         )
 
     @action(
