@@ -32,7 +32,7 @@ urlpatterns = [
     # Apps urls
     path("", include("apps.blogs.routers")),
     path("", include("apps.drivers.routers")),
-    # path("", include("apps.finances.routers")),
+    path("", include("apps.finances.routers")),
     path("", include("apps.home.routers")),
     path("", include("apps.jobs.routers")),
     path("", include("apps.locations.routers")),

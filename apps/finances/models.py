@@ -6,6 +6,7 @@ from apps.utilities.models import BaseModel
 from apps.orders.models import Order
 from apps.drivers.models import Driver
 from apps.restaurants.models import Restaurant
+from .managers import RevenueManager
 from .choices import TransactionTypeChoices
 
 
@@ -32,6 +33,8 @@ class Revenue(BaseModel):
         max_length=30,
         choices=TransactionTypeChoices.choices,
     )
+
+    objects = RevenueManager()
 
     class Meta:
         ordering = ["pk"]
