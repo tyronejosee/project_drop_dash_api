@@ -11,6 +11,8 @@ def update_restaurant_verification(sender, instance, **kwargs):
     """Signal update the restaurant verification status."""
     restaurant = instance.restaurant_id
 
+    # ! TODO: Move to services layer
+
     # Count the number of foods for that restaurant
     product_count = Food.objects.filter(
         restaurant_id=restaurant, is_available=True

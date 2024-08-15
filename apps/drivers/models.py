@@ -126,6 +126,9 @@ class Resource(BaseModel):
         ordering = ["pk"]
         verbose_name = "resource"
         verbose_name_plural = "resources"
+        indexes = [
+            models.Index(fields=["driver_id", "resource_type"]),
+        ]
 
     def __str__(self):
         return f"Resources for {self.driver_id}"

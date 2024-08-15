@@ -9,16 +9,17 @@ from rest_framework.response import Response
 from rest_framework import status
 
 from apps.utilities.mixins import ListCacheMixin, LogicalDeleteMixin
-from apps.users.permissions import IsSupport, IsClient, IsDriver
+from apps.users.permissions import IsSupport, IsClient, IsDriver, IsOwner
 from apps.orders.models import Order
 from apps.orders.serializers import OrderMinimalSerializer
 from apps.deliveries.models import Delivery
-from .models import Driver
+from .models import Driver, Resource
 from .services import DriverService
 from .serializers import (
     DriverReadSerializer,
     DriverWriteSerializer,
     DriverMinimalSerializer,
+    ResourceWriteSerializer,
 )
 
 
@@ -35,7 +36,7 @@ class DriverViewSet(ListCacheMixin, LogicalDeleteMixin, ModelViewSet):
     - DELETE /api/v1/drivers/{id}/
     """
 
-    permission_classes = [IsSupport]
+    permission_classes = [IsSupport, IsOwner]
     serializer_class = DriverWriteSerializer
     search_fields = ["user_id"]
     # filterset_class = DriverFilter
@@ -59,6 +60,28 @@ class DriverViewSet(ListCacheMixin, LogicalDeleteMixin, ModelViewSet):
 
     def create(self, request, *args, **kwargs):
         return DriverService.create_driver(request.user, request.data)
+
+    @action(
+        detail=False,
+        methods=["get"],
+        permission_classes=[IsDriver],
+        url_path="profile",
+    )
+    def get_profile(self, request, *args, **kwargs):
+        """
+        Action retrieve a driver profile.
+
+        Endpoints:
+        - GET api/v1/driver/profile/
+        """
+        driver = Driver.objects.get(user_id=request.user)
+        if driver.is_available:
+            serializer = DriverReadSerializer(driver)
+            return Response(serializer.data)
+        return Response(
+            {"error": "Your profile has been deactivated."},
+            status=status.HTTP_400_BAD_REQUEST,
+        )
 
     @action(
         detail=True,
@@ -87,6 +110,39 @@ class DriverViewSet(ListCacheMixin, LogicalDeleteMixin, ModelViewSet):
                 {"error": "Driver not found."},
                 status=status.HTTP_404_NOT_FOUND,
             )
+
+    @action(
+        detail=True,
+        methods=["post"],
+        permission_classes=[IsDriver],
+        url_path="request_resources",
+    )
+    def request_resources(self, request, *args, **kwargs):
+        """
+        Action for requesting resources.
+
+        Endpoints:
+        - POST api/v1/resources/request/
+        """
+        driver = self.get_object()
+
+        # Check if a previous request already exists
+        if Resource.objects.filter(
+            driver_id=driver,
+            resource_type=request.data.get("resource_type"),
+        ).exists():
+            return Response(
+                {"error": "You have already requested this resource."},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+        # Create and validate the request
+        serializer = ResourceWriteSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        serializer.save(driver_id=driver)
+        return Response(
+            {"detail": "Request successful."}, status=status.HTTP_201_CREATED
+        )
 
     @action(
         detail=True,
