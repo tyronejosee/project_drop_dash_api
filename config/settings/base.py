@@ -220,7 +220,13 @@ SPECTACULAR_SETTINGS = {
         "url": "https://github.com/tyronejosee/project_drop_dash_api/blob/main/LICENSE",
     },
     "CONTACT": {"name": "Developer", "url": "https://github.com/tyronejosee"},
-    "SCHEMA_PATH_PREFIX": r"^/api/v\d+",
-    "SCHEMA_PATH_PREFIX_TRIM": True,
+    # "SCHEMA_PATH_PREFIX": r"^/api/v\d+",
+    # "SCHEMA_PATH_PREFIX_TRIM": True,
     "SERVE_INCLUDE_SCHEMA": False,
+    "TAGS": [
+        {
+            "name": "posts",
+            "description": "Operations related to posts",
+        },
+    ],
 }

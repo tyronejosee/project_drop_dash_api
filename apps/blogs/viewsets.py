@@ -9,6 +9,7 @@ from rest_framework.permissions import AllowAny
 from rest_framework.decorators import action
 from rest_framework.response import Response
 from rest_framework import status
+from drf_spectacular.utils import extend_schema_view
 
 from apps.users.permissions import IsMarketing, IsClient
 from apps.utilities.mixins import ListCacheMixin, LogicalDeleteMixin
@@ -22,8 +23,10 @@ from .serializers import (
     TagReadSerializer,
     TagWriteSerializer,
 )
+from .schemas import post_schemas
 
 
+@extend_schema_view(**post_schemas)
 class PostViewSet(ListCacheMixin, LogicalDeleteMixin, ModelViewSet):
     """
     ViewSet for managing Country instances.
@@ -98,7 +101,7 @@ class PostViewSet(ListCacheMixin, LogicalDeleteMixin, ModelViewSet):
     )
     @method_decorator(cache_page(60 * 60 * 2))
     @method_decorator(vary_on_headers("User-Agent"))
-    def reports(self, request, *args, **kwargs):
+    def get_reports(self, request, *args, **kwargs):
         """
         Action retrieve a list of all post reports.
 
@@ -122,7 +125,7 @@ class PostViewSet(ListCacheMixin, LogicalDeleteMixin, ModelViewSet):
     )
     @method_decorator(cache_page(60 * 60 * 2))
     @method_decorator(vary_on_headers("User-Agent"))
-    def featured_posts(self, request, *args, **kwargs):
+    def get_featured_posts(self, request, *args, **kwargs):
         """
         Action retrieve all featured posts.
 
@@ -146,7 +149,7 @@ class PostViewSet(ListCacheMixin, LogicalDeleteMixin, ModelViewSet):
     )
     @method_decorator(cache_page(60 * 60 * 2))
     @method_decorator(vary_on_headers("User-Agent"))
-    def recent_posts(self, request, *args, **kwargs):
+    def get_recent_posts(self, request, *args, **kwargs):
         """
         Action retrieve all recent posts (7 days).
 
@@ -170,7 +173,7 @@ class PostViewSet(ListCacheMixin, LogicalDeleteMixin, ModelViewSet):
     )
     @method_decorator(cache_page(60 * 60 * 2))
     @method_decorator(vary_on_headers("User-Agent"))
-    def tags(self, request, *args, **kwargs):
+    def get_tags(self, request, *args, **kwargs):
         """
         Action retrieve all tags.
 
