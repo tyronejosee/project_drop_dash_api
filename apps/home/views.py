@@ -4,11 +4,14 @@ from rest_framework.views import APIView
 from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 from rest_framework import status
+from drf_spectacular.utils import extend_schema_view
 
 from .models import Company
 from .serializers import CompanyReadSerializer
+from .schemas import company_schemas
 
 
+@extend_schema_view(**company_schemas)
 class CompanyView(APIView):
     """
     View to display all the public information of the company.
@@ -22,7 +25,6 @@ class CompanyView(APIView):
     def get(self, request, *args, **kwargs):
         try:
             company = Company.objects.first()
-            print(company)
             if company:
                 serializer = CompanyReadSerializer(company)
                 return Response(serializer.data, status=status.HTTP_200_OK)
@@ -32,5 +34,6 @@ class CompanyView(APIView):
             )
         except Exception as e:
             return Response(
-                {"detail": f"{e}"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR
+                {"error": f"{e}"},
+                status=status.HTTP_500_INTERNAL_SERVER_ERROR,
             )

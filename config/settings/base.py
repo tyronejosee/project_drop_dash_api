@@ -225,8 +225,32 @@ SPECTACULAR_SETTINGS = {
     "SERVE_INCLUDE_SCHEMA": False,
     "TAGS": [
         {
-            "name": "blogs",
-            "description": "Operations related to blogs",
+            "name": "company",
+            "description": "All company data",
+        },
+        {
+            "name": "pages",
+            "description": "Operations related to pages",
+        },
+        {
+            "name": "keywords",
+            "description": "Operations related to keywords",
+        },
+        {
+            "name": "posts",
+            "description": "Operations related to posts",
+        },
+        {
+            "name": "countries",
+            "description": "Operations related to countries",
+        },
+        {
+            "name": "states",
+            "description": "Operations related to states",
+        },
+        {
+            "name": "cities",
+            "description": "Operations related to cities",
         },
     ],
 }

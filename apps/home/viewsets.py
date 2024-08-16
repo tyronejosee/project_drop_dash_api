@@ -2,6 +2,7 @@
 
 from rest_framework.viewsets import ModelViewSet
 from rest_framework.permissions import AllowAny
+from drf_spectacular.utils import extend_schema_view
 
 from apps.users.permissions import IsMarketing
 from apps.utilities.mixins import ListCacheMixin, LogicalDeleteMixin
@@ -13,8 +14,10 @@ from .serializers import (
     KeywordReadSerializer,
     KeywordWriteSerializer,
 )
+from .schemas import page_schemas, keyword_schemas
 
 
+@extend_schema_view(**page_schemas)
 class PageViewSet(ListCacheMixin, LogicalDeleteMixin, ModelViewSet):
     """
     ViewSet for managing Page instances.
@@ -53,6 +56,7 @@ class PageViewSet(ListCacheMixin, LogicalDeleteMixin, ModelViewSet):
         return super().get_permissions()
 
 
+@extend_schema_view(**keyword_schemas)
 class KeywordViewSet(ListCacheMixin, LogicalDeleteMixin, ModelViewSet):
     """
     ViewSet for managing Keywords instances.
