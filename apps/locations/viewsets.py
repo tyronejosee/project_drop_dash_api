@@ -2,6 +2,7 @@
 
 from rest_framework.viewsets import ModelViewSet
 from rest_framework.permissions import AllowAny
+from drf_spectacular.utils import extend_schema_view
 
 from apps.users.permissions import IsAdministrator
 from apps.utilities.mixins import ListCacheMixin, LogicalDeleteMixin
@@ -17,8 +18,10 @@ from .serializers import (
     CityWriteSerializer,
     CityMinimalSerializer,
 )
+from .schemas import country_schemas, state_schemas, city_schemas
 
 
+@extend_schema_view(**country_schemas)
 class CountryViewSet(ListCacheMixin, LogicalDeleteMixin, ModelViewSet):
     """
     ViewSet for managing Country instances.
@@ -37,7 +40,7 @@ class CountryViewSet(ListCacheMixin, LogicalDeleteMixin, ModelViewSet):
     search_fields = ["name"]
 
     def get_queryset(self):
-        return Country.objects.get_available().defer("is_available")
+        return Country.objects.get_available()
 
     def get_serializer_class(self):
         if self.action == "list":
@@ -52,6 +55,7 @@ class CountryViewSet(ListCacheMixin, LogicalDeleteMixin, ModelViewSet):
         return super().get_permissions()
 
 
+@extend_schema_view(**state_schemas)
 class StateViewSet(ListCacheMixin, LogicalDeleteMixin, ModelViewSet):
     """
     ViewSet for managing State instances.
@@ -68,7 +72,6 @@ class StateViewSet(ListCacheMixin, LogicalDeleteMixin, ModelViewSet):
     permission_classes = [IsAdministrator]
     serializer_class = StateWriteSerializer
     search_fields = ["name"]
-    # filterset_class = StateFilter # TODO: Add filter
 
     def get_queryset(self):
         return State.objects.get_available().select_related(
@@ -88,6 +91,7 @@ class StateViewSet(ListCacheMixin, LogicalDeleteMixin, ModelViewSet):
         return super().get_permissions()
 
 
+@extend_schema_view(**city_schemas)
 class CityViewSet(ListCacheMixin, LogicalDeleteMixin, ModelViewSet):
     """
     ViewSet for managing City instances.
@@ -104,7 +108,6 @@ class CityViewSet(ListCacheMixin, LogicalDeleteMixin, ModelViewSet):
     permission_classes = [IsAdministrator]
     serializer_class = CityWriteSerializer
     search_fields = ["name"]
-    # filterset_class = CityFilter # TODO: Add filter
 
     def get_queryset(self):
         return City.objects.select_related(

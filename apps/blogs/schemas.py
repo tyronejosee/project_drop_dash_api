@@ -22,7 +22,7 @@ post_schemas = {
             404: OpenApiResponse(description="Not found"),
         },
         auth=[],
-        tags=["posts"],
+        tags=["blogs"],
     ),
     "create": extend_schema(
         summary="Create a Post",
@@ -34,7 +34,7 @@ post_schemas = {
             401: OpenApiResponse(description="Unauthorized"),
             403: OpenApiResponse(description="Forbidden"),
         },
-        tags=["posts"],
+        tags=["blogs"],
     ),
     "retrieve": extend_schema(
         summary="Get a Post",
@@ -45,7 +45,7 @@ post_schemas = {
             404: OpenApiResponse(description="Not found"),
         },
         auth=[],
-        tags=["posts"],
+        tags=["blogs"],
     ),
     "update": extend_schema(
         summary="Update a Post",
@@ -58,7 +58,7 @@ post_schemas = {
             403: OpenApiResponse(description="Forbidden"),
             404: OpenApiResponse(description="Not Found"),
         },
-        tags=["posts"],
+        tags=["blogs"],
     ),
     "partial_update": extend_schema(
         summary="Partial Update a Post",
@@ -71,7 +71,7 @@ post_schemas = {
             403: OpenApiResponse(description="Forbidden"),
             404: OpenApiResponse(description="Not Found"),
         },
-        tags=["posts"],
+        tags=["blogs"],
     ),
     "destroy": extend_schema(
         summary="Remove a Post",
@@ -83,7 +83,7 @@ post_schemas = {
             403: OpenApiResponse(description="Forbidden"),
             404: OpenApiResponse(description="Not Found"),
         },
-        tags=["posts"],
+        tags=["blogs"],
     ),
     "create_report": extend_schema(
         summary="Create a Report for Post",
@@ -95,7 +95,7 @@ post_schemas = {
             401: OpenApiResponse(description="Unauthorized"),
             403: OpenApiResponse(description="Forbidden"),
         },
-        tags=["posts"],
+        tags=["blogs"],
     ),
     "get_reports": extend_schema(
         summary="Get all reports of Posts",
@@ -105,7 +105,7 @@ post_schemas = {
             400: OpenApiResponse(description="Bad request"),
             404: OpenApiResponse(description="Not found"),
         },
-        tags=["posts"],
+        tags=["blogs"],
     ),
     "get_featured_posts": extend_schema(
         summary="Get all Featured Posts",
@@ -116,7 +116,7 @@ post_schemas = {
             404: OpenApiResponse(description="Not found"),
         },
         auth=[],
-        tags=["posts"],
+        tags=["blogs"],
     ),
     "get_recent_posts": extend_schema(
         summary="Get all Recent Posts",
@@ -127,7 +127,7 @@ post_schemas = {
             404: OpenApiResponse(description="Not found"),
         },
         auth=[],
-        tags=["posts"],
+        tags=["blogs"],
     ),
     "get_tags": extend_schema(
         summary="Get all Tags for Posts",
@@ -138,7 +138,7 @@ post_schemas = {
             404: OpenApiResponse(description="Not found"),
         },
         auth=[],
-        tags=["posts"],
+        tags=["blogs"],
     ),
     "create_tag": extend_schema(
         summary="Create a Tag for Post",
@@ -150,6 +150,6 @@ post_schemas = {
             401: OpenApiResponse(description="Unauthorized"),
             403: OpenApiResponse(description="Forbidden"),
         },
-        tags=["posts"],
+        tags=["blogs"],
     ),
 }

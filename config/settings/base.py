@@ -225,8 +225,8 @@ SPECTACULAR_SETTINGS = {
     "SERVE_INCLUDE_SCHEMA": False,
     "TAGS": [
         {
-            "name": "posts",
-            "description": "Operations related to posts",
+            "name": "blogs",
+            "description": "Operations related to blogs",
         },
     ],
 }
