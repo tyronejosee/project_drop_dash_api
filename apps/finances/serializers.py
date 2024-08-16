@@ -28,7 +28,7 @@ class RevenueReadSerializer(ReadOnlyFieldsMixin, serializers.ModelSerializer):
         ]
 
 
-class RevenueWriteSerializer(ReadOnlyFieldsMixin, serializers.ModelSerializer):
+class RevenueWriteSerializer(serializers.ModelSerializer):
     """Serializer for Revenue model (Create/Update)."""
 
     class Meta:

@@ -252,5 +252,9 @@ SPECTACULAR_SETTINGS = {
             "name": "cities",
             "description": "Operations related to cities",
         },
+        {
+            "name": "revenues",
+            "description": "Operations related to revenues",
+        },
     ],
 }

@@ -1,13 +1,16 @@
 """ViewSets for Finances App."""
 
 from rest_framework.viewsets import ModelViewSet
+from drf_spectacular.utils import extend_schema_view
 
 from apps.utilities.mixins import ListCacheMixin, LogicalDeleteMixin
 from apps.users.permissions import IsAdministrator
 from .models import Revenue
 from .serializers import RevenueReadSerializer, RevenueWriteSerializer
+from .schemas import revenue_schemas
 
 
+@extend_schema_view(**revenue_schemas)
 class RevenueViewSet(ListCacheMixin, LogicalDeleteMixin, ModelViewSet):
     """
     ViewSet for Revenue model.
