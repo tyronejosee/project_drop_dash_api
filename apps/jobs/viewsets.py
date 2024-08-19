@@ -5,6 +5,7 @@ from rest_framework.permissions import AllowAny
 from rest_framework.decorators import action
 from rest_framework.response import Response
 from rest_framework import status
+from drf_spectacular.utils import extend_schema_view
 
 from apps.users.permissions import IsHumanResources
 from apps.utilities.mixins import ListCacheMixin, LogicalDeleteMixin
@@ -22,8 +23,10 @@ from .serializers import (
     ApplicantMinimalSerializer,
 )
 from .filters import WorkerFilter, ApplicantFilter
+from .schemas import position_schemas, worker_schemas, applicant_schemas
 
 
+@extend_schema_view(**position_schemas)
 class PositionViewSet(ListCacheMixin, LogicalDeleteMixin, ModelViewSet):
     """
     ViewSet for managing Position instances.
@@ -59,6 +62,7 @@ class PositionViewSet(ListCacheMixin, LogicalDeleteMixin, ModelViewSet):
         return super().get_permissions()
 
 
+@extend_schema_view(**worker_schemas)
 class WorkerViewSet(ListCacheMixin, LogicalDeleteMixin, ModelViewSet):
     """
     ViewSet for managing Worker instances.
@@ -109,6 +113,7 @@ class WorkerViewSet(ListCacheMixin, LogicalDeleteMixin, ModelViewSet):
         )
 
 
+@extend_schema_view(**applicant_schemas)
 class ApplicantViewSet(ListCacheMixin, LogicalDeleteMixin, ModelViewSet):
     """
     ViewSet for managing Applicant instances.

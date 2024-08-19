@@ -264,5 +264,17 @@ SPECTACULAR_SETTINGS = {
             "name": "revenues",
             "description": "Operations related to revenues",
         },
+        {
+            "name": "positions",
+            "description": "Operations related to positions",
+        },
+        {
+            "name": "applicants",
+            "description": "Operations related to applicants",
+        },
+        {
+            "name": "workers",
+            "description": "Operations related to workers",
+        },
     ],
 }

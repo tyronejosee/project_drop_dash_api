@@ -69,6 +69,7 @@ class WorkerReadSerializer(ReadOnlyFieldsMixin, serializers.ModelSerializer):
             "hired_date",
             "termination_date",
             "hourly_rate",
+            "contract_type",
             "status",
             "contract_file",
             "is_active",
