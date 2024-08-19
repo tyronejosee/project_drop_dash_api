@@ -55,7 +55,7 @@ class DriverService:
         """
         if driver.is_verified:
             return Response(
-                {"detail": "The driver has already been verified."},
+                {"error": "The driver has already been verified."},
                 status=status.HTTP_400_BAD_REQUEST,
             )
 
@@ -74,7 +74,7 @@ class DriverService:
                 status=status.HTTP_200_OK,
             )
         return Response(
-            {"detail": "All required documents must be submitted for verification."},
+            {"error": "All required documents must be submitted for verification."},
             status=status.HTTP_403_FORBIDDEN,
         )
 

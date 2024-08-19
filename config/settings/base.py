@@ -237,6 +237,10 @@ SPECTACULAR_SETTINGS = {
             "description": "Operations related to keywords",
         },
         {
+            "name": "drivers",
+            "description": "Operations related to drivers",
+        },
+        {
             "name": "promotions",
             "description": "Operations related to promotions",
         },

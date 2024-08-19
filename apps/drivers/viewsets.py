@@ -7,6 +7,7 @@ from rest_framework.viewsets import ModelViewSet
 from rest_framework.decorators import action
 from rest_framework.response import Response
 from rest_framework import status
+from drf_spectacular.utils import extend_schema_view
 
 from apps.utilities.mixins import ListCacheMixin, LogicalDeleteMixin
 from apps.users.permissions import IsSupport, IsClient, IsDriver, IsOwner
@@ -22,8 +23,10 @@ from .serializers import (
     ResourceReadSerializer,
     ResourceWriteSerializer,
 )
+from .schemas import driver_schemas
 
 
+@extend_schema_view(**driver_schemas)
 class DriverViewSet(ListCacheMixin, LogicalDeleteMixin, ModelViewSet):
     """
     ViewSet for managing Driver instances.
@@ -217,7 +220,7 @@ class DriverViewSet(ListCacheMixin, LogicalDeleteMixin, ModelViewSet):
         relations = Delivery.objects.filter(driver_id=driver)
         if not relations.exists():
             return Response(
-                {"detail": "No orders found for this driver."},
+                {"error": "No orders found for this driver."},
                 status=status.HTTP_404_NOT_FOUND,
             )
 
