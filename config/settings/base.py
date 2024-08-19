@@ -237,6 +237,19 @@ SPECTACULAR_SETTINGS = {
             "description": "Operations related to keywords",
         },
         {
+            "name": "restaurants",
+            "description": "Operations related to restaurants",
+        },
+        {
+            "name": "categories",
+            "description": "Operations related to categories",
+        },
+        {
+            "name": "foods",
+            "description": "Operations related to foods",
+        },
+        # TODO: Add here
+        {
             "name": "orders",
             "description": "Operations related to orders",
         },

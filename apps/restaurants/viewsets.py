@@ -10,6 +10,7 @@ from rest_framework.decorators import action
 from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 from rest_framework import status
+from drf_spectacular.utils import extend_schema_view
 
 from apps.users.permissions import IsPartner, IsClient, IsSupport
 from apps.utilities.mixins import ListCacheMixin, LogicalDeleteMixin
@@ -30,8 +31,10 @@ from .serializers import (
     FoodMinimalSerializer,
 )
 from .filters import RestaurantFilter
+from .schemas import restaurant_schemas, category_schemas, food_schemas
 
 
+@extend_schema_view(**restaurant_schemas)
 class RestaurantViewSet(ListCacheMixin, LogicalDeleteMixin, ModelViewSet):
     """
     ViewSet for managing Restaurant instances.
@@ -120,6 +123,7 @@ class RestaurantViewSet(ListCacheMixin, LogicalDeleteMixin, ModelViewSet):
         )
 
 
+@extend_schema_view(**category_schemas)
 class CategoryViewSet(ModelViewSet):
     """
     ViewSet for Category model.
@@ -198,6 +202,7 @@ class CategoryViewSet(ModelViewSet):
         return super().destroy(request, *args, **kwargs)
 
 
+@extend_schema_view(**food_schemas)
 class FoodViewSet(ModelViewSet):
     """
     ViewSet for Food model.

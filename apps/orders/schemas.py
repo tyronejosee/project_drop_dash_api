@@ -22,7 +22,6 @@ order_schemas = {
             400: OpenApiResponse(description="Bad request"),
             404: OpenApiResponse(description="Not found"),
         },
-        auth=[],
         tags=["orders"],
     ),
     "create": extend_schema(
@@ -45,7 +44,6 @@ order_schemas = {
             400: OpenApiResponse(description="Bad request"),
             404: OpenApiResponse(description="Not found"),
         },
-        auth=[],
         tags=["orders"],
     ),
     "update": extend_schema(
