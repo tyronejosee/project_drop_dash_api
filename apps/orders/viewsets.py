@@ -8,6 +8,7 @@ from rest_framework.viewsets import ModelViewSet
 from rest_framework.decorators import action
 from rest_framework.response import Response
 from rest_framework import status
+from drf_spectacular.utils import extend_schema_view
 
 from apps.users.permissions import IsOwner, IsClient, IsDriver, IsDispatcher
 from apps.utilities.mixins import ListCacheMixin, LogicalDeleteMixin
@@ -26,8 +27,10 @@ from .serializers import (
     OrderReportWriteSerializer,
     OrderRatingWriteSerializer,
 )
+from .schemas import order_schemas, order_item_schemas
 
 
+@extend_schema_view(**order_schemas)
 class OrderViewSet(ListCacheMixin, LogicalDeleteMixin, ModelViewSet):
     """
     ViewSet for managing Order instances.
@@ -139,6 +142,7 @@ class OrderViewSet(ListCacheMixin, LogicalDeleteMixin, ModelViewSet):
         - POST api/v1/orders/{id}/accept/
         """
         try:
+            # ! TODO: Add service layer
             order = self.get_object()
             driver = request.user.driver
 
@@ -187,6 +191,7 @@ class OrderViewSet(ListCacheMixin, LogicalDeleteMixin, ModelViewSet):
         - PATCH api/v1/orders/{id}/reject/
         """
         try:
+            # ! TODO: Add service layer
             order = self.get_object()
             driver = request.user.driver
 
@@ -327,7 +332,7 @@ class OrderViewSet(ListCacheMixin, LogicalDeleteMixin, ModelViewSet):
                 # TODO: Add notifications
                 return Response(
                     {"detail": "Failed delivery recorded successfully."},
-                    status=status.HTTP_200_OK,
+                    status=status.HTTP_201_CREATED,
                 )
             return Response(
                 serializer.errors,
@@ -337,6 +342,7 @@ class OrderViewSet(ListCacheMixin, LogicalDeleteMixin, ModelViewSet):
             {"error": "The status could not be changed, please try again."},
             status=status.HTTP_400_BAD_REQUEST,
         )
+        # TODO: Refactor this
 
     @action(
         methods=["post"],
@@ -361,6 +367,7 @@ class OrderViewSet(ListCacheMixin, LogicalDeleteMixin, ModelViewSet):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
+@extend_schema_view(**order_item_schemas)
 class OrderItemViewSet(ModelViewSet):
     """
     ViewSet for managing OrderItem instances.

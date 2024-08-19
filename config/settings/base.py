@@ -237,6 +237,10 @@ SPECTACULAR_SETTINGS = {
             "description": "Operations related to keywords",
         },
         {
+            "name": "orders",
+            "description": "Operations related to orders",
+        },
+        {
             "name": "drivers",
             "description": "Operations related to drivers",
         },
@@ -247,10 +251,6 @@ SPECTACULAR_SETTINGS = {
         {
             "name": "coupons",
             "description": "Operations related to coupons",
-        },
-        {
-            "name": "posts",
-            "description": "Operations related to posts",
         },
         {
             "name": "countries",
@@ -267,6 +267,10 @@ SPECTACULAR_SETTINGS = {
         {
             "name": "revenues",
             "description": "Operations related to revenues",
+        },
+        {
+            "name": "posts",
+            "description": "Operations related to posts",
         },
         {
             "name": "positions",
