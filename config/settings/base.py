@@ -237,6 +237,14 @@ SPECTACULAR_SETTINGS = {
             "description": "Operations related to keywords",
         },
         {
+            "name": "promotions",
+            "description": "Operations related to promotions",
+        },
+        {
+            "name": "coupons",
+            "description": "Operations related to coupons",
+        },
+        {
             "name": "posts",
             "description": "Operations related to posts",
         },

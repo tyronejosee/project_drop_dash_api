@@ -3,12 +3,15 @@
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
+from drf_spectacular.utils import extend_schema_view
 
 from apps.users.permissions import IsMarketing
 from .models import FixedCoupon, PercentageCoupon
 from .serializers import FixedCouponReadSerializer, PercentageCouponReadSerializer
+from .schemas import check_coupon_schemas
 
 
+@extend_schema_view(**check_coupon_schemas)
 class CheckCouponView(APIView):
     """
     View to check the validity of a coupon code.

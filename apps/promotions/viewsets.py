@@ -1,6 +1,7 @@
 """ViewSets for Promotions App."""
 
 from rest_framework.viewsets import ModelViewSet
+from drf_spectacular.utils import extend_schema_view
 
 from apps.users.permissions import IsMarketing
 from apps.utilities.mixins import ListCacheMixin, LogicalDeleteMixin
@@ -14,8 +15,10 @@ from .serializers import (
     PercentageCouponWriteSerializer,
 )
 from .filters import PromotionFilter, FixedCouponFilter, PercentageCouponFilter
+from .schemas import promotion_schemas, fixed_coupon_schemas, percentage_coupon_schemas
 
 
+@extend_schema_view(**promotion_schemas)
 class PromotionViewSet(ListCacheMixin, LogicalDeleteMixin, ModelViewSet):
     """
     ViewSet for managing Promotion instances.
@@ -48,6 +51,7 @@ class PromotionViewSet(ListCacheMixin, LogicalDeleteMixin, ModelViewSet):
         serializer.save(creator_id=self.request.user)
 
 
+@extend_schema_view(**fixed_coupon_schemas)
 class FixedCoponViewSet(ListCacheMixin, LogicalDeleteMixin, ModelViewSet):
     """
     ViewSet for managing FixedCoupon instances.
@@ -78,6 +82,7 @@ class FixedCoponViewSet(ListCacheMixin, LogicalDeleteMixin, ModelViewSet):
         serializer.save(creator_id=self.request.user)
 
 
+@extend_schema_view(**percentage_coupon_schemas)
 class PercentageCoponViewSet(ListCacheMixin, LogicalDeleteMixin, ModelViewSet):
     """
     ViewSet for managing FixedCoupon instances.
