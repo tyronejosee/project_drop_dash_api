@@ -9,7 +9,7 @@ from apps.utilities.mixins import ReadOnlyFieldsMixin
 User = get_user_model()
 
 
-class UserReadSerializer:
+class UserReadSerializer(UserCreateSerializer):
     """Serializer for User model."""
 
     role = serializers.CharField(source="get_role_display")

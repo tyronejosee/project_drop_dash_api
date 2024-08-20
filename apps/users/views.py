@@ -4,6 +4,12 @@ from rest_framework.generics import ListAPIView
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
+from rest_framework_simplejwt.views import (
+    TokenObtainPairView,
+    TokenRefreshView,
+    TokenVerifyView,
+)
+from drf_spectacular.utils import extend_schema_view
 
 from apps.users.permissions import IsClient, IsAdministrator
 from apps.users.models import User
@@ -12,6 +18,32 @@ from apps.reviews.models import Review
 from apps.reviews.serializers import ReviewReadSerializer
 from apps.orders.models import Order, OrderReport
 from apps.orders.serializers import OrderReadSerializer, OrderReportReadSerializer
+from .schemas import (
+    token_obtain_pair_schemas,
+    token_refresh_schemas,
+    token_verify_schemas,
+)
+
+
+@extend_schema_view(**token_obtain_pair_schemas)
+class TokenObtainPairExtensionView(TokenObtainPairView):
+    """Pending."""
+
+    pass
+
+
+@extend_schema_view(**token_refresh_schemas)
+class TokenRefreshExtensionView(TokenRefreshView):
+    """Pending."""
+
+    pass
+
+
+@extend_schema_view(**token_verify_schemas)
+class TokenVerifyExtensionView(TokenVerifyView):
+    """Pending."""
+
+    pass
 
 
 class UserReviewsView(ListAPIView):
