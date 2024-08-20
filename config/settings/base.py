@@ -213,7 +213,7 @@ AUTHENTICATION_BACKENDS = (
 
 SPECTACULAR_SETTINGS = {
     "TITLE": "Drop Dash (API)",
-    "DESCRIPTION": "Pending decription.",
+    "DESCRIPTION": "A home delivery platform that allows users to search for and purchase products from local restaurants near their homes, place orders, and schedule deliveries. Provides access to restaurants to manage their menus, receive orders, and handle their meals through the platform. Inspired by platforms like Rappi and Uber Eats",
     "VERSION": "v1",
     "LICENSE": {
         "name": "Apache Licence 2.0",
@@ -248,7 +248,10 @@ SPECTACULAR_SETTINGS = {
             "name": "foods",
             "description": "Operations related to foods",
         },
-        # TODO: Add here
+        {
+            "name": "reviews",
+            "description": "Operations related to reviews",
+        },
         {
             "name": "orders",
             "description": "Operations related to orders",

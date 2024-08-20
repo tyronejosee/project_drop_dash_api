@@ -31,7 +31,12 @@ from .serializers import (
     FoodMinimalSerializer,
 )
 from .filters import RestaurantFilter
-from .schemas import restaurant_schemas, category_schemas, food_schemas
+from .schemas import (
+    restaurant_schemas,
+    category_schemas,
+    food_schemas,
+    restaurant_review_schemas,
+)
 
 
 @extend_schema_view(**restaurant_schemas)
@@ -293,6 +298,7 @@ class FoodViewSet(ModelViewSet):
         return super().destroy(request, *args, **kwargs)
 
 
+@extend_schema_view(**restaurant_review_schemas)
 class RestaurantReviewViewSet(ModelViewSet):
     """
     ViewSet for RestaurantReview instances.
@@ -336,7 +342,7 @@ class RestaurantReviewViewSet(ModelViewSet):
             user_id=request.user, object_id=self.kwargs["restaurant_pk"]
         ).exists():
             return Response(
-                {"error": "Only one review per user is allowed.."},
+                {"error": "Only one review per user is allowed."},
                 status=status.HTTP_400_BAD_REQUEST,
             )
         return super().create(request, *args, **kwargs)
