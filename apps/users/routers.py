@@ -9,6 +9,7 @@ from .views import (
     TokenObtainPairExtensionView,
     TokenRefreshExtensionView,
     TokenVerifyExtensionView,
+    ProviderAuthExtensionView,
     UserReviewsView,
     UserOrdersView,
     UserOrderReportsView,
@@ -28,25 +29,31 @@ urlpatterns = [
     #     "api/v1/tokens/",
     #     include("djoser.urls.jwt"),
     # ),
+    # path(
+    #     "api/v1/socials/",
+    #     include("djoser.social.urls"),
+    # ),
+    # Djoser socials urls
+    re_path(
+        r"^api/v1/socials/o/(?P<provider>\S+)/$",
+        ProviderAuthExtensionView.as_view(),
+        name="provider-auth",
+    ),
     # djangorestframework-simplejwt urls
     re_path(
-        r"^api/v1/jwt/create/?",
+        r"^api/v1/tokens/jwt/create/?",
         TokenObtainPairExtensionView.as_view(),
         name="jwt-create",
     ),
     re_path(
-        r"^api/v1/jwt/refresh/?",
+        r"^api/v1/tokens/jwt/refresh/?",
         TokenRefreshExtensionView.as_view(),
         name="jwt-refresh",
     ),
     re_path(
-        r"^api/v1/jwt/verify/?",
+        r"^api/v1/tokens/jwt/verify/?",
         TokenVerifyExtensionView.as_view(),
         name="jwt-verify",
-    ),
-    path(
-        "api/v1/socials/",
-        include("djoser.social.urls"),
     ),
     # Views urls
     path(

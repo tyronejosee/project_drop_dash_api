@@ -286,6 +286,18 @@ SPECTACULAR_SETTINGS = {
             "description": "Operations related to posts",
         },
         {
+            "name": "socials",
+            "description": "Operations related to socials",
+        },
+        {
+            "name": "tokens",
+            "description": "Operations related to tokens",
+        },
+        {
+            "name": "users",
+            "description": "Operations related to users",
+        },
+        {
             "name": "positions",
             "description": "Operations related to positions",
         },
