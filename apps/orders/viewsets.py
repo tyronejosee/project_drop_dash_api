@@ -50,6 +50,9 @@ class OrderViewSet(ListCacheMixin, LogicalDeleteMixin, ModelViewSet):
     # filterset_class = OrderFilter
 
     def get_queryset(self):
+        if getattr(self, "swagger_fake_view", False):
+            return Order.objects.none()
+
         user = self.request.user
         if self.action == "list":
             return Order.objects.get_list_by_user(user)
@@ -388,6 +391,9 @@ class OrderItemViewSet(ModelViewSet):
     # filterset_class = OrderItemFilter
 
     def get_queryset(self):
+        if getattr(self, "swagger_fake_view", False):
+            return OrderItem.objects.none()
+        # ! TODO: Add managers and optimize queries
         return OrderItem.objects.filter(
             order_id=self.kwargs["order_pk"]
         ).select_related("order_id", "food_id")

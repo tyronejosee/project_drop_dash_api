@@ -24,6 +24,10 @@ from .schemas import (
     token_refresh_schemas,
     token_verify_schemas,
     provider_auth_schemas,
+    user_review_schemas,
+    user_order_schemas,
+    user_order_report_schemas,
+    user_history_schemas,
 )
 
 
@@ -75,6 +79,7 @@ class ProviderAuthExtensionView(ProviderAuthView):
     pass
 
 
+@extend_schema_view(**user_review_schemas)
 class UserReviewsView(ListAPIView):
     """
     View to list all reviews of a user.
@@ -88,9 +93,12 @@ class UserReviewsView(ListAPIView):
     # filterset_class = ReviewFilter
 
     def get_queryset(self):
+        if getattr(self, "swagger_fake_view", False):
+            return Review.objects.none()
         return Review.objects.filter(user_id=self.request.user)
 
 
+@extend_schema_view(**user_order_schemas)
 class UserOrdersView(ListAPIView):
     """
     View to list all orders of a user.
@@ -104,9 +112,12 @@ class UserOrdersView(ListAPIView):
     # filterset_class = OrderFilter
 
     def get_queryset(self):
+        if getattr(self, "swagger_fake_view", False):
+            return Order.objects.none()
         return Order.objects.filter(user_id=self.request.user)
 
 
+@extend_schema_view(**user_order_report_schemas)
 class UserOrderReportsView(ListAPIView):
     """
     View to list all order reports of a user.
@@ -119,9 +130,12 @@ class UserOrderReportsView(ListAPIView):
     serializer_class = OrderReportReadSerializer
 
     def get_queryset(self):
+        if getattr(self, "swagger_fake_view", False):
+            return OrderReport.objects.none()
         return OrderReport.objects.get_by_user(self.request.user)
 
 
+@extend_schema_view(**user_history_schemas)
 class UserHistoryView(APIView):
     """
     View to list all history of a user.

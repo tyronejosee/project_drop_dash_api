@@ -147,6 +147,9 @@ class CategoryViewSet(ModelViewSet):
     search_fields = ["name"]
 
     def get_queryset(self):
+        if getattr(self, "swagger_fake_view", False):
+            return Category.objects.none()
+        # ! TODO: Add managers and optimize queries
         if self.action == "list":
             return Category.objects.filter(
                 restaurant_id=self.kwargs["restaurant_pk"], is_available=True
@@ -227,6 +230,9 @@ class FoodViewSet(ModelViewSet):
     # Filterset_class = FoodFilter
 
     def get_queryset(self):
+        if getattr(self, "swagger_fake_view", False):
+            return Food.objects.none()
+        # ! TODO: Add managers and optimize queries
         if self.action == "list":
             return Food.objects.filter(restaurant_id=self.kwargs["restaurant_pk"]).only(
                 "id",
@@ -318,6 +324,9 @@ class RestaurantReviewViewSet(ModelViewSet):
     # Filterset_class = ReviewFilter
 
     def get_queryset(self):
+        if getattr(self, "swagger_fake_view", False):
+            return Review.objects.none()
+        # ! TODO: Add managers and optimize queries
         return (
             Review.objects.filter(
                 object_id=self.kwargs["restaurant_pk"],

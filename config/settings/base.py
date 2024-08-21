@@ -301,6 +301,10 @@ SPECTACULAR_SETTINGS = {
             "description": "Operations related to users",
         },
         {
+            "name": "accounts",
+            "description": "Operations related to accounts",
+        },
+        {
             "name": "positions",
             "description": "Operations related to positions",
         },

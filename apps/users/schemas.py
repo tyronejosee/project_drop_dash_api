@@ -1,11 +1,14 @@
 """Schemas for Users App."""
 
-from drf_spectacular.utils import extend_schema, OpenApiResponse
+from drf_spectacular.utils import extend_schema, OpenApiResponse, OpenApiParameter
 
+from apps.orders.serializers import OrderReadSerializer, OrderReportReadSerializer
+from apps.reviews.serializers import ReviewReadSerializer
 from .serializers import (
     UserReadSerializer,
     UserWriteSerializer,
     UserMinimalSerializer,
+    UserHistorySerializer,
 )
 
 
@@ -243,5 +246,81 @@ provider_auth_schemas = {
         summary="Authenticate with Provider",
         description="Initiates authentication with the specified provider and returns the URL for authorization.",
         tags=["socials"],
+    ),
+}
+
+
+user_review_schemas = {
+    "get": extend_schema(
+        summary="Get Reviews of Authenticated User",
+        description="This endpoint returns a list of reviews created by the authenticated user, only for `IsClient` users.",
+        responses={
+            200: OpenApiResponse(
+                response=ReviewReadSerializer(many=True),
+                description="OK (List of reviews successfully retrieved)",
+            ),
+            404: OpenApiResponse(
+                description="Not Found (Reviews not found)",
+            ),
+        },
+        tags=["accounts"],
+    ),
+}
+
+user_order_schemas = {
+    "get": extend_schema(
+        summary="Get Orders of Authenticated User",
+        description="This endpoint returns a list of orders created by the authenticated user, only for `IsClient` users.",
+        responses={
+            200: OpenApiResponse(
+                response=OrderReadSerializer(many=True),
+                description="OK (List of orders successfully retrieved)",
+            ),
+            404: OpenApiResponse(
+                description="Not Found (Orders not found)",
+            ),
+        },
+        tags=["accounts"],
+    ),
+}
+
+
+user_order_report_schemas = {
+    "get": extend_schema(
+        summary="Get Order Reports of Authenticated User",
+        description="This endpoint returns a list of order reports created by the authenticated user, only for `IsClient` users.",
+        responses={
+            200: OpenApiResponse(
+                response=OrderReportReadSerializer(many=True),
+                description="OK (List of orders reports successfully retrieved)",
+            ),
+            404: OpenApiResponse(
+                description="Not Found (Orders reports not found)",
+            ),
+        },
+        tags=["accounts"],
+    ),
+}
+
+
+user_history_schemas = {
+    "get": extend_schema(
+        summary="Get User History",
+        description="This endpoint returns a history of actions performed by a specific user, identified by user ID, only for `IsAdministrator` users.",
+        parameters=[
+            OpenApiParameter(
+                "id", description="ID of the user", required=True, type=int
+            ),
+        ],
+        responses={
+            200: OpenApiResponse(
+                response=UserHistorySerializer(many=True),
+                description="OK (List of user history successfully retrieved)",
+            ),
+            404: OpenApiResponse(
+                description="Not Found (User not found)",
+            ),
+        },
+        tags=["accounts"],
     ),
 }

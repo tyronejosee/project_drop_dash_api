@@ -38,6 +38,8 @@ class PromotionViewSet(ListCacheMixin, LogicalDeleteMixin, ModelViewSet):
     filterset_class = PromotionFilter
 
     def get_queryset(self):
+        if getattr(self, "swagger_fake_view", False):
+            return Promotion.objects.none()
         return Promotion.objects.get_active()
 
     def get_serializer_class(self):

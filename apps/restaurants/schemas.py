@@ -1,6 +1,10 @@
 """Schemas for Restaurants App."""
 
-from drf_spectacular.utils import extend_schema, OpenApiResponse
+from drf_spectacular.utils import (
+    extend_schema,
+    OpenApiResponse,
+    OpenApiParameter,
+)
 
 from apps.reviews.serializers import ReviewReadSerializer, ReviewWriteSerializer
 from apps.orders.serializers import OrderReadSerializer
@@ -288,6 +292,14 @@ restaurant_review_schemas = {
     "list": extend_schema(
         summary="Get Several Restaurant Reviews",
         description="Get a list of all available restaurant reviews.",
+        parameters=[
+            OpenApiParameter(
+                name="restaurant_pk",
+                description="The UUID of the restaurant",
+                required=True,
+                type=str,  # ! TODO: Fix type of path parameter restaurant_pk (UUID or SRT)
+            ),
+        ],
         responses={
             200: OpenApiResponse(
                 response=ReviewReadSerializer(many=True),
