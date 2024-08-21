@@ -4,6 +4,7 @@ from rest_framework import serializers
 
 from apps.utilities.mixins import ReadOnlyFieldsMixin
 from .models import Revenue
+from .services import RevenueService
 
 
 class RevenueReadSerializer(ReadOnlyFieldsMixin, serializers.ModelSerializer):
@@ -41,4 +42,5 @@ class RevenueWriteSerializer(serializers.ModelSerializer):
             "transaction_type",
         ]
 
-    # ! TODO: Add transaction type validation
+    def validate(self, data):
+        return RevenueService.validate_transaction_type(data)

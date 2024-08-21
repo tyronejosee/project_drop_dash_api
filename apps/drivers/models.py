@@ -2,6 +2,7 @@
 
 from django.conf import settings
 from django.db import models
+from django.db.models import Q
 from django.core.validators import FileExtensionValidator
 
 from apps.utilities.models import BaseModel
@@ -99,7 +100,19 @@ class DriverAssignment(BaseModel):
         indexes = [
             models.Index(fields=["status"]),
         ]
-        # ! TODO: Add constrains
+        constraints = [
+            # Ensures that the combination of driver and order is unique
+            models.UniqueConstraint(
+                fields=["driver_id", "order_id"], name="unique_driver_order_assignment"
+            ),
+            # Ensures that status is one of the choices
+            models.CheckConstraint(
+                check=Q(
+                    status__in=[choice[0] for choice in AssignmentStatusChoices.choices]
+                ),
+                name="valid_assignment_status",
+            ),
+        ]
 
     def __str__(self):
         return f"{self.driver_id} assigned to {self.order_id} on {self.assigned_at}"
