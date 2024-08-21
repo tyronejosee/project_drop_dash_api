@@ -83,7 +83,7 @@ class DriverService:
         """
         Calculate total earnings for a given driver.
         """
-        # TODO: Add filter by day or date range
+        # Add filter by day or date range
         deliveries = Delivery.objects.filter(driver_id=driver)
         total_earnings = sum(
             delivery.order_id.amount * Decimal(settings.DRIVER_TAX_RATE)

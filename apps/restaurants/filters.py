@@ -10,12 +10,6 @@ from .choices import SpecialtyChoices
 class RestaurantFilter(BaseFilter):
     """Filter for Restaurant model."""
 
-    name = filters.CharFilter(
-        field_name="name",
-        lookup_expr="icontains",
-        label="Filter by restaurant name, ex `/?name=mcdonals`",
-    )
-    # ! TODO: Remove or merge with viewset's search_fields
     specialty = filters.ChoiceFilter(
         field_name="specialty",
         choices=SpecialtyChoices.choices,

@@ -329,7 +329,7 @@ class OrderViewSet(ListCacheMixin, LogicalDeleteMixin, ModelViewSet):
 
                 delivery.status = StatusChoices.FAILED
                 delivery.save()
-                # TODO: Add notifications
+                # TODO: Add notifications service
                 return Response(
                     {"detail": "Failed delivery recorded successfully."},
                     status=status.HTTP_201_CREATED,
