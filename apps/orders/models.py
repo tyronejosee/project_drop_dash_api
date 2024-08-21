@@ -33,7 +33,6 @@ class Order(BaseModel):
     city_id = models.ForeignKey(City, on_delete=models.PROTECT)
     state_id = models.ForeignKey(State, on_delete=models.PROTECT)
     country_id = models.ForeignKey(Country, on_delete=models.PROTECT)
-    # TODO: Create model for Address with adress, city_id, etc
     note = models.TextField(blank=True)
     restaurant_id = models.ForeignKey(Restaurant, on_delete=models.DO_NOTHING)
     amount = models.DecimalField(

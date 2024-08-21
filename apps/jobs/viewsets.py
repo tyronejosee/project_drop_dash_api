@@ -82,8 +82,9 @@ class WorkerViewSet(ListCacheMixin, LogicalDeleteMixin, ModelViewSet):
     filterset_class = WorkerFilter
 
     def get_queryset(self):
-        # ! TODO: Perfom queries
-        return Worker.objects.get_available()
+        if self.action == "list":
+            return Worker.objects.get_list()
+        return Worker.objects.get_detail()
 
     def get_serializer_class(self):
         if self.action == "list":
@@ -133,7 +134,9 @@ class ApplicantViewSet(ListCacheMixin, LogicalDeleteMixin, ModelViewSet):
     filterset_class = ApplicantFilter
 
     def get_queryset(self):
-        return Applicant.objects.get_available()
+        if self.action == "list":
+            return Applicant.objects.get_list()
+        return Applicant.objects.get_detail()
 
     def get_serializer_class(self):
         if self.action == "list":

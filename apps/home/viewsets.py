@@ -37,11 +37,8 @@ class PageViewSet(ListCacheMixin, LogicalDeleteMixin, ModelViewSet):
 
     def get_queryset(self):
         if self.action == "list":
-            return Page.objects.get_available().only("id", "name")
-        elif self.action == "retrieve":
-            return Page.objects.get_available().defer("is_available")
-
-    # TODO: Add managers
+            return Page.objects.get_list()
+        return Page.objects.get_detail()
 
     def get_serializer_class(self):
         if self.action == "list":

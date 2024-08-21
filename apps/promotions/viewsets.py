@@ -38,9 +38,7 @@ class PromotionViewSet(ListCacheMixin, LogicalDeleteMixin, ModelViewSet):
     filterset_class = PromotionFilter
 
     def get_queryset(self):
-        return Promotion.objects.get_available().select_related(
-            "creator_id"
-        )  # ! TODO: Add manager, exclude conditions field
+        return Promotion.objects.get_active()
 
     def get_serializer_class(self):
         if self.action in ["list", "retrieve"]:

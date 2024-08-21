@@ -1,211 +1,80 @@
 // Drop Dash - Database Structure
 
-// ! TODO: Add Finances models
+// Blogs App
 
-// Utilities App
-
-Table Base {
+Table Tag {
   id uuid [pk]
-  is_available bool
-  updated_at datetime
-  created_at datetime
+  name varchar
+  slug slug
+  is_available base
+  updated_at base
+  created_at base
 }
 
-// Users App
-
-Table User {
+Table Post {
   id uuid [pk]
-  email varchar
-  username varchar
+  title varchar
   slug slug
-  first_name varchar
-  last_name varchar
-  date_birth date
+  content text
+  tags M2M
+  author_id FK
   points int
-  role varchar
-  is_active bool
-  is_staff bool
-  created_at date
-  updated_at date
-}
-
-// Reviews App
-
-Table Review {
-  id uuid [pk]
-  content_type FK
-  object_id uuid
-  content_object GFG
-  user_id FK
-  rating int
-  comment text
-  is_available base
-  updated_at base
-  created_at base
-}
-
-// Restaurants App
-
-Table Restaurant {
-  id uuid [pk]
-  user_id FK
-  name varchar
-  slug slug
-  image image
-  banner image
-  description text
-  specialty varchar
-  address varchar
-  city_id FK
-  state_id FK
-  country_id FK
-  opening_time datetime
-  closing_time datetime
-  phone varchar
-  website url
-  is_open bool
-  is_verified bool
-  banking_certificate file
-  e_rut file
-  legal_rep_email file
-  legal_rep_identity_document file
-  legal_rep_power_of_attorney file
-  is_available base
-  updated_at base
-  created_at base
-}
-
-Table Category {
-  id uuid [pk]
-  name varchar
-  restaurant_id FK
-  is_available base
-  updated_at base
-  created_at base
-}
-
-Table Food {
-  id uuid [pk]
-  name varchar
-  description text
-  price decimal
-  sale_price decimal
-  image image
-  restaurant_id FK
-  category_id FK
   is_featured bool
   is_available base
   updated_at base
   created_at base
 }
 
-// Promotions App
+Ref: Post.tags < Tag.id
+Ref: Post.author_id < User.id
 
-Table Promotion {
-  id uuid [pk]
-  creator_id FK
-  name varchar
-  conditions text
-  start_date date
-  end_date date
-  is_active bool
-  image image
-  is_available base
-  updated_at base
-  created_at base
-}
-
-Table FixedCoupon {
-  id uuid [pk]
-  name varchar
-  discount_price decimal
-  code varchar
-  start_date date
-  end_date date
-  quantity int
-  is_active bool
-  is_available base
-  updated_at base
-  created_at base
-}
-
-Table PercentageCoupon {
-  id uuid [pk]
-  name varchar
-  discount_percentage int
-  code varchar
-  start_date date
-  end_date date
-  quantity int
-  is_active bool
-  is_available base
-  updated_at base
-  created_at base
-}
-
-// Orders App
-
-Table Order {
+Table PostReport {
   id uuid [pk]
   user_id FK
-  shipping_name varchar
-  shipping_phone varchar
-  transaction varchar
-  address_1 varchar
-  address_2 varchar
-  city_id FK
-  state_id FK
-  country_id FK
-  note text
-  restaurant_id FK
-  amount decimal
+  post_id FK
+  reason text
+  priority varchar
   status bool
-  payment_method varchar
-  is_payment bool
-  is_valid bool
   is_available base
   updated_at base
   created_at base
 }
 
-Table OrderItem {
+Ref: PostReport.user_id < User.id
+Ref: PostReport.post_id < Post.id
+
+// Deliveries App
+
+Table Delivery {
   id uuid [pk]
   order_id FK
-  food_id FK
-  quantity int
-  price decimal
+  driver_id FK
+  signature image
+  status varchar
+  picked_up_at datetime
+  delivered_at datetime
+  is_completed bool
   is_available base
   updated_at base
   created_at base
 }
 
-// Locations App
+Ref: Delivery.order_id < Order.id
+Ref: Delivery.driver_id < Driver.id
 
-Table Country {
+Table FailedDelivery {
   id uuid [pk]
-  name varchar
+  order_id FK
+  driver_id FK
+  reason text
+  failed_at datetime
   is_available base
   updated_at base
   created_at base
 }
 
-Table State {
-  id uuid [pk]
-  name varchar
-  country_id FK
-  is_available base
-  updated_at base
-  created_at base
-}
-
-Table City {
-  id uuid [pk]
-  name varchar
-  state_id FK
-  is_available base
-  updated_at base
-  created_at base
-}
+Ref: FailedDelivery.order_id < Order.id
+Ref: FailedDelivery.driver_id < Driver.id
 
 // Drivers App
 
@@ -230,6 +99,11 @@ Table Driver {
   created_at base
 }
 
+Ref: Driver.user_id < User.id
+Ref: Driver.city_id < City.id
+Ref: Driver.state_id < State.id
+Ref: Driver.country_id < Country.id
+
 Table DriverAssignment {
   id uuid [pk]
   driver_id FK
@@ -240,6 +114,9 @@ Table DriverAssignment {
   updated_at base
   created_at base
 }
+
+Ref: DriverAssignment.driver_id < Driver.id
+Ref: DriverAssignment.order_id < Order.id
 
 Table Resource {
   id uuid [pk]
@@ -252,28 +129,17 @@ Table Resource {
   created_at base
 }
 
-// Deliveries App
+Ref: Resource.driver_id < Driver.id
 
-Table Delivery {
+// Finances App
+
+Table Revenue {
   id uuid [pk]
   order_id FK
   driver_id FK
-  signature image
-  status varchar
-  picked_up_at datetime
-  delivered_at datetime
-  is_completed bool
-  is_available base
-  updated_at base
-  created_at base
-}
-
-Table FailedDelivery {
-  id uuid [pk]
-  order_id FK
-  driver_id FK
-  reason text
-  failed_at datetime
+  restaurant_id FK
+  amount decimal
+  transaction_type varchar
   is_available base
   updated_at base
   created_at base
@@ -345,6 +211,12 @@ Table Worker {
   created_at base
 }
 
+Ref: Worker.user_id < User.id
+Ref: Worker.city_id < City.id
+Ref: Worker.state_id < State.id
+Ref: Worker.country_id < Country.id
+Ref: Worker.position_id < Position.id
+
 Table Applicant {
   id uuid [pk]
   user_id FK
@@ -360,94 +232,238 @@ Table Applicant {
   created_at base
 }
 
-// Blogs App
+Ref: Applicant.user_id < User.id
+Ref: Applicant.position_id < Position.id
 
-Table Tag {
+// Locations App
+
+Table Country {
   id uuid [pk]
   name varchar
-  slug slug
   is_available base
   updated_at base
   created_at base
 }
 
-Table Post {
+Table State {
   id uuid [pk]
-  title varchar
-  slug slug
-  content text
-  tags M2M
-  author_id FK
-  points int
-  is_featured bool
+  name varchar
+  country_id FK
   is_available base
   updated_at base
   created_at base
 }
 
-Table PostReport {
+Ref: State.country_id < Country.id
+
+Table City {
+  id uuid [pk]
+  name varchar
+  state_id FK
+  is_available base
+  updated_at base
+  created_at base
+}
+
+Ref: City.state_id < State.id
+
+// Orders App
+
+Table Order {
   id uuid [pk]
   user_id FK
-  post_id FK
-  reason text
-  priority varchar
+  shipping_name varchar
+  shipping_phone varchar
+  transaction varchar
+  address_1 varchar
+  address_2 varchar
+  city_id FK
+  state_id FK
+  country_id FK
+  note text
+  restaurant_id FK
+  amount decimal
   status bool
+  payment_method varchar
+  is_payment bool
+  is_valid bool
   is_available base
   updated_at base
   created_at base
 }
-
-// Relations
-
-Ref: Review.content_type < Restaurant.id
-Ref: Review.user_id < User.id
-
-Ref: Restaurant.user_id < User.id
-Ref: Restaurant.city_id < City.id
-Ref: Restaurant.state_id < State.id
-Ref: Restaurant.country_id < Country.id
-Ref: Category.restaurant_id < Restaurant.id
-Ref: Food.restaurant_id < Restaurant.id
-Ref: Food.category_id < Category.id
-
-Ref: Promotion.creator_id < User.id
 
 Ref: Order.user_id < User.id
 Ref: Order.city_id < City.id
 Ref: Order.state_id < State.id
 Ref: Order.country_id < Country.id
 Ref: Order.restaurant_id < Restaurant.id
+
+Table OrderItem {
+  id uuid [pk]
+  order_id FK
+  food_id FK
+  quantity int
+  price decimal
+  is_available base
+  updated_at base
+  created_at base
+}
+
 Ref: OrderItem.order_id < Order.id
 Ref: OrderItem.food_id < Food.id
 
-Ref: State.country_id < Country.id
-Ref: City.state_id < State.id
+// Promotions App
 
-Ref: Driver.user_id < User.id
-Ref: Driver.city_id < City.id
-Ref: Driver.state_id < State.id
-Ref: Driver.country_id < Country.id
+Table Promotion {
+  id uuid [pk]
+  creator_id FK
+  name varchar
+  conditions text
+  start_date date
+  end_date date
+  is_active bool
+  image image
+  is_available base
+  updated_at base
+  created_at base
+}
 
-Ref: DriverAssignment.driver_id < Driver.id
-Ref: DriverAssignment.order_id < Order.id
+Ref: Promotion.creator_id < User.id
 
-Ref: Resource.driver_id < Driver.id
+Table FixedCoupon {
+  id uuid [pk]
+  name varchar
+  discount_price decimal
+  code varchar
+  start_date date
+  end_date date
+  quantity int
+  is_active bool
+  is_available base
+  updated_at base
+  created_at base
+}
 
-Ref: Delivery.order_id < Order.id
-Ref: Delivery.driver_id < Driver.id
+Table PercentageCoupon {
+  id uuid [pk]
+  name varchar
+  discount_percentage int
+  code varchar
+  start_date date
+  end_date date
+  quantity int
+  is_active bool
+  is_available base
+  updated_at base
+  created_at base
+}
 
-Ref: FailedDelivery.order_id < Order.id
-Ref: FailedDelivery.driver_id < Driver.id
+// Restaurants App
 
-Ref: Worker.user_id < User.id
-Ref: Worker.city_id < City.id
-Ref: Worker.state_id < State.id
-Ref: Worker.country_id < Country.id
-Ref: Worker.position_id < Position.id
-Ref: Applicant.user_id < User.id
-Ref: Applicant.position_id < Position.id
+Table Restaurant {
+  id uuid [pk]
+  user_id FK
+  name varchar
+  slug slug
+  image image
+  banner image
+  description text
+  specialty varchar
+  address varchar
+  city_id FK
+  state_id FK
+  country_id FK
+  opening_time datetime
+  closing_time datetime
+  phone varchar
+  website url
+  is_open bool
+  is_verified bool
+  banking_certificate file
+  e_rut file
+  legal_rep_email file
+  legal_rep_identity_document file
+  legal_rep_power_of_attorney file
+  is_available base
+  updated_at base
+  created_at base
+}
 
-Ref: Post.tags < Tag.id
-Ref: Post.author_id < User.id
-Ref: PostReport.user_id < User.id
-Ref: PostReport.post_id < Post.id
+Ref: Restaurant.user_id < User.id
+Ref: Restaurant.city_id < City.id
+Ref: Restaurant.state_id < State.id
+Ref: Restaurant.country_id < Country.id
+
+Table Category {
+  id uuid [pk]
+  name varchar
+  restaurant_id FK
+  is_available base
+  updated_at base
+  created_at base
+}
+
+Ref: Category.restaurant_id < Restaurant.id
+
+Table Food {
+  id uuid [pk]
+  name varchar
+  description text
+  price decimal
+  sale_price decimal
+  image image
+  restaurant_id FK
+  category_id FK
+  is_featured bool
+  is_available base
+  updated_at base
+  created_at base
+}
+
+Ref: Food.restaurant_id < Restaurant.id
+Ref: Food.category_id < Category.id
+
+// Reviews App
+
+Table Review {
+  id uuid [pk]
+  content_type FK
+  object_id uuid
+  content_object GFG
+  user_id FK
+  rating int
+  comment text
+  is_available base
+  updated_at base
+  created_at base
+}
+
+Ref: Review.content_type < Restaurant.id
+Ref: Review.user_id < User.id
+
+// Users App
+
+Table User {
+  id uuid [pk]
+  email varchar
+  username varchar
+  slug slug
+  first_name varchar
+  last_name varchar
+  date_birth date
+  points int
+  role varchar
+  is_active bool
+  is_staff bool
+  created_at date
+  updated_at date
+}
+
+// Utilities App
+
+Table Base {
+  id uuid [pk]
+  is_available bool
+  updated_at datetime
+  created_at datetime
+}

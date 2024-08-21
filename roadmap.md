@@ -115,8 +115,6 @@ Pending implementation
 
 - [ ] `POST /applicants/{id}/status` Actualizar el estado de una solicitud de trabajo específica (IsRRHH).
 
-TODO: [x] Agregar permiso para Recursos humanos
-
 ## Locations [OK]
 
 - [x] `GET /countries` Obtener la lista de todos los países.
@@ -142,8 +140,6 @@ TODO: [x] Agregar permiso para Recursos humanos
 - [x] `GET /accounts/reviews` Obtener todas las reseñas escritas por un usuario específico (IsClient).
 - [x] `GET /accounts/orders` Obtener todas las reseñas escritas por un usuario específico (IsClient).
 - [x] `GET /accounts/{id}/historical` Obtener el historial de cambios de un usuario específico (IsAdministrator).
-
-TODO: Agregar reviews a restaurants y posts, limitar modelo de Review
 
 ## Logica de Negocios
 

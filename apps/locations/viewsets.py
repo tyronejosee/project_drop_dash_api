@@ -74,9 +74,9 @@ class StateViewSet(ListCacheMixin, LogicalDeleteMixin, ModelViewSet):
     search_fields = ["name"]
 
     def get_queryset(self):
-        return State.objects.get_available().select_related(
-            "country_id"
-        )  # TODO: Add manager
+        if self.action == "list":
+            return State.objects.get_list()
+        return State.objects.get_detail()
 
     def get_serializer_class(self):
         if self.action == "list":
@@ -110,9 +110,9 @@ class CityViewSet(ListCacheMixin, LogicalDeleteMixin, ModelViewSet):
     search_fields = ["name"]
 
     def get_queryset(self):
-        return City.objects.select_related(
-            "state_id"
-        ).get_available()  # TODO: Add manager
+        if self.action == "list":
+            return City.objects.get_list()
+        return City.objects.get_detail()
 
     def get_serializer_class(self):
         if self.action == "list":

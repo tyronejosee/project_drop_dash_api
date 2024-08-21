@@ -9,7 +9,13 @@ class PromotionManager(BaseManager):
     """Manager for Promotion model."""
 
     def get_active(self):
-        return self.get_available().filter(is_active=True)
+        return (
+            self.get_available()
+            .filter(is_active=True)
+            .select_related(
+                "creator_id",
+            ),
+        )
 
     def get_search(self, search_term):
         return self.get_available().filter(
