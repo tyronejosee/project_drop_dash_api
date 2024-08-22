@@ -1,8 +1,9 @@
 """Services for Drivers App."""
 
+import random
 from decimal import Decimal
 from django.conf import settings
-from django.core.exceptions import ValidationError
+from django.core.exceptions import ValidationError, ObjectDoesNotExist
 from rest_framework.response import Response
 from rest_framework import status
 
@@ -27,7 +28,7 @@ class DriverService:
         it validates the provided data, encrypts sensitive fields (phone and address),
         saves the driver profile, and updates the user's role to DRIVER.
         """
-        from .models import Driver
+        from apps.drivers.models import Driver
 
         if Driver.objects.filter(user_id=user).exists():
             return Response(
@@ -125,3 +126,58 @@ class DriverService:
                     "driver_license": "Driver license is required for automobiles and motorcycles."
                 }
             )
+
+    @staticmethod
+    def assign_driver_to_order(order):
+        """
+        Assign an available driver to a specific order.
+
+        This method checks for available drivers who are verified and active,
+        randomly selects one, and assigns them to the specified order.
+        """
+        from apps.drivers.models import Driver, DriverAssignment
+
+        try:
+            available_drivers = Driver.objects.get_available().filter(
+                is_verified=True, is_active=True
+            )
+            # ! TODO: Add location filter
+
+            # Check if there are available drivers
+            if not available_drivers.exists():
+                return {
+                    "success": False,
+                    "message": "No drivers available or active.",
+                    "status_code": status.HTTP_404_NOT_FOUND,
+                }
+
+            # Randomly select a driver
+            driver = random.choice(available_drivers)
+
+            if DriverAssignment.objects.filter(order_id=order, driver_id=driver).exists():
+                return {
+                    "success": False,
+                    "message": "The order has already been assigned.",
+                    "status_code": status.HTTP_409_CONFLICT,
+                }
+
+            # Create the driver assignment
+            DriverAssignment.objects.create(order_id=order, driver_id=driver)
+
+            return {
+                "success": True,
+                "message": f"Driver {driver.id} assigned to order {order.id}.",
+                "status_code": status.HTTP_200_OK,
+            }
+        except ObjectDoesNotExist:
+            return {
+                "success": False,
+                "message": "Order or driver not found.",
+                "status_code": status.HTTP_404_NOT_FOUND,
+            }
+        except Exception as e:
+            return {
+                "success": False,
+                "message": str(e),
+                "status_code": status.HTTP_500_INTERNAL_SERVER_ERROR,
+            }
