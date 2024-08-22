@@ -1,9 +1,7 @@
 """ViewSets for Orders App."""
 
-import random
 from django.db import IntegrityError
 from django.shortcuts import get_object_or_404
-from django.utils import timezone
 from rest_framework.viewsets import ModelViewSet
 from rest_framework.decorators import action
 from rest_framework.response import Response
@@ -12,12 +10,14 @@ from drf_spectacular.utils import extend_schema_view
 
 from apps.users.permissions import IsOwner, IsClient, IsDriver, IsDispatcher
 from apps.utilities.mixins import ListCacheMixin, LogicalDeleteMixin
-from apps.drivers.models import Driver, DriverAssignment
-from apps.drivers.choices import AssignmentStatusChoices
-from apps.deliveries.models import Delivery, FailedDelivery
+from apps.utilities.helpers import generate_response
+from apps.drivers.services import DriverService
+from apps.deliveries.services import DeliveryService
+from apps.deliveries.models import Delivery
 from apps.deliveries.serializers import FailedDeliverySerializer, SignatureSerializer
 from apps.deliveries.choices import StatusChoices
 from .models import Order, OrderItem, OrderReport
+from .services import OrderService
 from .serializers import (
     OrderReadSerializer,
     OrderWriteSerializer,
@@ -106,30 +106,32 @@ class OrderViewSet(ListCacheMixin, LogicalDeleteMixin, ModelViewSet):
     )
     def assign_driver(self, request, *args, **kwargs):
         """
-        Pending.
+        Action assign an available driver to a specific order.
 
         Endpoints:
         - PATCH api/v1/orders/{id}/asign_driver/
         """
         order = self.get_object()
-        available_drivers = Driver.objects.get_available().filter(
-            is_verified=True, is_active=True
-        )
-        # ! TODO: Add location filter and manager
+        result = DriverService.assign_driver_to_order(order)
+        return generate_response(result)
 
-        if not available_drivers.exists():
-            return Response(
-                {"error": "There are no drivers available for assignment."},
-                status=status.HTTP_400_BAD_REQUEST,
-            )
+        # available_drivers = Driver.objects.get_available().filter(
+        #     is_verified=True, is_active=True
+        # )
 
-        driver = random.choice(available_drivers)
-        DriverAssignment.objects.create(order_id=order, driver_id=driver)
+        # if not available_drivers.exists():
+        #     return Response(
+        #         {"error": "There are no drivers available for assignment."},
+        #         status=status.HTTP_400_BAD_REQUEST,
+        #     )
 
-        return Response(
-            {"detail": f"Driver {driver.id} assigned to order {order.id}."},
-            status=status.HTTP_200_OK,
-        )
+        # driver = random.choice(available_drivers)
+        # DriverAssignment.objects.create(order_id=order, driver_id=driver)
+
+        # return Response(
+        #     {"detail": f"Driver {driver.id} assigned to order {order.id}."},
+        #     status=status.HTTP_200_OK,
+        # )
 
     @action(
         methods=["patch"],
@@ -144,41 +146,10 @@ class OrderViewSet(ListCacheMixin, LogicalDeleteMixin, ModelViewSet):
         Endpoints:
         - POST api/v1/orders/{id}/accept/
         """
-        try:
-            # ! TODO: Add service layer
-            order = self.get_object()
-            driver = request.user.driver
-
-            assignment = DriverAssignment.objects.filter(
-                is_available=True,
-                driver_id=driver,
-                status=AssignmentStatusChoices.PENDING,
-            ).first()
-            assignment.status = AssignmentStatusChoices.ACCEPTED
-            assignment.is_available = False
-            assignment.save()
-
-            # Create delivery entries
-            Delivery.objects.create(
-                order_id=order,
-                driver_id=driver,
-                status=StatusChoices.ASSIGNED,
-            )
-
-            return Response(
-                {"detail": f"The order {order} was accepted."},
-                status=status.HTTP_200_OK,
-            )
-        except DriverAssignment.DoesNotExist:
-            return Response(
-                {"error": "No pending assignment found for this driver."},
-                status=status.HTTP_400_BAD_REQUEST,
-            )
-        except Exception as e:
-            return Response(
-                {"error": f"{e}"},
-                status=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            )
+        order = self.get_object()
+        driver = request.user.driver
+        result = OrderService.accept_order(order, driver)
+        return generate_response(result)
 
     @action(
         methods=["patch"],
@@ -193,27 +164,10 @@ class OrderViewSet(ListCacheMixin, LogicalDeleteMixin, ModelViewSet):
         Endpoints:
         - PATCH api/v1/orders/{id}/reject/
         """
-        try:
-            # ! TODO: Add service layer
-            order = self.get_object()
-            driver = request.user.driver
-
-            assignment = DriverAssignment.objects.get(
-                driver_id=driver,
-                order_id=order,
-            )
-            assignment.status = AssignmentStatusChoices.REJECTED
-            assignment.is_available = False
-            assignment.save()
-            return Response(
-                {"detail": f"The order {order} was rejected."},
-                status=status.HTTP_200_OK,
-            )
-        except Exception as e:
-            return Response(
-                {"error": f"{e}"},
-                status=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            )
+        order = self.get_object()
+        driver = request.user.driver
+        result = OrderService.reject_order(order, driver)
+        return generate_response(result)
 
     @action(
         methods=["patch"],
@@ -230,29 +184,8 @@ class OrderViewSet(ListCacheMixin, LogicalDeleteMixin, ModelViewSet):
         """
         order = self.get_object()
         driver = request.user.driver
-
-        delivery = Delivery.objects.get(
-            order_id=order,
-            driver_id=driver,
-        )
-        # ! TODO: Add service layer
-        if delivery.status == StatusChoices.ASSIGNED:
-            delivery.status = StatusChoices.PICKED_UP
-            delivery.picked_up_at = timezone.now()
-            delivery.save()
-            return Response(
-                {"detail": "Delivery status was changed to 'Picked Up'."},
-                status=status.HTTP_200_OK,
-            )
-        elif delivery.status == StatusChoices.PICKED_UP:
-            return Response(
-                {"error": "Delivery has already been marked as 'Picked Up'."},
-                status=status.HTTP_409_CONFLICT,
-            )
-        return Response(
-            {"error": "Delivery with status pending cannot be marked."},
-            status=status.HTTP_400_BAD_REQUEST,
-        )
+        result = DeliveryService.mark_as_picked_up(order, driver)
+        return generate_response(result)
 
     @action(
         methods=["post"],
@@ -273,28 +206,8 @@ class OrderViewSet(ListCacheMixin, LogicalDeleteMixin, ModelViewSet):
         serializer = SignatureSerializer(data=request.data)
         if serializer.is_valid():
             signature = serializer.validated_data["signature"]
-
-            delivery = Delivery.objects.get(
-                order_id=order,
-                driver_id=driver,
-            )
-
-            if delivery.status == StatusChoices.PICKED_UP:
-                # TODO: Add verification code
-                delivery.signature = signature
-                delivery.status = StatusChoices.DELIVERED
-                delivery.delivered_at = timezone.now()
-                delivery.is_completed = True
-                delivery.save()
-
-                return Response(
-                    {"detail": "Order successfully delivered."},
-                    status=status.HTTP_200_OK,
-                )
-            return Response(
-                {"error": "The status could not be changed, please try again."},
-                status=status.HTTP_409_CONFLICT,
-            )
+            result = DeliveryService.mark_as_delivered(order, driver, signature)
+            return generate_response(result)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     @action(
@@ -322,16 +235,8 @@ class OrderViewSet(ListCacheMixin, LogicalDeleteMixin, ModelViewSet):
             serializer = FailedDeliverySerializer(data=request.data)
             if serializer.is_valid():
                 reason = serializer.validated_data["reason"]
-                # Record failed delivery
-                FailedDelivery.objects.create(
-                    order_id=order,
-                    driver_id=driver,
-                    reason=reason,
-                    failed_at=timezone.now(),
-                )  # ! TODO: Add services layer
 
-                delivery.status = StatusChoices.FAILED
-                delivery.save()
+                DeliveryService.record_failed_delivery(order, driver, reason)
                 # TODO: Add notifications service
                 return Response(
                     {"detail": "Failed delivery recorded successfully."},
@@ -345,7 +250,6 @@ class OrderViewSet(ListCacheMixin, LogicalDeleteMixin, ModelViewSet):
             {"error": "The status could not be changed, please try again."},
             status=status.HTTP_400_BAD_REQUEST,
         )
-        # TODO: Refactor this
 
     @action(
         methods=["post"],
