@@ -23,6 +23,7 @@ from .serializers import (
     TagReadSerializer,
     TagWriteSerializer,
 )
+from .filters import PostFilter
 from .schemas import post_schemas
 
 
@@ -42,8 +43,8 @@ class PostViewSet(ListCacheMixin, LogicalDeleteMixin, ModelViewSet):
 
     permission_classes = [IsMarketing]
     serializer_class = PostWriteSerializer
-    search_fields = ["title"]
-    # filterset_class = PostFilter
+    search_fields = ["title", "author_id__name"]
+    filterset_class = PostFilter
 
     def get_queryset(self):
         return (

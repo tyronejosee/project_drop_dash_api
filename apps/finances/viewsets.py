@@ -7,6 +7,7 @@ from apps.utilities.mixins import ListCacheMixin, LogicalDeleteMixin
 from apps.users.permissions import IsAdministrator
 from .models import Revenue
 from .serializers import RevenueReadSerializer, RevenueWriteSerializer
+from .filters import RevenueFilter
 from .schemas import revenue_schemas
 
 
@@ -27,7 +28,7 @@ class RevenueViewSet(ListCacheMixin, LogicalDeleteMixin, ModelViewSet):
     permission_classes = [IsAdministrator]
     serializer_class = RevenueWriteSerializer
     search_fields = ["order_id", "driver_id", "restaurant_id"]
-    # Filterset_class = RevenueFilter
+    filterset_class = RevenueFilter
 
     def get_queryset(self):
         return Revenue.objects.get_available().select_related(

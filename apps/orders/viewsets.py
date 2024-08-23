@@ -115,24 +115,6 @@ class OrderViewSet(ListCacheMixin, LogicalDeleteMixin, ModelViewSet):
         result = DriverService.assign_driver_to_order(order)
         return generate_response(result)
 
-        # available_drivers = Driver.objects.get_available().filter(
-        #     is_verified=True, is_active=True
-        # )
-
-        # if not available_drivers.exists():
-        #     return Response(
-        #         {"error": "There are no drivers available for assignment."},
-        #         status=status.HTTP_400_BAD_REQUEST,
-        #     )
-
-        # driver = random.choice(available_drivers)
-        # DriverAssignment.objects.create(order_id=order, driver_id=driver)
-
-        # return Response(
-        #     {"detail": f"Driver {driver.id} assigned to order {order.id}."},
-        #     status=status.HTTP_200_OK,
-        # )
-
     @action(
         methods=["patch"],
         detail=True,
