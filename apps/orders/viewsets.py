@@ -27,6 +27,7 @@ from .serializers import (
     OrderReportWriteSerializer,
     OrderRatingWriteSerializer,
 )
+from .filters import OrderFilter
 from .schemas import order_schemas, order_item_schemas
 
 
@@ -47,7 +48,7 @@ class OrderViewSet(ListCacheMixin, LogicalDeleteMixin, ModelViewSet):
     permission_classes = [IsClient, IsOwner]
     serializer_class = OrderWriteSerializer
     search_fields = ["transaction", "shipping_name"]
-    # filterset_class = OrderFilter
+    filterset_class = OrderFilter
 
     def get_queryset(self):
         if getattr(self, "swagger_fake_view", False):
@@ -274,7 +275,6 @@ class OrderItemViewSet(ModelViewSet):
     serializer_class = OrderItemWriteSerializer
     search_fields = ["food_id"]
     pagination_class = None
-    # filterset_class = OrderItemFilter
 
     def get_queryset(self):
         if getattr(self, "swagger_fake_view", False):

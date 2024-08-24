@@ -87,7 +87,7 @@ class Category(BaseModel):
 
 
 class Food(BaseModel):
-    """Model definition for Food (Entity)."""
+    """Model definition for Food."""
 
     name = models.CharField(max_length=255)
     description = models.TextField(blank=True)

@@ -18,6 +18,7 @@ from apps.orders.models import Order
 from apps.orders.serializers import OrderReadSerializer
 from apps.reviews.models import Review
 from apps.reviews.serializers import ReviewReadSerializer, ReviewWriteSerializer
+from apps.reviews.filters import ReviewFilter
 from .models import Restaurant, Category, Food
 from .serializers import (
     RestaurantReadSerializer,
@@ -30,7 +31,7 @@ from .serializers import (
     FoodWriteSerializer,
     FoodMinimalSerializer,
 )
-from .filters import RestaurantFilter
+from .filters import RestaurantFilter, FoodFilter
 from .schemas import (
     restaurant_schemas,
     category_schemas,
@@ -227,7 +228,7 @@ class FoodViewSet(ModelViewSet):
     permission_classes = [IsPartner]
     serializer_class = FoodWriteSerializer
     search_fields = ["name"]
-    # Filterset_class = FoodFilter
+    filterset_class = FoodFilter
 
     def get_queryset(self):
         if getattr(self, "swagger_fake_view", False):
@@ -321,7 +322,7 @@ class RestaurantReviewViewSet(ModelViewSet):
     permission_classes = [IsClient]
     serializer_class = ReviewWriteSerializer
     search_fields = ["user_id"]
-    # Filterset_class = ReviewFilter
+    filterset_class = ReviewFilter
 
     def get_queryset(self):
         if getattr(self, "swagger_fake_view", False):

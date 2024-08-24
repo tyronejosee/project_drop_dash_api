@@ -60,13 +60,13 @@ pip install -r requirements/local.txt
 Create an environment variable file .env or use `.env.template` file.
 
 ```bash
-SECRET_KEY=""
-EMAIL_BACKEND=""
-EMAIL_HOST=""
-EMAIL_HOST_USER=""
-EMAIL_HOST_PASSWORD=""
-EMAIL_PORT=""
-EMAIL_USE_TLS=""
+SECRET_KEY=
+EMAIL_BACKEND=
+EMAIL_HOST=
+EMAIL_HOST_USER=
+EMAIL_HOST_PASSWORD=
+EMAIL_PORT=
+EMAIL_USE_TLS=
 ```
 
 Docker run.

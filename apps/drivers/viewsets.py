@@ -23,6 +23,7 @@ from .serializers import (
     ResourceReadSerializer,
     ResourceWriteSerializer,
 )
+from .filters import DriverFilter
 from .schemas import driver_schemas
 
 
@@ -43,7 +44,7 @@ class DriverViewSet(ListCacheMixin, LogicalDeleteMixin, ModelViewSet):
     permission_classes = [IsSupport, IsOwner]
     serializer_class = DriverWriteSerializer
     search_fields = ["user_id"]
-    # filterset_class = DriverFilter
+    filterset_class = DriverFilter
 
     def get_queryset(self):
         if self.action == "list":

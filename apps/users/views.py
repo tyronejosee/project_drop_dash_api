@@ -17,8 +17,10 @@ from apps.users.models import User
 from apps.users.serializers import UserHistorySerializer
 from apps.reviews.models import Review
 from apps.reviews.serializers import ReviewReadSerializer
+from apps.reviews.filters import ReviewFilter
 from apps.orders.models import Order, OrderReport
 from apps.orders.serializers import OrderReadSerializer, OrderReportReadSerializer
+from apps.orders.filters import UserOrderFilter
 from .schemas import (
     token_obtain_pair_schemas,
     token_refresh_schemas,
@@ -90,7 +92,7 @@ class UserReviewsView(ListAPIView):
 
     permission_class = [IsClient]
     serializer_class = ReviewReadSerializer
-    # filterset_class = ReviewFilter
+    filterset_class = ReviewFilter
 
     def get_queryset(self):
         if getattr(self, "swagger_fake_view", False):
@@ -109,7 +111,7 @@ class UserOrdersView(ListAPIView):
 
     permission_class = [IsClient]
     serializer_class = OrderReadSerializer
-    # filterset_class = OrderFilter
+    filterset_class = UserOrderFilter
 
     def get_queryset(self):
         if getattr(self, "swagger_fake_view", False):
