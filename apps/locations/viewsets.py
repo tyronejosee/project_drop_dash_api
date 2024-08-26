@@ -5,7 +5,8 @@ from rest_framework.permissions import AllowAny
 from drf_spectacular.utils import extend_schema_view
 
 from apps.users.permissions import IsAdministrator
-from apps.utilities.mixins import ListCacheMixin, LogicalDeleteMixin
+from apps.utilities.mixins import CacheMixin, LogicalDeleteMixin
+from apps.utilities.helpers import generate_cache_key
 from .models import Country, State, City
 from .serializers import (
     CountryReadSerializer,
@@ -22,7 +23,7 @@ from .schemas import country_schemas, state_schemas, city_schemas
 
 
 @extend_schema_view(**country_schemas)
-class CountryViewSet(ListCacheMixin, LogicalDeleteMixin, ModelViewSet):
+class CountryViewSet(CacheMixin, LogicalDeleteMixin, ModelViewSet):
     """
     ViewSet for managing Country instances.
 
@@ -54,9 +55,12 @@ class CountryViewSet(ListCacheMixin, LogicalDeleteMixin, ModelViewSet):
             return [AllowAny()]
         return super().get_permissions()
 
+    def get_cache_key(self, request, *args, **kwargs):
+        return generate_cache_key(request, prefix="country")
+
 
 @extend_schema_view(**state_schemas)
-class StateViewSet(ListCacheMixin, LogicalDeleteMixin, ModelViewSet):
+class StateViewSet(CacheMixin, LogicalDeleteMixin, ModelViewSet):
     """
     ViewSet for managing State instances.
 
@@ -90,9 +94,12 @@ class StateViewSet(ListCacheMixin, LogicalDeleteMixin, ModelViewSet):
             return [AllowAny()]
         return super().get_permissions()
 
+    def get_cache_key(self, request, *args, **kwargs):
+        return generate_cache_key(request, prefix="state")
+
 
 @extend_schema_view(**city_schemas)
-class CityViewSet(ListCacheMixin, LogicalDeleteMixin, ModelViewSet):
+class CityViewSet(CacheMixin, LogicalDeleteMixin, ModelViewSet):
     """
     ViewSet for managing City instances.
 
@@ -125,3 +132,6 @@ class CityViewSet(ListCacheMixin, LogicalDeleteMixin, ModelViewSet):
         if self.action in ["list", "retrieve"]:
             return [AllowAny()]
         return super().get_permissions()
+
+    def get_cache_key(self, request, *args, **kwargs):
+        return generate_cache_key(request, prefix="city")
