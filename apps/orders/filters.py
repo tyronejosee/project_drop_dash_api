@@ -2,8 +2,9 @@
 
 from django_filters import rest_framework as filters
 
+from apps.payments.choices import PaymentMethodChoices
 from .models import Order
-from .choices import OrderStatusChoices, PaymentMethodChoices
+from .choices import OrderStatusChoices
 
 
 class OrderFilter(filters.FilterSet):
