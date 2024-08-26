@@ -17,16 +17,19 @@ class Revenue(BaseModel):
         Order,
         on_delete=models.DO_NOTHING,
         blank=True,
+        null=True,
     )
     driver_id = models.ForeignKey(
         Driver,
         on_delete=models.DO_NOTHING,
         blank=True,
+        null=True,
     )
     restaurant_id = models.ForeignKey(
         Restaurant,
         on_delete=models.DO_NOTHING,
         blank=True,
+        null=True,
     )
     amount = models.DecimalField(max_digits=10, decimal_places=2)
     transaction_type = models.CharField(
