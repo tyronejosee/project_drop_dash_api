@@ -23,8 +23,6 @@ class WorkerService:
         worker.is_active = False
         worker.is_full_time = False
         worker.save()
-
-        # TODO: Encrypt data
         return worker
 
 

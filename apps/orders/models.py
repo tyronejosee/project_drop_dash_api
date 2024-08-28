@@ -72,7 +72,8 @@ class Order(BaseModel):
     def save(self, *args, **kwargs):
         from .services import OrderService
 
-        OrderService.generate_transaction_field(self)
+        # OrderService.generate_transaction_field(self)
+        # ! TODO: Remove transaction service
         OrderService.calculate_amount(self)
         OrderService.validate_order(self)
         super().save(*args, **kwargs)

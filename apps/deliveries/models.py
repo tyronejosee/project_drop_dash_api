@@ -62,6 +62,8 @@ class Delivery(BaseModel):
     def __str__(self):
         return f"Delivery for {self.order_id} - {self.status}"
 
+    # ! TODO: Execute driver assignment logic within the save method
+
 
 class FailedDelivery(BaseModel):
     """Model definition for FailedDelivery."""

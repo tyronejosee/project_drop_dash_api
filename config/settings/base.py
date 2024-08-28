@@ -211,6 +211,8 @@ AUTHENTICATION_BACKENDS = (
     "django.contrib.auth.backends.ModelBackend",
 )
 
+MERCADOPAGO_ACCESS_TOKEN = env("MERCADOPAGO_ACCESS_TOKEN")
+
 SPECTACULAR_SETTINGS = {
     "TITLE": "Drop Dash (API)",
     "DESCRIPTION": "A home delivery platform that allows users to search for and purchase products from local restaurants near their homes, place orders, and schedule deliveries. Provides access to restaurants to manage their menus, receive orders, and handle their meals through the platform. Inspired by platforms like Rappi and Uber Eats",
@@ -219,9 +221,10 @@ SPECTACULAR_SETTINGS = {
         "name": "Apache Licence 2.0",
         "url": "https://github.com/tyronejosee/project_drop_dash_api/blob/main/LICENSE",
     },
-    "CONTACT": {"name": "Developer", "url": "https://github.com/tyronejosee"},
-    # "SCHEMA_PATH_PREFIX": r"^/api/v\d+",
-    # "SCHEMA_PATH_PREFIX_TRIM": True,
+    "CONTACT": {
+        "name": "Developer",
+        "url": "https://github.com/tyronejosee",
+    },
     "SERVE_INCLUDE_SCHEMA": False,
     "TAGS": [
         {
