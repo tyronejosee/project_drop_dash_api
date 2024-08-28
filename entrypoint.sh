@@ -3,9 +3,6 @@ set -o errexit
 set -o pipefail
 set -o nounset
 
-# Load environment variables from .env file
-export $(grep -v '^#' .env | xargs)
-
 # Define color and style codes directly
 bold="\033[1m"
 normal="\033[0m"
@@ -26,7 +23,7 @@ echo -e "${bold}${yellow}Collecting static files...${normal}"
 # python manage.py collectstatic --noinput
 
 # Start the Django development server on all network interfaces, listening on port 8000
-echo -e "${bold}${blue}Starting Django development server on port 8200...${normal}"
+echo -e "${bold}${blue}Starting Django development server...${normal}"
 echo -e "${bold}${blue}Access the application at${normal} ${bold}${red}http://127.0.0.1:8200/${normal}"
 python manage.py runserver 0.0.0.0:8000
 

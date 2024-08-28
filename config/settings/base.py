@@ -69,6 +69,7 @@ THIRD_APPS = [
     "django_filters",
     "simple_history",
     "drf_spectacular",
+    "drf_spectacular_sidecar",
 ]
 
 INSTALLED_APPS = BASE_APPS + PROJECT_APPS + THIRD_APPS
@@ -280,7 +281,7 @@ SPECTACULAR_SETTINGS = {
     "REDOC_UI_SETTINGS": {
         "hideHostname": True,
         "theme": {
-            "colors": {"primary": {"main": "#FF135B"}},
+            "colors": {"primary": {"main": "#16FF00"}},
         },
     },
     "EXTENSIONS_INFO": {

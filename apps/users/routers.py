@@ -20,19 +20,8 @@ router = DefaultRouter()
 router.register(r"users", UserExtensionViewSet, basename="user")
 
 urlpatterns = [
+    # Routers urls
     path("api/v1/", include(router.urls)),
-    # path(
-    #     "api/v1/",
-    #     include("djoser.urls"),
-    # ),
-    # path(
-    #     "api/v1/tokens/",
-    #     include("djoser.urls.jwt"),
-    # ),
-    # path(
-    #     "api/v1/socials/",
-    #     include("djoser.social.urls"),
-    # ),
     # Djoser socials urls
     re_path(
         r"^api/v1/socials/o/(?P<provider>\S+)/$",
