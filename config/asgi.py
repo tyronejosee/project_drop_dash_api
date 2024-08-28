@@ -1,7 +1,7 @@
 """ASGI config for config project."""
 
 import os
-from .environment import SETTINGS_MODULE
+from config.environment import SETTINGS_MODULE
 
 from django.core.asgi import get_asgi_application
 

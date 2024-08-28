@@ -1,7 +1,7 @@
 """WSGI config for config project."""
 
 import os
-from .environment import SETTINGS_MODULE
+from config.environment import SETTINGS_MODULE
 
 from django.core.wsgi import get_wsgi_application
 

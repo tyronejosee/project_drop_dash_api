@@ -1,16 +1,33 @@
 """Settings for config project (Base)."""
 
 import os
+import sys
 from pathlib import Path
 from datetime import timedelta
 import environ
 
+env = environ.Env()
+environ.Env.read_env(".env")
+
 
 BASE_DIR = Path(__file__).resolve().parent.parent.parent
 
+DEBUG = env("DEBUG")
 
-env = environ.Env()
-environ.Env.read_env(".env.dev")
+SECRET_KEY = env("SECRET_KEY")
+
+ADMINS = [
+    (env("ADMIN_NAME"), env("ADMIN_EMAIL")),
+]
+
+
+ALLOWED_HOSTS = env.list("ALLOWED_HOSTS")
+
+CORS_ORIGIN_WHITELIST = env.list("CORS_ORIGIN_WHITELIST")
+
+CSRF_TRUSTED_ORIGINS = env.list("CSRF_TRUSTED_ORIGINS")
+
+INTERNAL_IPS = env.list("INTERNAL_IPS")
 
 
 SALES_TAX_RATE = 0.10
@@ -122,6 +139,35 @@ TIME_ZONE = "America/Santiago"
 USE_I18N = True
 USE_TZ = True
 
+if "test" in sys.argv:
+    DATABASES = {
+        "default": {
+            "ENGINE": "django.db.backends.sqlite3",
+            "NAME": BASE_DIR / "db.sqlite3",
+        }
+    }
+else:
+    DATABASES = {
+        "default": {
+            "ENGINE": "django.db.backends.postgresql",
+            "NAME": env("DATABASE_NAME"),
+            "USER": env("DATABASE_USER"),
+            "PASSWORD": env("DATABASE_PASSWORD"),
+            "HOST": "db",
+            "PORT": "5432",
+        }
+    }
+
+
+CACHES = {
+    "default": {
+        "BACKEND": "django_redis.cache.RedisCache",
+        "LOCATION": env("CACHE_LOCATION"),
+        "OPTIONS": {
+            "CLIENT_CLASS": "django_redis.client.DefaultClient",
+        },
+    },
+}
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
@@ -218,14 +264,31 @@ SPECTACULAR_SETTINGS = {
     "DESCRIPTION": "A home delivery platform that allows users to search for and purchase products from local restaurants near their homes, place orders, and schedule deliveries. Provides access to restaurants to manage their menus, receive orders, and handle their meals through the platform. Inspired by platforms like Rappi and Uber Eats",
     "VERSION": "v1",
     "LICENSE": {
-        "name": "Apache Licence 2.0",
-        "url": "https://github.com/tyronejosee/project_drop_dash_api/blob/main/LICENSE",
+        "name": env("LICENCE_NAME"),
+        "url": env("LICENCE_URL"),
     },
     "CONTACT": {
-        "name": "Developer",
-        "url": "https://github.com/tyronejosee",
+        "name": env("CONTACT_NAME"),
+        "url": env("CONTACT_URL"),
     },
     "SERVE_INCLUDE_SCHEMA": False,
+    "SWAGGER_UI_DIST": "SIDECAR",
+    "SWAGGER_UI_FAVICON_HREF": "SIDECAR",
+    # ! TODO: Custom colors and logo
+    "SWAGGER_UI_FAVICON_HREF": "https://res.cloudinary.com/dwyvfa5dj/image/upload/v1724775927/Drop%20Dash%20API/fb9ai97yagzqsimsdg4q.png",
+    "REDOC_DIST": "SIDECAR",
+    "REDOC_UI_SETTINGS": {
+        "hideHostname": True,
+        "theme": {
+            "colors": {"primary": {"main": "#FF135B"}},
+        },
+    },
+    "EXTENSIONS_INFO": {
+        "x-logo": {
+            "url": "https://res.cloudinary.com/dwyvfa5dj/image/upload/v1724788246/Drop%20Dash%20API/pyqqdznrcqofiuxd4l4e.png",
+            "altText": "API Logo",
+        },
+    },
     "TAGS": [
         {
             "name": "company",

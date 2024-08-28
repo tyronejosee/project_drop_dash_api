@@ -1,0 +1,43 @@
+services:
+  db:
+    image: postgres:16.4
+    container_name: dropdash_db
+    restart: always
+    env_file:
+      - ./.env
+    ports:
+      - 5432:5432
+    volumes:
+      - .data:/var/lib/postgresql
+    # healthcheck:
+    #   test: ["CMD-SHELL", "pg_isready -U user -d database"]
+    #   interval: 30s
+    #   retries: 3
+    #   start_period: 5s
+    #   timeout: 10s
+
+  redis:
+    image: redis:7.4.0
+    container_name: dropdash_redis
+    ports:
+      - 6379:6379
+
+  web:
+    container_name: dropdash_web
+    restart: always
+    build: .
+    volumes:
+      - .:/app
+    ports:
+      - "8200:8000"
+    env_file:
+      - ./.env
+    depends_on:
+      - db
+      - redis
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://localhost:8000/ || exit 1"]
+      interval: 30s
+      retries: 3
+      start_period: 10s
+      timeout: 10s

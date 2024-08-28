@@ -1,8 +1,11 @@
-ENVIRONMENT = "local"
-# ENVIRONMENT = "testing"
-# ENVIRONMENT = "production"
+"""Enviroments configs."""
 
-SETTINGS_MODULE = "config.settings.local"
+import environ
+
+env = environ.Env()
+environ.Env.read_env(".env")
+
+ENVIRONMENT = env("ENVIRONMENT", default="local")
 
 if ENVIRONMENT == "local":
     SETTINGS_MODULE = "config.settings.local"

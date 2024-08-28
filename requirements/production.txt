@@ -3,6 +3,9 @@
 # Web server
 gunicorn
 
-# Databases
-psycopg-binary==3.1.18
+# Store
 django-storages
+
+# Databases
+psycopg==3.1.18
+psycopg2-binary==2.9.9
