@@ -37,7 +37,7 @@ restaurant_schemas = {
     ),
     "create": extend_schema(
         summary="Create a Restaurant",
-        description="Create a new restaurant. The `user_id` is created by default, based on `request.user`, only for `IsClient` or `IsAdministrator` users.",
+        description="Create a new restaurant. The `user_id` is created by default, based on `request.user`, the request must be sent with `Content-Type: multipart/form-data`, only for `IsClient` or `IsAdministrator` users.",
         request=RestaurantWriteSerializer,
         responses={
             201: OpenApiResponse(RestaurantWriteSerializer, description="Created"),
@@ -60,7 +60,7 @@ restaurant_schemas = {
     ),
     "update": extend_schema(
         summary="Update a Restaurant",
-        description="Update all fields of a specific restaurant, only for `IsPartner` or `IsAdministrator` users.",
+        description="Update all fields of a specific restaurant, if you are sending images or files, use `Content-Type: multipart/form-data`, only for `IsPartner` or `IsAdministrator` users.",
         request=RestaurantWriteSerializer,
         responses={
             200: OpenApiResponse(RestaurantWriteSerializer, description="OK"),
@@ -73,7 +73,7 @@ restaurant_schemas = {
     ),
     "partial_update": extend_schema(
         summary="Partial Update a Restaurant",
-        description="Update some fields of a specific restaurant, only for `IsPartner` or `IsAdministrator` users.",
+        description="Update some fields of a specific restaurant, if you are sending images or files, use `Content-Type: multipart/form-data`, only for `IsPartner` or `IsAdministrator` users.",
         request=RestaurantWriteSerializer,
         responses={
             200: OpenApiResponse(RestaurantWriteSerializer, description="OK"),
@@ -218,7 +218,7 @@ food_schemas = {
     ),
     "create": extend_schema(
         summary="Create a Food of a Restaurant",
-        description="Create a new food, only for `IsPartner` or `IsAdministrator` users.",
+        description="Create a new food, the request must be sent with `Content-Type: multipart/form-data`, only for `IsPartner` or `IsAdministrator` users.",
         request=FoodWriteSerializer,
         responses={
             201: OpenApiResponse(FoodWriteSerializer, description="Created"),
@@ -243,7 +243,7 @@ food_schemas = {
     ),
     "update": extend_schema(
         summary="Update a Food of a Restaurant",
-        description="Update all fields of a specific food, only for `IsPartner` or `IsAdministrator` users.",
+        description="Update all fields of a specific food, if you are sending images or files, use `Content-Type: multipart/form-data`, only for `IsPartner` or `IsAdministrator` users.",
         request=FoodWriteSerializer,
         responses={
             200: OpenApiResponse(FoodWriteSerializer, description="OK"),
@@ -258,7 +258,7 @@ food_schemas = {
     ),
     "partial_update": extend_schema(
         summary="Partial Update a Food of a Restaurant",
-        description="Update some fields of a specific food, only for `IsPartner` or `IsAdministrator` users.",
+        description="Update some fields of a specific food, if you are sending images or files, use `Content-Type: multipart/form-data`, only for `IsPartner` or `IsAdministrator` users.",
         request=FoodWriteSerializer,
         responses={
             200: OpenApiResponse(FoodWriteSerializer, description="OK"),

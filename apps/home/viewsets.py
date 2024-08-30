@@ -70,6 +70,7 @@ class KeywordViewSet(ListCacheMixin, LogicalDeleteMixin, ModelViewSet):
     permission_classes = [IsMarketing]
     serializer_class = KeywordWriteSerializer
     search_fields = ["name"]
+    pagination_class = None
 
     def get_queryset(self):
         return Keyword.objects.get_available()

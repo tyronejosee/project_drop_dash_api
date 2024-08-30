@@ -50,7 +50,7 @@ promotion_schemas = {
     ),
     "create": extend_schema(
         summary="Create a Promotion",
-        description="Create a new promotion, only for `IsMarketing` or `IsAdministrator` users.",
+        description="Create a new promotion, the request must be sent with `Content-Type: multipart/form-data`, only for `IsMarketing` or `IsAdministrator` users.",
         request=PromotionWriteSerializer,
         responses={
             201: OpenApiResponse(PromotionWriteSerializer, description="Created"),
@@ -72,7 +72,7 @@ promotion_schemas = {
     ),
     "update": extend_schema(
         summary="Update a Promotion",
-        description="Update all fields of a specific promotion, only for `IsMarketing` or `IsAdministrator` users.",
+        description="Update all fields of a specific promotion, if you are sending images or files, use `Content-Type: multipart/form-data`, only for `IsMarketing` or `IsAdministrator` users.",
         request=PromotionWriteSerializer,
         responses={
             200: OpenApiResponse(PromotionWriteSerializer, description="OK"),
@@ -85,7 +85,7 @@ promotion_schemas = {
     ),
     "partial_update": extend_schema(
         summary="Partial Update a Promotion",
-        description="Update some fields of a specific promotion, only for `IsMarketing` or `IsAdministrator` users.",
+        description="Update some fields of a specific promotion, if you are sending images or files, use `Content-Type: multipart/form-data`, only for `IsMarketing` or `IsAdministrator` users.",
         request=PromotionWriteSerializer,
         responses={
             200: OpenApiResponse(PromotionWriteSerializer, description="OK"),

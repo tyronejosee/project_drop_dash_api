@@ -23,7 +23,7 @@ driver_schemas = {
     ),
     "create": extend_schema(
         summary="Create a Driver",
-        description="Create a new driver. Encrypt the data and change the role from `IsClient to `Isdriver`. only for `IsClient` users. The `user_id` is created by default, based on `request.user`.",
+        description="Create a new driver. Encrypt the data and change the role from `IsClient to `Isdriver`, the request must be sent with `Content-Type: multipart/form-data`, only for `IsClient` users. The `user_id` is created by default, based on `request.user`.",
         request=DriverWriteSerializer,
         responses={
             201: OpenApiResponse(DriverWriteSerializer, description="Created"),
@@ -45,7 +45,7 @@ driver_schemas = {
     ),
     "update": extend_schema(
         summary="Update a Driver",
-        description="Update all fields of a specific driver, only for `IsSupport` or `IsAdministrator` users.",
+        description="Update all fields of a specific driver, if you are sending images or files, use `Content-Type: multipart/form-data`, only for `IsSupport` or `IsAdministrator` users.",
         request=DriverWriteSerializer,
         responses={
             200: OpenApiResponse(DriverWriteSerializer, description="OK"),
@@ -58,7 +58,8 @@ driver_schemas = {
     ),
     "partial_update": extend_schema(
         summary="Partial Update a Driver",
-        description="Update some fields of a specific driver, only for `IsSupport` or `IsAdministrator` users.",
+        description=(
+            "Update some fields of a specific driver, if you are sending images or files, use `Content-Type: multipart/form-data`, only for `IsSupport` or `IsAdministrator` users."),
         request=DriverWriteSerializer,
         responses={
             200: OpenApiResponse(DriverWriteSerializer, description="OK"),

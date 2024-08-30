@@ -106,7 +106,7 @@ worker_schemas = {
     ),
     "create": extend_schema(
         summary="Create a Worker",
-        description="Create a new worker, only for `IsHumanResources` or `IsAdministrator` users.",
+        description="Create a new worker, the request must be sent with `Content-Type: multipart/form-data`, only for `IsHumanResources` or `IsAdministrator` users.",
         request=WorkerWriteSerializer,
         responses={
             201: OpenApiResponse(WorkerWriteSerializer, description="Created"),
@@ -128,7 +128,7 @@ worker_schemas = {
     ),
     "update": extend_schema(
         summary="Update a Worker",
-        description="Update all fields of a specific worker, only for `IsHumanResources` or `IsAdministrator` users.",
+        description="Update all fields of a specific worker, if you are sending images or files, use `Content-Type: multipart/form-data`, only for `IsHumanResources` or `IsAdministrator` users.",
         request=WorkerWriteSerializer,
         responses={
             200: OpenApiResponse(WorkerWriteSerializer, description="OK"),
@@ -141,7 +141,7 @@ worker_schemas = {
     ),
     "partial_update": extend_schema(
         summary="Partial Update a Worker",
-        description="Update some fields of a specific worker, only for `IsHumanResources` or `IsAdministrator` users.",
+        description="Update some fields of a specific worker, if you are sending images or files, use `Content-Type: multipart/form-data`, only for `IsHumanResources` or `IsAdministrator` users.",
         request=WorkerWriteSerializer,
         responses={
             200: OpenApiResponse(WorkerWriteSerializer, description="OK"),
@@ -194,7 +194,7 @@ applicant_schemas = {
     ),
     "create": extend_schema(
         summary="Create a Applicant",
-        description="Create a new applicant.",
+        description="Create a new applicant, the request must be sent with `Content-Type: multipart/form-data`.",
         request=ApplicantWriteSerializer,
         responses={
             201: OpenApiResponse(ApplicantWriteSerializer, description="Created"),
@@ -217,7 +217,7 @@ applicant_schemas = {
     ),
     "update": extend_schema(
         summary="Update a Applicant",
-        description="Update all fields of a specific applicant, only for `IsHumanResources` or `IsAdministrator` users.",
+        description="Update all fields of a specific applicant, if you are sending images or files, use `Content-Type: multipart/form-data`, only for `IsHumanResources` or `IsAdministrator` users.",
         request=ApplicantWriteSerializer,
         responses={
             200: OpenApiResponse(ApplicantWriteSerializer, description="OK"),
@@ -230,7 +230,7 @@ applicant_schemas = {
     ),
     "partial_update": extend_schema(
         summary="Partial Update a Applicant",
-        description="Update some fields of a specific applicant, only for `IsHumanResources` or `IsAdministrator` users.",
+        description="Update some fields of a specific applicant, if you are sending images or files, use `Content-Type: multipart/form-data`, only for `IsHumanResources` or `IsAdministrator` users.",
         request=ApplicantWriteSerializer,
         responses={
             200: OpenApiResponse(ApplicantWriteSerializer, description="OK"),

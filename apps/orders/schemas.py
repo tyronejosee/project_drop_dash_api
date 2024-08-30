@@ -168,7 +168,7 @@ order_schemas = {
     ),
     "delivered_order": extend_schema(
         summary="Mark Order as Delivered",
-        description="Marks a delivery status as 'Delivered'. The delivery must have been marked as 'Picked Up' before it can be marked as 'Delivered'. A valid signature is required to complete the delivery. only for `IsDriver` or `IsAdministrator` users.",
+        description="Marks a delivery status as `Delivered`. The delivery must have been marked as `Picked Up` before it can be marked as `Delivered`. A valid signature is required to complete the delivery, the request must be sent with `Content-Type: multipart/form-data`. only for `IsDriver` or `IsAdministrator` users.",
         request=SignatureSerializer,
         responses={
             200: OpenApiResponse(description="Order successfully delivered."),
