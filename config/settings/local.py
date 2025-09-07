@@ -1,14 +1,11 @@
 """Settings for config project (Local)."""
 
-from .base import *
+import os
+
+from .base import BASE_DIR
 
 
 CORS_ORIGIN_ALLOW_ALL = True
-
-# INSTALLED_APPS.append("debug_toolbar")
-
-# MIDDLEWARE.append("debug_toolbar.middleware.DebugToolbarMiddleware")
-
 
 EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
 

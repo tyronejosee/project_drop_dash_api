@@ -2,7 +2,7 @@
 
 import os
 
-from .base import *
+from .base import BASE_DIR, env
 
 
 EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
@@ -29,7 +29,7 @@ SECURE_BROWSER_XSS_FILTER = True
 CORS_ALLOWED_ORIGINS = env.list("CORS_ALLOWED_ORIGINS")
 
 CORS_ALLOW_CREDENTIALS = True
-# CORS_ALLOW_ALL_ORIGINS = True
+CORS_ALLOW_ALL_ORIGINS = True
 
 CORS_ALLOW_HEADERS = [
     "Authorization",

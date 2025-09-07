@@ -274,8 +274,6 @@ SPECTACULAR_SETTINGS = {
     },
     "SERVE_INCLUDE_SCHEMA": False,
     "SWAGGER_UI_DIST": "SIDECAR",
-    "SWAGGER_UI_FAVICON_HREF": "SIDECAR",
-    # ! TODO: Custom colors and logo
     "SWAGGER_UI_FAVICON_HREF": "https://res.cloudinary.com/dwyvfa5dj/image/upload/v1724775927/Drop%20Dash%20API/fb9ai97yagzqsimsdg4q.png",
     "REDOC_DIST": "SIDECAR",
     "REDOC_UI_SETTINGS": {

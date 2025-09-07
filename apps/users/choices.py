@@ -1,4 +1,4 @@
-"""Choices for Contents App."""
+"""Choices for Users App."""
 
 from django.db.models import TextChoices
 

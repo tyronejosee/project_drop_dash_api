@@ -6,4 +6,4 @@ class DriversConfig(AppConfig):
     name = "apps.drivers"
 
     def ready(self):
-        import apps.drivers.signals
+        import apps.drivers.signals  # noqa: F401

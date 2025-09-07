@@ -4,61 +4,132 @@ on:
   push:
     branches:
       - main
+      - develop
+      - "release/*"
   pull_request:
     branches:
       - main
+      - develop
+      - "feature/*"
+      - "hotfix/*"
+      - "release/*"
 
 jobs:
-  build:
+  ci:
+    name: Build & Test
     runs-on: ubuntu-latest
+    env:
+      ADMIN_EMAIL: ${{ secrets.ADMIN_EMAIL }}
+      ADMIN_NAME: ${{ secrets.ADMIN_NAME }}
+      ALLOWED_HOSTS: ${{ secrets.ALLOWED_HOSTS }}
+      AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+      AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+      AWS_STORAGE_BUCKET_NAME: ${{ secrets.AWS_STORAGE_BUCKET_NAME }}
+      CACHE_LOCATION: ${{ secrets.CACHE_LOCATION }}
+      CONTACT_NAME: ${{ secrets.CONTACT_NAME }}
+      CONTACT_URL: ${{ secrets.CONTACT_URL }}
+      CORS_ALLOWED_ORIGINS: ${{ secrets.CORS_ALLOWED_ORIGINS }}
+      CORS_ORIGIN_WHITELIST: ${{ secrets.CORS_ORIGIN_WHITELIST }}
+      CSRF_TRUSTED_ORIGINS: ${{ secrets.CSRF_TRUSTED_ORIGINS }}
+      DATABASE_NAME: ${{ secrets.DATABASE_NAME }}
+      DATABASE_PASSWORD: ${{ secrets.DATABASE_PASSWORD }}
+      DATABASE_USER: ${{ secrets.DATABASE_USER }}
+      DEBUG: ${{ secrets.DEBUG }}
+      EMAIL_BACKEND: ${{ secrets.EMAIL_BACKEND }}
+      EMAIL_HOST_PASSWORD: ${{ secrets.EMAIL_HOST_PASSWORD }}
+      EMAIL_HOST_USER: ${{ secrets.EMAIL_HOST_USER }}
+      EMAIL_HOST: ${{ secrets.EMAIL_HOST }}
+      EMAIL_PORT: ${{ secrets.EMAIL_PORT }}
+      EMAIL_USE_TLS: ${{ secrets.EMAIL_USE_TLS }}
+      ENCRYPT_KEY: ${{ secrets.ENCRYPT_KEY }}
+      ENVIRONMENT: ${{ secrets.ENVIRONMENT }}
+      INTERNAL_IPS: ${{ secrets.INTERNAL_IPS }}
+      LICENCE_NAME: ${{ secrets.LICENCE_NAME }}
+      LICENCE_URL: ${{ secrets.LICENCE_URL }}
+      MERCADOPAGO_ACCESS_TOKEN: ${{ secrets.MERCADOPAGO_ACCESS_TOKEN }}
+      SECRET_KEY: ${{ secrets.SECRET_KEY }}
+      SECURE_SSL_REDIRECT: ${{ secrets.SECURE_SSL_REDIRECT }}
+      WEB_CONCURRENCY: ${{ secrets.WEB_CONCURRENCY }}
     strategy:
-      max-parallel: 4
+      matrix:
+        python-version: [3.12]
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
-      - name: Set up Python
-        uses: actions/setup-python@v5
+        uses: actions/checkout@v3
+
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v4
         with:
-          python-version: "3.11.8"
+          python-version: ${{ matrix.python-version }}
+
+      - name: Cache pip
+        uses: actions/cache@v3
+        with:
+          path: ~/.cache/pip
+          key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements/local.txt') }}
+          restore-keys: |
+            ${{ runner.os }}-pip-
+
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
           pip install -r requirements/local.txt
-      - name: Lint with flake8
+
+      - name: Lint with Ruff
         run: |
-          pip install flake8
-          flake8 --config .flake8
-      - name: Django testing
+          pip install ruff
+          ruff check .
+
+      - name: Run tests
         run: |
-          python manage.py test
-        env:
-          SECRET_KEY: ${{ secrets.SECRET_KEY }}
-          DEBUG: ${{ secrets.DEBUG }}
-          ENVIRONMENT: ${{ secrets.ENVIRONMENT }}
-          ADMIN_NAME: ${{ secrets.ADMIN_NAME }}
-          ADMIN_EMAIL: ${{ secrets.ADMIN_EMAIL }}
-          DATABASE_NAME: ${{ secrets.DATABASE_NAME }}
-          DATABASE_USER: ${{ secrets.DATABASE_USER }}
-          DATABASE_PASSWORD: ${{ secrets.DATABASE_PASSWORD }}
-          CACHE_LOCATION: ${{ secrets.CACHE_LOCATION }}
-          ALLOWED_HOSTS: ${{ secrets.ALLOWED_HOSTS }}
-          INTERNAL_IPS: ${{ secrets.INTERNAL_IPS }}
-          CORS_ALLOWED_ORIGINS: ${{ secrets.CORS_ALLOWED_ORIGINS }}
-          CORS_ORIGIN_WHITELIST: ${{ secrets.CORS_ORIGIN_WHITELIST }}
-          CSRF_TRUSTED_ORIGINS: ${{ secrets.CSRF_TRUSTED_ORIGINS }}
-          SECURE_SSL_REDIRECT: ${{ secrets.SECURE_SSL_REDIRECT }}
-          MERCADOPAGO_ACCESS_TOKEN: ${{ secrets.MERCADOPAGO_ACCESS_TOKEN }}
-          WEB_CONCURRENCY: ${{ secrets.WEB_CONCURRENCY }}
-          # AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          # AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          # AWS_STORAGE_BUCKET_NAME: ${{ secrets.AWS_STORAGE_BUCKET_NAME }}
-          # EMAIL_BACKEND: ${{ secrets.EMAIL_BACKEND }}
-          # EMAIL_HOST: ${{ secrets.EMAIL_HOST }}
-          # EMAIL_HOST_USER: ${{ secrets.EMAIL_HOST_USER }}
-          # EMAIL_HOST_PASSWORD: ${{ secrets.EMAIL_HOST_PASSWORD }}
-          # EMAIL_PORT: ${{ secrets.EMAIL_PORT }}
-          # EMAIL_USE_TLS: ${{ secrets.EMAIL_USE_TLS }}
-          LICENCE_NAME: ${{ secrets.LICENCE_NAME }}
-          LICENCE_URL: ${{ secrets.LICENCE_URL }}
-          CONTACT_NAME: ${{ secrets.CONTACT_NAME }}
-          CONTACT_URL: ${{ secrets.CONTACT_URL }}
+          pip install pytest
+          pytest -n 4 --maxfail=3 --disable-warnings -v
+
+  docker:
+    name: Build & Push Docker Image
+    runs-on: ubuntu-latest
+    needs: ci
+    if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/develop'
+    outputs:
+      TAG: ${{ steps.docker-tag.outputs.TAG }}
+      ENV: ${{ steps.docker-tag.outputs.ENV }}
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Log in to Docker Hub
+        uses: docker/login-action@v2
+        with:
+          username: ${{ secrets.DOCKER_HUB_USERNAME }}
+          password: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
+
+      - name: Determine Docker Tag
+        id: docker-tag
+        run: |
+          if [[ "${GITHUB_REF##*/}" == "main" ]]; then
+            TAG="prod-${GITHUB_SHA}"
+            ENV="prod"
+          elif [[ "${GITHUB_REF##*/}" == "develop" ]]; then
+            TAG="staging-${GITHUB_SHA}"
+            ENV="staging"
+          fi
+
+          echo "TAG=$TAG" >> $GITHUB_ENV
+          echo "ENV=$ENV" >> $GITHUB_ENV
+          echo "::set-output name=TAG::$TAG"
+          echo "::set-output name=ENV::$ENV"
+
+      - name: Build Docker image
+        run: |
+          docker build \
+            --build-arg PYTHON_VERSION=3.11 \
+            -t tyronejose/drop-dash-api:${TAG} .
+
+      - name: Push Docker image
+        run: |
+          docker push tyronejose/drop-dash-api:${TAG}
+
+  # ! TODO: Add deploy job

@@ -6,4 +6,4 @@ class PromotionsConfig(AppConfig):
     name = "apps.promotions"
 
     def ready(self):
-        import apps.promotions.signals
+        import apps.promotions.signals  # noqa: F401

@@ -6,4 +6,4 @@ class RestaurantsConfig(AppConfig):
     name = "apps.restaurants"
 
     def ready(self):
-        import apps.restaurants.signals
+        import apps.restaurants.signals  # noqa: F401
