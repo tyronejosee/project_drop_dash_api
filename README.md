@@ -1,19 +1,19 @@
 <div align="center">
-  <a href="https://github.com/tyronejosee/project_new_store#gh-light-mode-only" target="_blank">
+  <a href="https://github.com/tyronejosee/project_drop_dash_api#gh-light-mode-only" target="_blank">
     <img src="./.github/logo_light.svg" alt="logo-light" width="80">
   </a>
-  <a href="https://github.com/tyronejosee/project_new_store#gh-dark-mode-only" target="_blank">
+  <a href="https://github.com/tyronejosee/project_drop_dash_api#gh-dark-mode-only" target="_blank">
     <img src="./.github/logo_dark.svg" alt="logo-dark" width="80">
   </a>
 </div>
 <div align="center">
-  <h1><strong>Drop Dash - API</strong></h1>
-  <a href="#"><strong>Swagger UI</strong></a>
+  <h1><strong>🚀 Drop Dash - API</strong></h1>
+  <a href="https://tyronejoseedocs.vercel.app/dropdash/swagger/"><strong>Swagger UI</strong></a>
   🔸
-  <a href="#"><strong>Redoc</strong></a>
+  <a href="https://tyronejoseedocs.vercel.app/dropdash/redoc/"><strong>Redoc</strong></a>
 </div>
 <p align="center">
-This API simulates a home delivery platform that allows users to search for and purchase products from local restaurants near their homes, place orders, and schedule deliveries. Similarly, restaurants can manage their menus, receive orders, and handle their meals through the platform. The API is inspired by platforms like Rappi, Uber Eats, PedidosYa, and Glovo.
+API REST backend for on-demand delivery platform inspired by Rappi and Uber Eats, with comprehensive management of restaurants, orders, drivers, and finances.
 <p>
 
 <p align="center">
@@ -37,6 +37,32 @@ This API simulates a home delivery platform that allows users to search for and 
     <img src="https://img.shields.io/badge/redis-7.4.0-D82C20" alt="postgresql-version">
   </a>
 </p>
+
+## ✨ Highlighted Features
+
+- Modular REST API for all critical entities.
+- Complete delivery system with assignments, failures, and historical audit.
+- Decoupled repositories to improve testability.
+- Financial system with validation based on transaction type.
+- Promotion system with custom validators.
+- Full management of restaurants, menus, and availability.
+- Conditional caching via feature flags.
+- Full traceability of orders, deliveries, and failures.
+- Advanced filters for complex searches (range filters, boolean filters, choice filters).
+- Automated seeds for large volumes of drivers.
+- Clean and maintainable domain-based architecture.
+
+## 🛠️ Technologies Used
+
+- Backend: Django 5, Django REST Framework
+- Documentation: drf-spectacular
+- DB: PostgreSQL
+- Cache / Feature Flags: Custom decorators and dynamic settings
+- Audit: django-simple-history
+- Infrastructure: Docker, Docker Compose
+- CI/CD: GitHub Actions
+- Testing / Lint: Flake8, Pre-commit
+- Seeds & CLI: Django Management Commands
 
 ## ⚙️ Installation
 
