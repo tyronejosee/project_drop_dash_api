@@ -53,14 +53,14 @@ class Restaurant(BaseModel, SlugMixin):
     history = HistoricalRecords()
 
     class Meta:
-        ordering = ["pk"]
-        verbose_name = "restaurant"
-        verbose_name_plural = "restaurants"
+        ordering: list[str] = ["pk"]
+        verbose_name: str = "restaurant"
+        verbose_name_plural: str = "restaurants"
 
-    def __str__(self):
+    def __str__(self) -> str:
         return str(self.name)
 
-    def save(self, *args, **kwargs):
+    def save(self, *args, **kwargs) -> None:
         self.set_slug()
         super().save(*args, **kwargs)
 
@@ -78,11 +78,11 @@ class Category(BaseModel):
     objects = CategoryManager()
 
     class Meta:
-        ordering = ["pk"]
-        verbose_name = "category"
-        verbose_name_plural = "categories"
+        ordering: list[str] = ["pk"]
+        verbose_name: str = "category"
+        verbose_name_plural: str = "categories"
 
-    def __str__(self):
+    def __str__(self) -> str:
         return str(self.name)
 
 
