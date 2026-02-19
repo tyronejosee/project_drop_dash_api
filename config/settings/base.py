@@ -1,9 +1,9 @@
 """Settings for config project (Base)."""
 
 import os
-import sys
-from pathlib import Path
 from datetime import timedelta
+from pathlib import Path
+
 import environ
 
 env = environ.Env()
@@ -139,25 +139,6 @@ LANGUAGE_CODE = "en-us"
 TIME_ZONE = "America/Santiago"
 USE_I18N = True
 USE_TZ = True
-
-if "test" in sys.argv:
-    DATABASES = {
-        "default": {
-            "ENGINE": "django.db.backends.sqlite3",
-            "NAME": BASE_DIR / "db.sqlite3",
-        }
-    }
-else:
-    DATABASES = {
-        "default": {
-            "ENGINE": "django.db.backends.postgresql",
-            "NAME": env("DATABASE_NAME"),
-            "USER": env("DATABASE_USER"),
-            "PASSWORD": env("DATABASE_PASSWORD"),
-            "HOST": "db",
-            "PORT": "5432",
-        }
-    }
 
 
 CACHES = {
